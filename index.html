@@ -1,28 +1,69 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>新多益核心單字閃卡 (TOEIC Flashcards)</title>
   <style>
     :root {
+      /* Warm Muji Light Theme */
       --bg-color: #f7f5f0;
       --card-bg: #ffffff;
+      --card-back-bg: #fffdfa;
       --text-main: #2d2926;
       --text-muted: #79716b;
       --text-sub: #a8a29e;
       --border-color: #e7e2d9;
+      --border-dashed: #dcd5c9;
+      --tab-bg: #ece7de;
+      --chip-bg: #f3efe9;
       --accent: #b85d38;
       --accent-hover: #9e4a29;
       --accent-soft: #fbf3ee;
+      --accent-border: rgba(184, 93, 56, 0.25);
       --green: #4f7942;
       --green-soft: #f0f6ee;
+      --green-border: rgba(79, 121, 66, 0.3);
       --amber: #c87d2a;
       --amber-soft: #fdf6ec;
+      --amber-border: rgba(200, 125, 42, 0.3);
+      --btn-hover: #f0ebe2;
+      --example-bg: #fbf9f5;
       --shadow-sm: 0 2px 8px rgba(45, 41, 38, 0.04);
       --shadow-md: 0 10px 25px -5px rgba(45, 41, 38, 0.07), 0 8px 10px -6px rgba(45, 41, 38, 0.04);
-      --shadow-lg: 0 20px 30px -10px rgba(45, 41, 38, 0.1);
+      --shadow-lg: 0 20px 30px -10px rgba(45, 41, 38, 0.12);
+      --modal-overlay: rgba(30, 26, 23, 0.5);
       --radius: 14px;
+    }
+
+    [data-theme="dark"] {
+      /* Elegant Warm Dark Theme (Charcoal / Deep Clay) */
+      --bg-color: #1a1816;
+      --card-bg: #262320;
+      --card-back-bg: #2b2723;
+      --text-main: #f3eee8;
+      --text-muted: #aba39a;
+      --text-sub: #78716a;
+      --border-color: #3d3833;
+      --border-dashed: #4a443e;
+      --tab-bg: #2c2824;
+      --chip-bg: #35302b;
+      --accent: #d4764e;
+      --accent-hover: #e08a63;
+      --accent-soft: rgba(212, 118, 78, 0.18);
+      --accent-border: rgba(212, 118, 78, 0.35);
+      --green: #689f38;
+      --green-soft: rgba(104, 159, 56, 0.18);
+      --green-border: rgba(104, 159, 56, 0.35);
+      --amber: #d97706;
+      --amber-soft: rgba(217, 119, 6, 0.18);
+      --amber-border: rgba(217, 119, 6, 0.35);
+      --btn-hover: #332e29;
+      --example-bg: #221f1c;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+      --modal-overlay: rgba(0, 0, 0, 0.75);
     }
 
     * {
@@ -30,6 +71,7 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
 
     body {
@@ -56,8 +98,8 @@
     header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      padding-bottom: 8px;
+      align-items: center;
+      padding-bottom: 12px;
       border-bottom: 1px solid var(--border-color);
     }
 
@@ -74,14 +116,40 @@
       margin-top: 2px;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--btn-hover);
+      transform: scale(1.05);
+    }
+
     .status-badge {
       font-size: 0.82rem;
       font-weight: 600;
       color: var(--accent);
       background: var(--accent-soft);
-      padding: 4px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
-      border: 1px solid rgba(184, 93, 56, 0.2);
+      border: 1px solid var(--accent-border);
+      white-space: nowrap;
     }
 
     /* Progress bar */
@@ -120,12 +188,12 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
 
     .filter-tabs {
       display: flex;
-      background: #ece7de;
+      background: var(--tab-bg);
       padding: 3px;
       border-radius: 8px;
       gap: 2px;
@@ -134,24 +202,25 @@
     .tab-btn {
       border: none;
       background: transparent;
-      padding: 5px 12px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-size: 0.78rem;
       font-weight: 500;
       color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
     .tab-btn.active {
-      background: #ffffff;
+      background: var(--card-bg);
       color: var(--text-main);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      font-weight: 600;
     }
 
     .action-tools {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .tool-btn {
@@ -165,11 +234,11 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
 
     .tool-btn:hover {
-      background: #f0ebe2;
+      background: var(--btn-hover);
     }
 
     .tool-btn.active {
@@ -183,7 +252,7 @@
     .flashcard-stage {
       perspective: 1200px;
       width: 100%;
-      height: 420px;
+      height: 430px;
       cursor: pointer;
     }
 
@@ -211,7 +280,7 @@
       border-radius: var(--radius);
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      padding: 32px 28px;
+      padding: 30px 28px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -220,7 +289,7 @@
 
     .card-face-back {
       transform: rotateY(180deg);
-      background: #fffdfa;
+      background: var(--card-back-bg);
     }
 
     /* Front Card Design */
@@ -233,7 +302,7 @@
     .tag-chip {
       font-size: 0.75rem;
       color: var(--text-muted);
-      background: #f3efe9;
+      background: var(--chip-bg);
       padding: 4px 10px;
       border-radius: 6px;
       font-weight: 500;
@@ -243,17 +312,18 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      font-size: 1.25rem;
-      color: #d1cbbf;
+      font-size: 1.35rem;
+      color: var(--text-sub);
       transition: transform 0.2s ease, color 0.2s ease;
+      padding: 4px;
     }
 
     .star-btn:hover {
-      transform: scale(1.15);
+      transform: scale(1.2);
     }
 
     .star-btn.active {
-      color: #e5a024;
+      color: #f59e0b;
     }
 
     .card-center-front {
@@ -286,7 +356,7 @@
     }
 
     .audio-btn {
-      background: #f3efe9;
+      background: var(--chip-bg);
       border: none;
       width: 32px;
       height: 32px;
@@ -296,7 +366,6 @@
       align-items: center;
       justify-content: center;
       color: var(--text-main);
-      transition: all 0.2s ease;
     }
 
     .audio-btn:hover {
@@ -325,7 +394,7 @@
       justify-content: space-between;
       align-items: baseline;
       padding-bottom: 12px;
-      border-bottom: 1px dashed var(--border-color);
+      border-bottom: 1px dashed var(--border-dashed);
     }
 
     .back-word-group {
@@ -355,7 +424,7 @@
     }
 
     .example-container {
-      background: #fbf9f5;
+      background: var(--example-bg);
       border-left: 3px solid var(--accent);
       padding: 12px 14px;
       border-radius: 0 8px 8px 0;
@@ -365,18 +434,18 @@
     .example-en {
       font-size: 0.95rem;
       line-height: 1.5;
-      color: #2b2826;
+      color: var(--text-main);
       margin-bottom: 6px;
     }
 
     .example-zh {
       font-size: 0.88rem;
-      color: #6a645d;
+      color: var(--text-muted);
       line-height: 1.45;
     }
 
     .related-container {
-      background: #f3efe9;
+      background: var(--chip-bg);
       padding: 10px 14px;
       border-radius: 8px;
       font-size: 0.84rem;
@@ -390,7 +459,7 @@
     }
 
     .related-body {
-      color: #403b37;
+      color: var(--text-main);
       line-height: 1.4;
     }
 
@@ -403,7 +472,7 @@
 
     .rate-btn {
       flex: 1;
-      padding: 10px 0;
+      padding: 11px 0;
       border-radius: 8px;
       border: none;
       font-size: 0.88rem;
@@ -413,27 +482,26 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.2s ease;
     }
 
     .rate-btn-again {
       background: var(--amber-soft);
       color: var(--amber);
-      border: 1px solid rgba(200, 125, 42, 0.3);
+      border: 1px solid var(--amber-border);
     }
 
     .rate-btn-again:hover {
-      background: #faebd7;
+      background: rgba(217, 119, 6, 0.28);
     }
 
     .rate-btn-good {
       background: var(--green-soft);
       color: var(--green);
-      border: 1px solid rgba(79, 121, 66, 0.3);
+      border: 1px solid var(--green-border);
     }
 
     .rate-btn-good:hover {
-      background: #e2f0de;
+      background: rgba(104, 159, 56, 0.28);
     }
 
     /* Controls Bar */
@@ -458,13 +526,11 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s ease;
       box-shadow: var(--shadow-sm);
     }
 
     .btn-nav:hover {
-      background: #f0ebe2;
-      border-color: #d8d1c5;
+      background: var(--btn-hover);
     }
 
     .btn-flip {
@@ -478,7 +544,200 @@
       background: var(--accent-hover);
     }
 
-    /* Keyboard Shortcuts Footer */
+    /* Modal (Import dialog) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-dialog {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .modal-dialog {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.15rem;
+      color: var(--text-main);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 20px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 0.88rem;
+    }
+
+    .import-dropzone {
+      border: 2px dashed var(--border-dashed);
+      border-radius: 10px;
+      padding: 24px 16px;
+      text-align: center;
+      background: var(--chip-bg);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .import-dropzone:hover {
+      border-color: var(--accent);
+    }
+
+    .import-dropzone input {
+      display: none;
+    }
+
+    .dropzone-title {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .dropzone-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .paste-area-label {
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .paste-textarea {
+      width: 100%;
+      height: 130px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-family: monospace;
+      font-size: 0.8rem;
+      resize: vertical;
+    }
+
+    .paste-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .modal-footer {
+      padding: 14px 22px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--chip-bg);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-bg);
+      color: var(--text-main);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 12px 22px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
     footer {
       margin-top: 12px;
       display: flex;
@@ -497,8 +756,8 @@
     }
 
     .shortcut-hints kbd {
-      background: #ece7de;
-      border: 1px solid #dcd5c9;
+      background: var(--tab-bg);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 2px 6px;
       font-family: inherit;
@@ -511,7 +770,6 @@
       color: var(--text-sub);
     }
 
-    /* Mobile adjustments */
     @media (max-width: 500px) {
       .flashcard-stage {
         height: 460px;
@@ -538,7 +796,12 @@
       <h1>新多益核心單字閃卡</h1>
       <p>TOEIC Essential Vocabulary Flashcards</p>
     </div>
-    <div class="status-badge" id="cardCounter">1 / 238</div>
+    <div class="header-actions">
+      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換明暗主題 (D)">
+        <!-- SVG will be injected by JS -->
+      </button>
+      <div class="status-badge" id="cardCounter">1 / 238</div>
+    </div>
   </header>
 
   <!-- Progress Bar -->
@@ -561,13 +824,17 @@
     </div>
 
     <div class="action-tools">
-      <button class="tool-btn" id="shuffleBtn" onclick="toggleShuffle()">
+      <button class="tool-btn" id="shuffleBtn" onclick="toggleShuffle()" title="打亂順序 (R)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
         <span>隨機打亂</span>
       </button>
-      <button class="tool-btn" onclick="resetProgress()">
+      <button class="tool-btn" onclick="openImportModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>匯入單字</span>
+      </button>
+      <button class="tool-btn" onclick="resetProgress()" title="重置已掌握與待複習狀態">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
-        <span>重置紀錄</span>
+        <span>重置進度</span>
       </button>
     </div>
   </div>
@@ -586,7 +853,7 @@
           <h2 class="word-text" id="frontWord">Loading...</h2>
           <div class="phonetic-row">
             <span class="phonetic-text" id="frontPhonetic"></span>
-            <button class="audio-btn" title="聆聽發音" onclick="speakCurrentWord(event)">
+            <button class="audio-btn" title="聆聽發音 (S)" onclick="speakCurrentWord(event)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
           </div>
@@ -634,15 +901,15 @@
 
   <!-- Navigation Controls -->
   <div class="controls">
-    <button class="btn-nav" onclick="prevCard()">
+    <button class="btn-nav" onclick="prevCard()" title="上一張 (← 或 K)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
       <span>上一張</span>
     </button>
-    <button class="btn-nav btn-flip" onclick="flipCard()">
+    <button class="btn-nav btn-flip" onclick="flipCard()" title="翻面 (Space)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
       <span>翻面 (Space)</span>
     </button>
-    <button class="btn-nav" onclick="nextCard()">
+    <button class="btn-nav" onclick="nextCard()" title="下一張 (→ 或 J)">
       <span>下一張</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </button>
@@ -655,49 +922,136 @@
       <span><kbd>→</kbd> / <kbd>J</kbd> 下一張</span>
       <span><kbd>←</kbd> / <kbd>K</kbd> 上一張</span>
       <span><kbd>R</kbd> 隨機洗牌</span>
-      <span><kbd>S</kbd> 英文發音</span>
+      <span><kbd>S</kbd> 單字發音</span>
+      <span><kbd>D</kbd> 暗色切換</span>
       <span><kbd>1</kbd> 待複習</span>
       <span><kbd>2</kbd> 已掌握</span>
     </div>
-    <div class="stat-text">支援離線使用與 GitHub Pages 靜態託管</div>
+    <div class="stat-text">純靜態架構 · 支援離線與 GitHub Pages 永久託管</div>
   </footer>
 </div>
 
-<script>
-  // Vocabulary Database
-  const VOCAB_DATA = [{"word": "able", "phonetic": "['ebl]", "pos": "adj.", "meaning": "有才能的", "example": "It was said that the man she met yesterday at the bar was able to speak six foreign languages.", "example_zh": "據說她昨天在酒吧認識的那個男人，會講六種外語。", "related": "ability (n.) 能力，才能；unable (adj.) 未能，無法；inability (n.) 無能力", "tag": "新多益500分-A"}, {"word": "accident", "phonetic": "['æksədənt]", "pos": "n.", "meaning": "(交通)事故，意外事故", "example": "I wish there were no car accidents anywhere in the world. I hate to hear such bad news.", "example_zh": "我希望世界上不再有交通事故，我討厭那些壞消息。", "related": "accidental (adj.) 意外的；accident-prone (adj.) 易出事故的", "tag": "新多益500分-A"}, {"word": "acid", "phonetic": "['æsıd]", "pos": "n./adj.", "meaning": "酸；酸性的", "example": "Learning from his last failure, this time he decided to treat this substance with acid.", "example_zh": "從上次的失敗中吸取教訓，這次他決定用酸來處理這種物質。", "related": "acidic (adj.) 酸性的", "tag": "新多益500分-A"}, {"word": "act", "phonetic": "[ækt]", "pos": "v.", "meaning": "扮演", "example": "When I was a little girl playing with my friends, I often acted as the mother and took care of my children, which were dolls.", "example_zh": "當小時候和朋友玩扮家家酒遊戲時，我經常扮演媽媽照顧小寶寶(洋娃娃)。", "related": "acting (n.) 表演，演藝業；actor (n.) 演員；actress (n.) 女演員", "tag": "新多益500分-A"}, {"word": "add", "phonetic": "[æd]", "pos": "v.", "meaning": "加，添加", "example": "Add some sugar to the coffee and it will taste better.", "example_zh": "加一些糖到咖啡裡，味道會好一些。", "related": "addition (n.) 加法；additive (adj.) 加法的；plus (prep.) 加", "tag": "新多益500分-A"}, {"word": "adult", "phonetic": "[ə'dalt]", "pos": "n.", "meaning": "成年人", "example": "He is an adult, but often acts like a child.", "example_zh": "他已經成年了，可是行為舉止卻常像孩子一樣幼稚。", "related": "mature (adj.) 成熟的；maturity (n.) 成熟；adulthood (n.) 成年", "tag": "新多益500分-A"}, {"word": "advance", "phonetic": "[əd'væns]", "pos": "n./v.", "meaning": "發展，進步", "example": "The country has made great advances in the development of its economy during the past ten years.", "example_zh": "在過去的10年中，這個國家在經濟的發展，有重大的進步。", "related": "advanced (adj.) 先進的；advancement (n.) 前進，進步", "tag": "新多益500分-A"}, {"word": "age", "phonetic": "[ed3]", "pos": "n.", "meaning": "年齡", "example": "She looked older than the age she professed to be, so he thought that she was lying about her real age.", "example_zh": "因看上去比她所說的年紀還要老，所以他懷疑她隱瞞了真實的年齡。", "related": "age group 年齡族群；legal age 法定年齡", "tag": "新多益500分-A"}, {"word": "agree", "phonetic": "[ə'gri]", "pos": "v.", "meaning": "同意", "example": "I totally agree with what you said just now.", "example_zh": "我完全贊同你剛才所說的話。", "related": "agreement (n.) 應允，同意；agreeable (adj.) 欣然同意的", "tag": "新多益500分-A"}, {"word": "air conditioner", "phonetic": "[er] [kən'dıʃənə]", "pos": "n.", "meaning": "空調", "example": "All rooms are equipped with air conditioners and computers.", "example_zh": "每個房間都有空調和電腦。", "related": "air conditioning 空氣調節系統；air-conditioned (adj.) 裝有空調的", "tag": "新多益500分-A"}, {"word": "airline", "phonetic": "['er,laın]", "pos": "n.", "meaning": "航空公司", "example": "Everyone hates it when airlines change schedules for no apparent reason.", "example_zh": "每個人都討厭航空公司無故改變航班時刻。", "related": "airliner (n.) 大型客機；flight (n.) 航班", "tag": "新多益500分-A"}, {"word": "airport", "phonetic": "['er,port]", "pos": "n.", "meaning": "機場，航空站", "example": "This time, I have decided to buy the ticket at the airport.", "example_zh": "這次我決定去機場買機票。", "related": "airfield (n.) 飛機場", "tag": "新多益500分-A"}, {"word": "album", "phonetic": "['ælbəm]", "pos": "n.", "meaning": "相簿，專輯", "example": "He put the photos in the album.", "example_zh": "他把照片粘在相簿中。", "related": "photo album 相簿；picture frame 相框", "tag": "新多益500分-A"}, {"word": "amuse", "phonetic": "[ə'mjuz]", "pos": "v.", "meaning": "逗笑，逗樂", "example": "He told some jokes to amuse us.", "example_zh": "他講了一些笑話逗我們開心。", "related": "amused (adj.) 有趣的；amusement (n.) 娛樂；amusing (adj.) 引人發笑的", "tag": "新多益500分-A"}, {"word": "angle", "phonetic": "['ængl]", "pos": "n.", "meaning": "角", "example": "Please show me the way to find a supplementary angle.", "example_zh": "請告訴我找補角的方法。", "related": "acute angle 銳角；obtuse angle 鈍角", "tag": "新多益500分-A"}, {"word": "angry", "phonetic": "['ængri]", "pos": "adj.", "meaning": "憤怒的，生氣的", "example": "Having waited outside for three hours, he felt extremely angry when he was told to come back tomorrow.", "example_zh": "他在外面等了3個小時後，被告知明天再來，他感到非常憤怒。", "related": "anger (n.) 怒火；angrily (adv.) 憤怒地；rage (n.) 暴怒", "tag": "新多益500分-A"}, {"word": "answer", "phonetic": "['ænsə]", "pos": "n./v.", "meaning": "答案；回答", "example": "He is anxious to know the answer to this arithmetic question.", "example_zh": "他急於知道這道算術題的答案。", "related": "respond (v.) 回答；response (n.) 答覆；key (n.) 答案", "tag": "新多益500分-A"}, {"word": "apple", "phonetic": "['æpl]", "pos": "n.", "meaning": "蘋果", "example": "New York ranked second in the production of apples, producing 850,000,000 pounds this year.", "example_zh": "紐約的蘋果產量位居第二，今年達850,000,000磅。", "related": "the Big Apple 紐約市；core (n.) 果核", "tag": "新多益500分-A"}, {"word": "apply", "phonetic": "[ə'plaı]", "pos": "v.", "meaning": "申請，請求", "example": "After graduation, most of my classmates chose to apply for scholarships from foreign universities.", "example_zh": "畢業後，絕大多數同學，都選擇申請國外大學的獎學金。", "related": "application (n.) 應用，申請；applicant (n.) 申請人", "tag": "新多益500分-A"}, {"word": "arm", "phonetic": "[arm]", "pos": "v.", "meaning": "武裝，備戰", "example": "Don't try to resist the robbers, because each of them is armed with a shotgun.", "example_zh": "別小看那些劫匪，他們每人都配有一把霰彈槍。", "related": "armament (n.) 武裝；disarm (v.) 解除武裝", "tag": "新多益500分-A"}, {"word": "arm", "phonetic": "[arm]", "pos": "n.", "meaning": "手臂", "example": "He met his ex-wife accidentally on the street, who was shopping cheerfully arm-in-arm with a tall man.", "example_zh": "他偶然在街上碰到前妻，看到她正高興地購物，手挽著一位高大的男子。", "related": "forearm (n.) 前臂；elbow (n.) 肘", "tag": "新多益500分-A"}, {"word": "arms", "phonetic": "[armz]", "pos": "n.", "meaning": "兵器，武器", "example": "Our mission is to bomb the enemy's arms depot.", "example_zh": "我們的任務是炸毀敵軍的軍火庫。", "related": "armed (adj.) 武裝的；unarmed (adj.) 無武器的", "tag": "新多益500分-A"}, {"word": "army", "phonetic": "['armı]", "pos": "n.", "meaning": "軍隊，陸軍", "example": "The people in the town are fighting against the invading army.", "example_zh": "鎮民正在對抗入侵的軍隊。", "related": "troop (n.) 軍隊；force (n.) 武裝部隊", "tag": "新多益500分-A"}, {"word": "arrive", "phonetic": "[ə'raıv]", "pos": "v.", "meaning": "到達", "example": "Would you mind me arriving earlier tomorrow morning?", "example_zh": "你介意我明天早上早點來嗎？", "related": "arrival (n.) 到達；latecomer (n.) 遲到者", "tag": "新多益500分-A"}, {"word": "art", "phonetic": "[art]", "pos": "n.", "meaning": "藝術，美術", "example": "He is studying for a master's degree in modern art.", "example_zh": "他正在攻讀現代藝術碩士。", "related": "artist (n.) 藝術家；artistic (adj.) 藝術的；art gallery 美術館", "tag": "新多益500分-A"}, {"word": "attack", "phonetic": "[ə'tæk]", "pos": "n./v.", "meaning": "進攻，攻擊", "example": "It is the best chance we have to make a sneak attack on the enemy.", "example_zh": "這是偷襲敵人的最佳時機。", "related": "attacker (n.) 攻擊者；assault (n./v.) 襲擊；raid (n.) 突襲", "tag": "新多益500分-A"}, {"word": "attend", "phonetic": "[ə'tend]", "pos": "v.", "meaning": "出席，參加", "example": "I promised my son I would attend his school concert, so I will ask for a leave today.", "example_zh": "我答應兒子要出席他的演唱會，所以今天我想請假。", "related": "attendance (n.) 出席；present (adj.) 出席的", "tag": "新多益500分-A"}, {"word": "attitude", "phonetic": "['ætətjud]", "pos": "n.", "meaning": "態度", "example": "Whatever we meet, we should not lose our optimistic attitude towards life.", "example_zh": "不論我們遇到什麼困難，都不要失去對生活的樂觀態度。", "related": "manner (n.) 態度，行為", "tag": "新多益500分-A"}, {"word": "attract", "phonetic": "[ə'trækt]", "pos": "v.", "meaning": "吸引，引起……的好感", "example": "As we all know, some newspapers distort news to attract people's attention.", "example_zh": "眾所皆知，有些報紙為了吸引人們的目光而扭曲事實。", "related": "attractive (adj.) 有吸引力的；attraction (n.) 吸引力", "tag": "新多益500分-A"}, {"word": "baby", "phonetic": "['bebr]", "pos": "n.", "meaning": "嬰兒", "example": "Paul intended to name his baby after his grandfather, but his wife disagreed.", "example_zh": "保羅打算以他祖父的名字為自己孩子命名，但他妻子不同意。", "related": "baby boom 嬰兒潮；babysitter (n.) 保母", "tag": "新多益500分-B"}, {"word": "back", "phonetic": "[bæk]", "pos": "n.", "meaning": "背", "example": "The child's mother put him on the back of the ostrich, but he was so afraid that he burst into tears.", "example_zh": "孩子的媽把他放到鴕鳥的背上，可是他太害怕竟然大哭起來。", "related": "backache (n.) 背痛；back-breaking (adj.) 繁重的", "tag": "新多益500分-B"}, {"word": "bag", "phonetic": "[bæg]", "pos": "n.", "meaning": "包，袋", "example": "He got angry with me and kicked my bag out of the room.", "example_zh": "他生我的氣，所以把我的包包踢出了房間。", "related": "handbag (n.) 手提包；wallet (n.) 皮夾；purse (n.) 錢包", "tag": "新多益500分-B"}, {"word": "baggage", "phonetic": "['bægid3]", "pos": "n.", "meaning": "行李", "example": "It was terrible that I mistook another's baggage for mine at the carousel in the airport.", "example_zh": "在機場的行李傳送帶上，我拿錯別人的行李，還以為是自己的，真是太糟糕了。", "related": "baggage claim 提領行李處", "tag": "新多益500分-B"}, {"word": "ball", "phonetic": "[bol]", "pos": "n.", "meaning": "球", "example": "The exterior surface of the hollow ball is green.", "example_zh": "這個空心球的表面是綠色的。", "related": "ball game 球類運動", "tag": "新多益500分-B"}, {"word": "ban", "phonetic": "[bæn]", "pos": "v.", "meaning": "禁止，取締", "example": "Parking is banned on this street.", "example_zh": "這條街禁止停車。", "related": "forbid (v.) 禁止；forbidden (adj.) 被禁止的", "tag": "新多益500分-B"}, {"word": "band", "phonetic": "[bænd]", "pos": "n.", "meaning": "樂隊", "example": "He wanted to join the jazz band when he was a student in high school.", "example_zh": "當他是中學生時，他想加入爵士樂隊。", "related": "orchestra (n.) 管弦樂隊", "tag": "新多益500分-B"}, {"word": "bank", "phonetic": "[bænk]", "pos": "n.", "meaning": "銀行", "example": "I will go to the bank to establish an account.", "example_zh": "我要去銀行開個帳戶。", "related": "bank balance 銀行存款餘額；banker (n.) 銀行家", "tag": "新多益500分-B"}, {"word": "bar", "phonetic": "[bar]", "pos": "n.", "meaning": "酒吧", "example": "Every night he kills time in a bar.", "example_zh": "他每晚都在酒吧裡消磨時間。", "related": "counter (n.) 櫃檯；nightclub (n.) 夜總會", "tag": "新多益500分-B"}, {"word": "basin", "phonetic": "['besn]", "pos": "n.", "meaning": "盆子", "example": "Robert took off the dirty clothes and placed them in the basin.", "example_zh": "羅伯特把髒衣服脫下，並放在盆子裡。", "related": "tub (n.) 盆，桶；bucket (n.) 桶子", "tag": "新多益500分-B"}, {"word": "basketball", "phonetic": "['bæskıt,bol]", "pos": "n.", "meaning": "籃球", "example": "Most of the boys in my class are basketball fanatics.", "example_zh": "我們班大部分的男孩，都是籃球迷。", "related": "basket (n.) 籃；hoop (n.) 籃圈", "tag": "新多益500分-B"}, {"word": "bat", "phonetic": "[bæt]", "pos": "n.", "meaning": "蝙蝠", "example": "He said that bats were very ugly and he hated them.", "example_zh": "他說蝙蝠很醜陋，他痛恨牠們。", "related": "vampire bat 吸血蝠；owl (n.) 貓頭鷹", "tag": "新多益500分-B"}, {"word": "bath", "phonetic": "[bæθ]", "pos": "n.", "meaning": "浴缸，浴盆", "example": "The mother stripped the kid and put her in the bath.", "example_zh": "媽媽脫掉孩子的衣服，幫她洗澡。", "related": "bathtub (n.) 浴缸；shower (n.) 淋浴", "tag": "新多益500分-B"}, {"word": "battle", "phonetic": "['bætl]", "pos": "n./v.", "meaning": "戰鬥，爭鬥", "example": "After a fierce battle, we occupied the enemy's capital.", "example_zh": "一場激烈的戰鬥之後，我們佔領了敵國首都。", "related": "battlefield (n.) 戰場；battleground (n.) 戰地", "tag": "新多益500分-B"}, {"word": "bay", "phonetic": "[be]", "pos": "n.", "meaning": "海灣", "example": "Do you know that in a small bay big waves will never build up?", "example_zh": "你知道嗎，在小港灣裡永遠無法形成大波浪。", "related": "ocean wave 海浪", "tag": "新多益500分-B"}, {"word": "beach", "phonetic": "[bitf]", "pos": "n.", "meaning": "海灘", "example": "There are many beautiful shells on the beach.", "example_zh": "海灘上有很多漂亮的貝殼。", "related": "coast (n.) 海岸；shore (n.) 海濱；seaside (n.) 海濱", "tag": "新多益500分-B"}, {"word": "bear", "phonetic": "[ber]", "pos": "n.", "meaning": "熊", "example": "Can you tell me something about polar bears?", "example_zh": "你能講一些關於北極熊的事給我聽嗎？", "related": "panda (n.) 貓熊；koala (n.) 無尾熊", "tag": "新多益500分-B"}, {"word": "beautiful", "phonetic": "['bjutəfəl]", "pos": "adj.", "meaning": "漂亮的", "example": "The girl with the beautiful face behaved rudely towards the old lady.", "example_zh": "那個女孩長得很漂亮，卻對那位老太太很粗魯。", "related": "beauty (n.) 美人；good-looking (adj.) 好看的", "tag": "新多益500分-B"}, {"word": "bed", "phonetic": "[bed]", "pos": "n.", "meaning": "床", "example": "The patient lay quietly on his bed in the medical ward.", "example_zh": "病人安靜地躺在內科病房的床上。", "related": "bedside (n.) 床邊；bedhead (n.) 床頭", "tag": "新多益500分-B"}, {"word": "bee", "phonetic": "[bi]", "pos": "n.", "meaning": "蜜蜂", "example": "Don't touch the bee or else it will give you a sting.", "example_zh": "不要碰那隻蜜蜂，否則牠會蜇你的。", "related": "honeybee (n.) 蜜蜂；queen bee 女王蜂", "tag": "新多益500分-B"}, {"word": "beef", "phonetic": "[bif]", "pos": "n.", "meaning": "牛肉", "example": "The woman only rarely eats beef.", "example_zh": "那女士很少吃牛肉。", "related": "steak (n.) 牛排；veal (n.) 小牛肉", "tag": "新多益500分-B"}, {"word": "beer", "phonetic": "[bir]", "pos": "n.", "meaning": "啤酒", "example": "A large quantity of beer was sold last month.", "example_zh": "上個月賣了大量的啤酒。", "related": "ale (n.) 麥芽啤酒；beer belly 啤酒肚", "tag": "新多益500分-B"}, {"word": "begin", "phonetic": "[bı'gın]", "pos": "v.", "meaning": "開始", "example": "When did you begin reading this novel?", "example_zh": "你何時開始讀這本小說？", "related": "beginning (n.) 開頭；end (v./n.) 結束", "tag": "新多益500分-B"}, {"word": "belief", "phonetic": "[bı'lif]", "pos": "n.", "meaning": "信仰，信念", "example": "It is said that people in trouble are inclined to have a belief in God.", "example_zh": "據說處於困境中的人們傾向於信仰上帝。", "related": "creed (n.) 信念；believer (n.) 信徒", "tag": "新多益500分-B"}, {"word": "bend", "phonetic": "[bend]", "pos": "v.", "meaning": "彎腰，彎曲", "example": "He bent down to pick up all the coins that he had dropped on the ground carelessly.", "example_zh": "他彎下腰把自己不小心掉到地上的硬幣都撿了起來。", "related": "bow (v.) 鞠躬；kneel (v.) 跪下", "tag": "新多益500分-B"}, {"word": "bet", "phonetic": "[bet]", "pos": "v./n.", "meaning": "打賭，下賭注", "example": "I bet you haven't finished your work today.", "example_zh": "我打賭你還沒有完成今天的工作。", "related": "casino (n.) 賭場", "tag": "新多益500分-B"}, {"word": "bike", "phonetic": "[bark]", "pos": "n.", "meaning": "自行車", "example": "Riding a bike is one of my boss's favorite activities.", "example_zh": "騎自行車是我老闆很喜愛的活動之一。", "related": "bicycle (n.) 自行車；biker (n.) 騎車者", "tag": "新多益500分-B"}, {"word": "biology", "phonetic": "[bar'alǝdzı]", "pos": "n.", "meaning": "生物學", "example": "I study biology in university.", "example_zh": "我大學的時候唸生物學。", "related": "biologist (n.) 生物學家；biological (adj.) 生物的", "tag": "新多益500分-B"}, {"word": "bite", "phonetic": "[bart]", "pos": "v./n.", "meaning": "咬，叮咬", "example": "Tom promised that his dog didn't bite, but I was still afraid to approach it.", "example_zh": "湯姆保證說他的狗不會咬人，可我還是不敢靠近牠。", "related": "snap (v.) 猛咬", "tag": "新多益500分-B"}, {"word": "bitter", "phonetic": "['bitə]", "pos": "adj.", "meaning": "苦的", "example": "As is known to us, all bitter pills may have blessed effects.", "example_zh": "大家都知道良藥苦口這個道理。", "related": "bitterness (n.) 苦味；bittersweet (adj.) 苦甜參半的", "tag": "新多益500分-B"}, {"word": "black", "phonetic": "[blæk]", "pos": "adj.", "meaning": "黑色的", "example": "I bought a black hat yesterday in the store.", "example_zh": "我昨天在商店買了一頂黑帽子。", "related": "pitch-dark (adj.) 漆黑的", "tag": "新多益500分-B"}, {"word": "bless", "phonetic": "[bles]", "pos": "v.", "meaning": "求上帝降福，祝福", "example": "May God bless you and all the people you love.", "example_zh": "願上帝保佑你和所有你愛的人！", "related": "blessing (n.) 祝福；blessed (adj.) 神聖的", "tag": "新多益500分-B"}, {"word": "blind", "phonetic": "[blaınd]", "pos": "adj.", "meaning": "瞎的，失明的", "example": "He became blind in one eye after a fire accident.", "example_zh": "在一次火災事故後，他的一隻眼睛失明了。", "related": "blind spot 盲點；blindly (adv.) 盲目地", "tag": "新多益500分-B"}, {"word": "blood", "phonetic": "[blad]", "pos": "n.", "meaning": "血液", "example": "The police found the hiding place of the escaped convict by the trail of his blood.", "example_zh": "警方透過血跡，找到了逃犯的藏身之地。", "related": "blood type 血型；vessel (n.) 血管；vein (n.) 靜脈", "tag": "新多益500分-B"}, {"word": "blow", "phonetic": "[blo]", "pos": "v.", "meaning": "吹，吹氣", "example": "You can blow out all the candles on the birthday cake with a single puff, can't you?", "example_zh": "你能一口氣吹滅生日蛋糕上所有的蠟燭，對嗎？", "related": "blower (n.) 吹風機；blowout (n.) 爆胎", "tag": "新多益500分-B"}, {"word": "blue", "phonetic": "[blu]", "pos": "adj.", "meaning": "藍色的", "example": "My daughter likes this blue skirt very much.", "example_zh": "我女兒非常喜歡這條藍色短裙。", "related": "bluish (adj.) 帶藍色的", "tag": "新多益500分-B"}, {"word": "board", "phonetic": "[bord]", "pos": "v.", "meaning": "上飛機，登機", "example": "There are so many people in line that it will take a long time to board.", "example_zh": "很多人在排隊，登機將會花很長的時間。", "related": "boarding pass 登機證；check-in 辦理登機處", "tag": "新多益500分-B"}, {"word": "board", "phonetic": "[bord]", "pos": "n.", "meaning": "董事會", "example": "The board turned down his expansion plans.", "example_zh": "董事會否決了他的擴張計畫。", "related": "board member 董事；directorate (n.) 董事會", "tag": "新多益500分-B"}, {"word": "boat", "phonetic": "[bot]", "pos": "n.", "meaning": "小船，小艇", "example": "The bridge was ruined by the heavy rain, so we crossed the river by boat.", "example_zh": "橋被大雨沖壞了，於是我們坐小船渡河。", "related": "boatyard (n.) 造船廠", "tag": "新多益500分-B"}, {"word": "bodybuilding", "phonetic": "['badı,bıldın]", "pos": "n.", "meaning": "健身", "example": "He goes to a bodybuilding class every day to keep healthy.", "example_zh": "他每天都去健身房鍛鍊，以保持健康。", "related": "workout (n.) 鍛鍊；exercise (n.) 運動", "tag": "新多益500分-B"}, {"word": "bomb", "phonetic": "[bam]", "pos": "n./v.", "meaning": "炸彈；轟炸", "example": "They decided to drop bombs to blow up this fort.", "example_zh": "他們決定扔炸彈來炸毀這個堡壘。", "related": "bombing (n.) 轟炸；bombard (v.) 炮轟", "tag": "新多益500分-B"}, {"word": "bone", "phonetic": "[bon]", "pos": "n.", "meaning": "骨頭", "example": "The dog ran over here with a bone in its mouth.", "example_zh": "狗跑了過來，嘴裡還叼著一塊骨頭。", "related": "skeleton (n.) 骨骼；fracture (n.) 骨折", "tag": "新多益500分-B"}, {"word": "book", "phonetic": "[buk]", "pos": "v.", "meaning": "預訂", "example": "My boss asked me to book a flight to New York for tomorrow.", "example_zh": "老闆叫我幫他訂一張明天飛往紐約的機票。", "related": "booking (n.) 預訂；bookable (adj.) 可預訂的", "tag": "新多益500分-B"}, {"word": "book", "phonetic": "[buk]", "pos": "n.", "meaning": "書，書籍", "example": "I spend one hour reading books every day.", "example_zh": "我每天花一個小時讀書。", "related": "bookcase (n.) 書櫃；bookmark (n.) 書籤", "tag": "新多益500分-B"}, {"word": "borrow", "phonetic": "['baro]", "pos": "v.", "meaning": "借入", "example": "I want to borrow your dictionary.", "example_zh": "我想借一下你的字典。", "related": "borrower (n.) 借方；loan (v./n.) 借出/貸款", "tag": "新多益500分-B"}, {"word": "bottle", "phonetic": "['batl]", "pos": "n.", "meaning": "瓶子", "example": "I have drunk two bottles of beer, so I can't drink any more.", "example_zh": "我已經喝了兩瓶啤酒，不能再喝了。", "related": "bottle-opener (n.) 開瓶器；jar (n.) 廣口瓶", "tag": "新多益500分-B"}, {"word": "bowling", "phonetic": "['bolin]", "pos": "n.", "meaning": "保齡球運動", "example": "We are going to go bowling this Sunday; will you go with us?", "example_zh": "這周日我們去打保齡球，你要不要跟我們一塊去？", "related": "bowling alley 保齡球館；strike (n.) 全倒", "tag": "新多益500分-B"}, {"word": "boy", "phonetic": "[bor]", "pos": "n.", "meaning": "男孩", "example": "Some naughty boys splattered the wall with black ink.", "example_zh": "一些淘氣的男孩子在牆上亂潑灑黑墨水。", "related": "boyhood (n.) 少年時代；boy scout 童子軍", "tag": "新多益500分-B"}, {"word": "brain", "phonetic": "[bren]", "pos": "n.", "meaning": "腦", "example": "He suffered severe brain damage in the accident, which caused him to be a vegetable.", "example_zh": "他的大腦在意外中受了嚴重損傷，結果成了植物人。", "related": "brainstorm (n./v.) 腦力激盪；brain dead 腦死", "tag": "新多益500分-B"}, {"word": "brake", "phonetic": "[brek]", "pos": "n./v.", "meaning": "煞車", "example": "The driver braked suddenly to give way to a little cat on the road.", "example_zh": "司機忽然踩煞車，讓路給路上的小貓。", "related": "brake pedal 煞車踏板；handbrake (n.) 手煞車", "tag": "新多益500分-B"}, {"word": "brave", "phonetic": "[brev]", "pos": "adj.", "meaning": "勇敢的，無畏的", "example": "I think you were brave to protest to the boss that the salary was too low.", "example_zh": "我認為你真的很勇敢，敢向老闆抗議薪資太低。", "related": "bravery (n.) 勇敢；daring (adj.) 敢冒險的", "tag": "新多益500分-B"}, {"word": "bread", "phonetic": "[bred]", "pos": "n.", "meaning": "麵包", "example": "It tastes better if you spread the jam on your bread.", "example_zh": "把果醬塗到麵包上，這樣味道會好一點。", "related": "breaded (adj.) 裹麵包屑的", "tag": "新多益500分-B"}, {"word": "break", "phonetic": "[brek]", "pos": "v.", "meaning": "(使)破，裂，碎", "example": "Whenever I touch the vase, my mother says 'stop monkeying about with the vase, or you'll break it.'", "example_zh": "每當我觸摸花瓶時，媽媽就會說「別亂動花瓶，否則你會弄破的」。", "related": "breakdown (n.) 故障；broken (adj.) 損壞的", "tag": "新多益500分-B"}, {"word": "breathe", "phonetic": "[brið]", "pos": "v.", "meaning": "呼吸", "example": "The waves were so fierce that we could hardly breathe.", "example_zh": "風刮得很猛，以至於我們幾乎無法呼吸。", "related": "breath (n.) 呼吸；breathless (adj.) 氣喘吁吁的", "tag": "新多益500分-B"}, {"word": "bridge", "phonetic": "[brid3]", "pos": "n.", "meaning": "橋", "example": "This is one of the longest bridges in the world.", "example_zh": "這是世界上最長的橋之一。", "related": "suspension bridge 吊橋", "tag": "新多益500分-B"}, {"word": "bright", "phonetic": "[braıt]", "pos": "adj.", "meaning": "明亮的，光線充足的", "example": "The sun is very bright today.", "example_zh": "今天真是個陽光燦爛的日子。", "related": "brighten (v.) 使明亮；brightness (n.) 亮度", "tag": "新多益500分-B"}, {"word": "build", "phonetic": "[bıld]", "pos": "v.", "meaning": "建築，建造", "example": "People in the town are delighted to hear that a railway station will be built there.", "example_zh": "聽說鎮上要蓋火車站，鎮民都很高興。", "related": "builder (n.) 建築工；building site 工地", "tag": "新多益500分-B"}, {"word": "building", "phonetic": "['bıldıŋ]", "pos": "n.", "meaning": "建築物，房子", "example": "A tall building was erected in the center of the city recently.", "example_zh": "最近市中心蓋了一棟高樓。", "related": "skyscraper (n.) 摩天大樓；high-rise (adj.) 高層的", "tag": "新多益500分-B"}, {"word": "bus", "phonetic": "[bas]", "pos": "n.", "meaning": "公共汽車", "example": "The twin brothers go to work by bus every day.", "example_zh": "那對雙胞胎兄弟，每天都坐公車上班。", "related": "bus station 公車站；bus stop 公車站牌", "tag": "新多益500分-B"}, {"word": "business", "phonetic": "['biznis]", "pos": "n.", "meaning": "商業，生意", "example": "Nobody wanted to do business with him because of his dishonesty.", "example_zh": "因為他不誠實，沒有人願意跟他做生意。", "related": "businessman (n.) 企業家；business hours 營業時間", "tag": "新多益500分-B"}, {"word": "busy", "phonetic": "['bızı]", "pos": "adj.", "meaning": "忙碌的，無暇的", "example": "He has been busy drawing up the new plans for his company recently.", "example_zh": "他最近正忙著起草擬公司的新計畫。", "related": "bustle (v.) 使忙碌", "tag": "新多益500分-B"}, {"word": "buy", "phonetic": "[bar]", "pos": "v.", "meaning": "買，購買", "example": "I bought this umbrella at a 30% discount.", "example_zh": "我用七折的價錢買這把傘。", "related": "buyer (n.) 買主；afford (v.) 買得起", "tag": "新多益500分-B"}, {"word": "cabbage", "phonetic": "['kæbıd3]", "pos": "n.", "meaning": "高麗菜，包心菜", "example": "He is tired of having cabbage three times a day.", "example_zh": "他厭倦了一天三餐都吃高麗菜。", "related": "Chinese cabbage 大白菜；lettuce (n.) 萵苣", "tag": "新多益500分-C"}, {"word": "cafeteria", "phonetic": "[,kæfə'tıriə]", "pos": "n.", "meaning": "自助餐廳，自助食堂", "example": "We can have delicious roast duck in this cafeteria.", "example_zh": "我們可以在這家自助餐廳，吃到美味的烤鴨。", "related": "buffet (n.) 自助餐；fast food restaurant 速食店", "tag": "新多益500分-C"}, {"word": "cage", "phonetic": "[ked3]", "pos": "n.", "meaning": "籠子", "example": "Don't you feel sorry for birds that are always locked in a cage?", "example_zh": "你不覺得被關在籠子裡的小鳥很可憐嗎？", "related": "birdcage (n.) 鳥籠；caged (adj.) 關在籠中的", "tag": "新多益500分-C"}, {"word": "cake", "phonetic": "[kek]", "pos": "n.", "meaning": "蛋糕", "example": "He passed me one half of the cake.", "example_zh": "他給我一半的蛋糕。", "related": "brownie (n.) 布朗尼；bakery (n.) 麵包店", "tag": "新多益500分-C"}, {"word": "call", "phonetic": "[kɔl]", "pos": "v.", "meaning": "大聲呼叫，大聲說", "example": "He called his girlfriend's name loudly through the window of her house, but nobody answered him.", "example_zh": "他對著女友家的窗戶大喊女友的名字，但是卻沒有人回應。", "related": "yell (v.) 叫喊；roar (v.) 咆哮", "tag": "新多益500分-C"}, {"word": "camera", "phonetic": "['kæmərə]", "pos": "n.", "meaning": "照相機，攝影機", "example": "Each camera we sell comes with a three-year guarantee.", "example_zh": "我們出售的每台相機，都有三年的保固。", "related": "digital camera 數位相機；focus (n.) 焦點", "tag": "新多益500分-C"}, {"word": "camp", "phonetic": "[kæmp]", "pos": "v./n.", "meaning": "露營；營地", "example": "It's absurd to go camping in such terrible weather.", "example_zh": "在這麼惡劣的天氣裡去露營，簡直是荒謬。", "related": "campsite (n.) 營地；camping (n.) 野營", "tag": "新多益500分-C"}, {"word": "campaign", "phonetic": "[kæm'pen]", "pos": "n.", "meaning": "戰役，運動", "example": "The campaign to capture this fortress has proven to be a successful one.", "example_zh": "攻破這個堡壘的戰役，證明是成功的。", "related": "deploy (v.) 部署，調度", "tag": "新多益500分-C"}, {"word": "cancer", "phonetic": "['kænsə]", "pos": "n.", "meaning": "癌症", "example": "Quit smoking please! You know that lung cancer is a consequence of cigarette smoking.", "example_zh": "請戒煙吧！你知道嗎，肺癌就是吸煙的結果。", "related": "cancer cell 癌細胞；breast cancer 乳癌", "tag": "新多益500分-C"}, {"word": "candle", "phonetic": "['kændl]", "pos": "n.", "meaning": "蠟燭", "example": "The candle blew out when I opened the window.", "example_zh": "當我打開窗戶的時候，蠟燭被風吹滅了。", "related": "candlestick (n.) 燭臺；candlelight (n.) 燭光", "tag": "新多益500分-C"}, {"word": "career", "phonetic": "[kə'rır]", "pos": "n.", "meaning": "生涯，職業", "example": "My father has met many difficulties in his career over the years.", "example_zh": "這些年，爸爸的事業遇到了許多困難。", "related": "career woman 職業婦女；career break 職業假期", "tag": "新多益500分-C"}, {"word": "careful", "phonetic": "['kerfəl]", "pos": "adj.", "meaning": "小心的，細緻的", "example": "You have to be careful though the gangster was arrested, his confederate escaped.", "example_zh": "你必須小心，雖然那個歹徒被逮住了，但他的同夥卻逃之夭夭。", "related": "carefully (adv.) 仔細地；careless (adj.) 粗心的", "tag": "新多益500分-C"}, {"word": "case", "phonetic": "[kes]", "pos": "n.", "meaning": "訴訟案，案件", "example": "The case will be soon brought to trial.", "example_zh": "這個訴訟案，將會很快被審判。", "related": "case study 案例研究", "tag": "新多益500分-C"}, {"word": "cash", "phonetic": "[kæʃ]", "pos": "n.", "meaning": "現金，資金", "example": "I will pay for the shirt by cash.", "example_zh": "我會以現金方式支付這件襯衫。", "related": "cash card 提款卡；ATM 自動提款機", "tag": "新多益500分-C"}, {"word": "challenge", "phonetic": "['tfælınd3]", "pos": "n./v.", "meaning": "挑戰", "example": "I know this is a difficult problem, but are you prepared to face the challenge?", "example_zh": "我知道這是個難題，但是你準備好迎接這個挑戰了嗎？", "related": "challenger (n.) 挑戰者；challenging (adj.) 具挑戰性的", "tag": "新多益500分-C"}, {"word": "change", "phonetic": "[tfend3]", "pos": "v./n.", "meaning": "改變，變化", "example": "Our hometown has seen changes in the last twenty years.", "example_zh": "我們家鄉在最近20年內有顯而易見的改變。", "related": "unchangeable (adj.) 不可改變的", "tag": "新多益500分-C"}, {"word": "cheap", "phonetic": "[tip]", "pos": "adj.", "meaning": "便宜的，廉價的", "example": "Vegetables are cheap when they're in season.", "example_zh": "當季的蔬菜很便宜。", "related": "dirt cheap 非常便宜；inexpensive (adj.) 便宜的", "tag": "新多益500分-C"}, {"word": "check", "phonetic": "[tfck]", "pos": "v.", "meaning": "檢查", "example": "When we were children, adults often told us to check our homework carefully after we finished it.", "example_zh": "小時候，大人們經常告訴我們，做完作業以後，要仔細地檢查。", "related": "conveyor belt 傳送帶；metal detector 金屬探測儀", "tag": "新多益500分-C"}, {"word": "chef", "phonetic": "[Scf]", "pos": "n.", "meaning": "(餐館、飯店等的)主廚，廚師", "example": "As chef of the restaurant, he gets a higher salary than his coworkers.", "example_zh": "身為飯店的主廚，他的工資比其他同事高。", "related": "cook (n.) 廚師", "tag": "新多益500分-C"}, {"word": "choice question", "phonetic": "[tfois] ['kwɛstſən]", "pos": "n.", "meaning": "選擇題", "example": "There are too many choice questions in this paper.", "example_zh": "這張試卷上有太多的選擇題了。", "related": "multiple choice 選擇題；option (n.) 選項", "tag": "新多益500分-C"}, {"word": "choose", "phonetic": "[tfuz]", "pos": "v.", "meaning": "選擇，挑選", "example": "Tina is a popular girl in our school, so it is a difficult matter for her to choose a boyfriend among so many pursuers.", "example_zh": "蒂娜在我們學校很受歡迎，所以要在眾多追求者中挑一個作為她的男朋友，也是件頭疼的事。", "related": "choice (n.) 抉擇；optional (adj.) 可選的", "tag": "新多益500分-C"}, {"word": "clean", "phonetic": "[klin]", "pos": "v./adj.", "meaning": "打掃；乾淨的", "example": "Dust soon accumulates if you don't clean rooms regularly.", "example_zh": "如果你不經常打掃房間，很快就會累積灰塵。", "related": "clean-up (n.) 清理；vacuum cleaner 吸塵器", "tag": "新多益500分-C"}, {"word": "climate", "phonetic": "['klaımıt]", "pos": "n.", "meaning": "氣候", "example": "His wife couldn't adapt to the climate there and fell ill.", "example_zh": "他妻子不能適應那裡的氣候而病倒了。", "related": "climatic (adj.) 氣候的；climatology (n.) 氣候學", "tag": "新多益500分-C"}, {"word": "closet", "phonetic": "['klazıt]", "pos": "n.", "meaning": "壁櫥，衣櫥", "example": "There's still dampness in the closet.", "example_zh": "這個衣櫃還是有點潮濕。", "related": "wardrobe (n.) 衣櫥；drawer (n.) 抽屜", "tag": "新多益500分-C"}, {"word": "clothes", "phonetic": "[kloz]", "pos": "n.", "meaning": "衣服，服裝", "example": "He took a bundle of clothes and ran away.", "example_zh": "他拿了一包衣服跑掉了。", "related": "cloth (n.) 布料；clothing (n.) 服裝", "tag": "新多益500分-C"}, {"word": "clue", "phonetic": "[klu]", "pos": "n.", "meaning": "線索，跡象", "example": "A passerby gave the police an important clue, which helped them to solve the case.", "example_zh": "一個路人給警方一條重要線索，幫助他們偵破了案子。", "related": "fingerprint (n.) 指紋；evidence (n.) 證據", "tag": "新多益500分-C"}, {"word": "coach", "phonetic": "[kotf]", "pos": "n./v.", "meaning": "教練；訓練，指導", "example": "When will you coach me on how to improve my basketball playing?", "example_zh": "你何時可以教我提升自己的籃球技巧啊？", "related": "coaching (n.) 指導；tutor (n.) 家教", "tag": "新多益500分-C"}, {"word": "code", "phonetic": "[kod]", "pos": "n.", "meaning": "準則；法規；代碼", "example": "Every employee of this company must be familiar with the code of practice before working here.", "example_zh": "開始工作之前，公司的每個員工必須熟悉公司的業務守則。", "related": "code name 代號；coded (adj.) 編碼的", "tag": "新多益500分-C"}, {"word": "colleague", "phonetic": "['kalıg]", "pos": "n.", "meaning": "同事", "example": "My colleague, Mary, appeared to be even more beautiful after she returned from her honeymoon.", "example_zh": "我的同事瑪麗，自從度蜜月回來後，就變得更漂亮了。", "related": "coworker (n.) 同事；associate (n.) 同事", "tag": "新多益500分-C"}, {"word": "community", "phonetic": "[kə'mjunətı]", "pos": "n.", "meaning": "社區，團體", "example": "The young man was very diligent and went to the community library to study on weekends.", "example_zh": "那個年輕人很勤奮，每個週末都會去社區圖書館讀書。", "related": "community center 社區活動中心；community service 社區服務", "tag": "新多益500分-C"}, {"word": "compete", "phonetic": "[kəm'pit]", "pos": "v.", "meaning": "競爭，對抗", "example": "In fact, I don't want to compete with you for the contract.", "example_zh": "事實上，我不想因為合約和你競爭。", "related": "competition (n.) 競爭；competitive (adj.) 競爭的；competitor (n.) 對手", "tag": "新多益500分-C"}, {"word": "compute", "phonetic": "[kəm'pjut]", "pos": "v.", "meaning": "計算，估算", "example": "I computed my loss from the accident last night.", "example_zh": "我昨天晚上已經估算了一下，我在這次事故中的損失。", "related": "computational (adj.) 計算的；computing (n.) 計算", "tag": "新多益500分-C"}, {"word": "condition", "phonetic": "[kən'dıfən]", "pos": "n.", "meaning": "條件；狀況", "example": "I have no interest in meeting the conditions he raised.", "example_zh": "我對他提出的條件不感興趣。", "related": "terms (n.) 條件；conditional (adj.) 附帶條件的", "tag": "新多益500分-C"}, {"word": "confident", "phonetic": "['kanfədənt]", "pos": "adj.", "meaning": "自信的", "example": "I'm confident that these obstacles can be overcome.", "example_zh": "我有信心可以克服這些障礙。", "related": "confidence (n.) 自信心；confidently (adv.) 自信地", "tag": "新多益500分-C"}, {"word": "contribute", "phonetic": "[kən'tribjut]", "pos": "v.", "meaning": "捐贈，捐助，貢獻", "example": "People from all over the country have contributed food and clothing to the famine victims.", "example_zh": "全國各地的人們都捐獻食物和衣物給饑荒的災民。", "related": "contribution (n.) 貢獻，捐贈；contributor (n.) 捐贈者", "tag": "新多益500分-C"}, {"word": "custom", "phonetic": "['kʌstəm]", "pos": "n.", "meaning": "風俗，習俗", "example": "The tribal lore and customs have been passed down orally from generation to generation.", "example_zh": "部落的知識和風俗，透過口耳相傳一代代地保留下來。", "related": "customary (adj.) 習俗的；customize (v.) 訂做", "tag": "新多益500分-C"}, {"word": "dairy", "phonetic": "['derı]", "pos": "n.", "meaning": "牛奶廠，乳品公司", "example": "We bought milk at the dairy.", "example_zh": "我們在乳品公司買牛奶。", "related": "dairy cow 乳牛；dairy product 乳製品", "tag": "新多益500分-D"}, {"word": "danger", "phonetic": "['dendzə]", "pos": "n.", "meaning": "危險", "example": "Linda must be trapped in this storm. If so, she must be in danger.", "example_zh": "琳達肯定是被暴風雨困住了，如果這樣的話，她就有危險了。", "related": "dangerous (adj.) 危險的；risk (n.) 風險", "tag": "新多益500分-D"}, {"word": "data", "phonetic": "['detǝ]", "pos": "n.", "meaning": "(儲存在電腦中的)資料", "example": "This time, we have to write a composition about the language data related to ESL learning.", "example_zh": "這次我們必須寫一篇文章，是關於外語學習語言資料庫的。", "related": "database (n.) 資料庫；data mining 資料採擷技術", "tag": "新多益500分-D"}, {"word": "deal", "phonetic": "[dil]", "pos": "n./v.", "meaning": "協定，交易", "example": "Why don't we make a deal?", "example_zh": "我們為什麼不簽訂個協議呢？", "related": "dealer (n.) 交易商；dealership (n.) 經銷權", "tag": "新多益500分-D"}, {"word": "decide", "phonetic": "[dı'saıd]", "pos": "v.", "meaning": "決定，選定", "example": "I decided to go to Beijing for some sightseeing this weekend.", "example_zh": "這個週末，我決定去北京觀光旅遊。", "related": "decision (n.) 決定；decisive (adj.) 決定性的", "tag": "新多益500分-D"}, {"word": "deliver", "phonetic": "[dı'lıvə]", "pos": "v.", "meaning": "遞送，傳送", "example": "We want to check whether the goods have been delivered.", "example_zh": "我們想確認一下貨物是否已發送。", "related": "delivery (n.) 遞送；delivery system 配送系統", "tag": "新多益500分-D"}, {"word": "demand", "phonetic": "[dı'mænd]", "pos": "n./v.", "meaning": "要求，需求", "example": "I am afraid that I can't satisfy all your demands.", "example_zh": "我恐怕不能滿足你所有的需求。", "related": "demanding (adj.) 苛求的；require (v.) 要求", "tag": "新多益500分-D"}, {"word": "describe", "phonetic": "[dı'skraıb]", "pos": "v.", "meaning": "描述", "example": "The witness was required to describe the appearance of the murderer.", "example_zh": "目擊者被要求描述他看到的兇手模樣。", "related": "description (n.) 描述；descriptive (adj.) 描寫的", "tag": "新多益500分-D"}, {"word": "detail", "phonetic": "['ditel]", "pos": "v./n.", "meaning": "詳述；細節", "example": "Could you detail your experiences related to job-hunting?", "example_zh": "你能把找工作的經歷，詳細的跟我說明一下嗎？", "related": "detailed (adj.) 詳細的；elaborate (v.) 詳細說明", "tag": "新多益500分-D"}, {"word": "develop", "phonetic": "[dı'veləp]", "pos": "v.", "meaning": "開發，研製，發展", "example": "The scientists are developing a new kind of medicine which may be used to cure cancer.", "example_zh": "科學家們正在研製一種能夠治療癌症的新藥。", "related": "development (n.) 發展；developmental (adj.) 開發的", "tag": "新多益500分-D"}, {"word": "diet", "phonetic": "['darət]", "pos": "n.", "meaning": "日常飲食；節食", "example": "Could you recommend a diet for old people to me?", "example_zh": "你能推薦我一些適合老年人的飲食嗎？", "related": "dietician (n.) 營養師；go on a diet 節食", "tag": "新多益500分-D"}, {"word": "digital", "phonetic": "['dıdzıt!]", "pos": "adj.", "meaning": "數字的，數位的", "example": "It is convenient to use a digital camera.", "example_zh": "數位相機用起來很方便。", "related": "digital technology 數位科技", "tag": "新多益500分-D"}, {"word": "direct", "phonetic": "[də'rekt]", "pos": "v./adj.", "meaning": "導演；直接的", "example": "We must select a person to direct the play.", "example_zh": "我們必須挑選出一個人來導演這齣話劇。", "related": "director (n.) 導演；producer (n.) 製片人", "tag": "新多益500分-D"}, {"word": "disappoint", "phonetic": "[,dısə'pɔınt]", "pos": "v.", "meaning": "使失望", "example": "I really don't want to disappoint you, but I don't have any money to lend you.", "example_zh": "我真的不想讓你失望，但我真的沒有錢可以借你。", "related": "disappointment (n.) 失望；disappointed (adj.) 感到失望的", "tag": "新多益500分-D"}, {"word": "disease", "phonetic": "[dı'ziz]", "pos": "n.", "meaning": "疾病", "example": "The disease caused my little brother to bleed to death.", "example_zh": "這種疾病讓弟弟出血死亡。", "related": "illness (n.) 疾病；sick (adj.) 生病的", "tag": "新多益500分-D"}, {"word": "double", "phonetic": "['dabl]", "pos": "v./adj.", "meaning": "使加倍；雙重的", "example": "If we can finish this task on schedule, our boss will double our salary.", "example_zh": "如果我們如期完成這項任務，老闆會發雙倍薪資給我們。", "related": "double-digit (adj.) 兩位數的", "tag": "新多益500分-D"}, {"word": "duty", "phonetic": "['djutr]", "pos": "n.", "meaning": "稅；職責", "example": "Usually, the duty on cigarettes is very high.", "example_zh": "在一般情況下，對香菸課的稅是很高的。", "related": "tariff (n.) 關稅；duty-free (adj.) 免稅的", "tag": "新多益500分-D"}, {"word": "earn", "phonetic": "[3n]", "pos": "v.", "meaning": "賺錢，贏得", "example": "Everyone has such a lust that the more they earn, the more they want.", "example_zh": "賺得越多，想要的也越多，是每個人都有的慾求。", "related": "earnings (n.) 薪水，工資；income (n.) 收入", "tag": "新多益500分-E"}, {"word": "earthquake", "phonetic": "['30,kwek]", "pos": "n.", "meaning": "地震", "example": "Everybody hates earthquakes, because they can be so devastating.", "example_zh": "每個人都很討厭地震，因為它會造成災難。", "related": "tsunami (n.) 海嘯；landslide (n.) 山崩", "tag": "新多益500分-E"}, {"word": "economy", "phonetic": "[r'kanəmı]", "pos": "n.", "meaning": "經濟", "example": "If you want to be acquainted with the development of the economy in China, you can read some books about economics.", "example_zh": "如果你想對中國的經濟發展有所瞭解，你可以讀一些經濟學方面的書籍。", "related": "economics (n.) 經濟學；economist (n.) 經濟學家；economic (adj.) 經濟上的", "tag": "新多益500分-E"}, {"word": "edit", "phonetic": "['edit]", "pos": "v.", "meaning": "編輯，校訂", "example": "He spent three months editing this book.", "example_zh": "他花了3個月時間編輯這本書。", "related": "editor (n.) 編輯；edition (n.) 版本；editorial (n.) 社論", "tag": "新多益500分-E"}, {"word": "educate", "phonetic": "['edzə,ket]", "pos": "v.", "meaning": "(在學校)教育", "example": "Teachers should educate students to have good manners.", "example_zh": "教師應該教育學生要有禮貌。", "related": "education (n.) 學校教育；educated (adj.) 受過良好教育的", "tag": "新多益500分-E"}, {"word": "elect", "phonetic": "[r'lekt]", "pos": "v.", "meaning": "選舉，推選", "example": "We should elect a monitor for our class.", "example_zh": "我們應該在班上選出一位班長。", "related": "election (n.) 選舉；general election 普選", "tag": "新多益500分-E"}, {"word": "electric", "phonetic": "[r'lektrik]", "pos": "adj.", "meaning": "電的，電動的", "example": "I'm glad that my boyfriend sent me an electric hair dryer.", "example_zh": "真高興，男友送我一台吹風機。", "related": "electrical (adj.) 電氣的；electrician (n.) 電工", "tag": "新多益500分-E"}, {"word": "entrance", "phonetic": "['entrǝns]", "pos": "n.", "meaning": "入口", "example": "Turn right, and then you will see the subway entrance on your right.", "example_zh": "右轉，然後你就會看到地鐵站入口在你的右邊。", "related": "entry (n.) 入口；exit (n.) 出口", "tag": "新多益500分-E"}, {"word": "environment", "phonetic": "[in'vaırənmənt]", "pos": "n.", "meaning": "環境", "example": "It is highly important to preserve the environment.", "example_zh": "保護自然環境至關重要。", "related": "environmental (adj.) 環境的；environmentalist (n.) 環保人士", "tag": "新多益500分-E"}, {"word": "exceed", "phonetic": "[ık'sid]", "pos": "v.", "meaning": "超過，超出", "example": "The prices of all the goods will not exceed 1,000 dollars.", "example_zh": "所有商品的價格，都不會超過1000美元。", "related": "excess (n.) 超過量；excessive (adj.) 過度的", "tag": "新多益500分-E"}, {"word": "expend", "phonetic": "[ık'spend]", "pos": "v.", "meaning": "花費，消費", "example": "He has expended all his energy on his job.", "example_zh": "他把所有的精力都放在工作上。", "related": "expenditure (n.) 花費；expense (n.) 費用；expensive (adj.) 昂貴的", "tag": "新多益500分-E"}, {"word": "experience", "phonetic": "[ık'spırıəns]", "pos": "n./v.", "meaning": "經驗；經歷", "example": "Please hold on because this job will give you lots of precious experience.", "example_zh": "請堅持下去，因為這個工作會為你帶來許多寶貴的經驗。", "related": "experienced (adj.) 有經驗的；inexperience (n.) 無經驗", "tag": "新多益500分-E"}, {"word": "export", "phonetic": "[iks'port]", "pos": "v./n.", "meaning": "出口，輸出", "example": "Please tell me what Australia exports to other countries.", "example_zh": "請告訴我澳洲向其他國家出口哪些產品。", "related": "exporter (n.) 出口商；exports (n.) 輸出額", "tag": "新多益500分-E"}, {"word": "explain", "phonetic": "[ık'splen]", "pos": "v.", "meaning": "說明，解釋", "example": "Could you explain why you were late for your wedding?", "example_zh": "你能解釋一下在自己的婚禮上遲到的原因嗎？", "related": "explanation (n.) 解釋；illustrate (v.) 闡明", "tag": "新多益500分-E"}, {"word": "explode", "phonetic": "[ık'splod]", "pos": "v.", "meaning": "爆炸", "example": "When the balloon exploded, we were staring at it.", "example_zh": "氣球爆炸時，我們正盯著它看呢。", "related": "explosion (n.) 爆炸；explosive (adj./n.) 爆炸性的/炸藥", "tag": "新多益500分-E"}, {"word": "factory", "phonetic": "['fækt(ə)rı]", "pos": "n.", "meaning": "工廠，製造廠", "example": "She worked in a textile factory in her youth.", "example_zh": "她年輕時在一家紡織廠工作。", "related": "plant (n.) 工廠，發電廠", "tag": "新多益500分-F"}, {"word": "fail", "phonetic": "[fel]", "pos": "v.", "meaning": "不及格；失敗", "example": "I must review this term's work, or else I will fail my final exam.", "example_zh": "我必須複習這學期的功課，否則我期末考會不及格。", "related": "pass (v.) 及格；failure (n.) 失敗", "tag": "新多益500分-F"}, {"word": "fair", "phonetic": "[fer]", "pos": "adj.", "meaning": "公正的，公平的", "example": "He is an upright man, so I believe he will make a fair judgment.", "example_zh": "他是一個正直的人，所以我相信他會做出公正的判決。", "related": "fair play 公平競爭；unfair (adj.) 不公平的", "tag": "新多益500分-F"}, {"word": "familiar", "phonetic": "[fə'mılıə]", "pos": "adj.", "meaning": "熟悉的", "example": "I have become familiar with this job in just two weeks.", "example_zh": "僅花了兩周的時間，我對這份工作就已經上手了。", "related": "familiar friends 親密朋友", "tag": "新多益500分-F"}, {"word": "fashion", "phonetic": "['fæfən]", "pos": "n.", "meaning": "時尚，流行", "example": "I would like to do any kind of job related to fashion.", "example_zh": "我願意做任何和時尚有關的工作。", "related": "fashionable (adj.) 時髦的", "tag": "新多益500分-F"}, {"word": "figure", "phonetic": "['fıgjə]", "pos": "n.", "meaning": "身材；數字；人物", "example": "She used all her savings to have plastic surgery, and finally became a beautiful woman with a slender figure.", "example_zh": "她花費了所有積蓄去做整型手術，最終變成身材苗條的美女。", "related": "build (n.) 體型；height (n.) 身高；weight (n.) 體重", "tag": "新多益500分-F"}, {"word": "finance", "phonetic": "[far'næns]", "pos": "n.", "meaning": "資金，金融，財政", "example": "An expert in finance will tell you how to manage your money.", "example_zh": "財務專家會告訴你如何理財。", "related": "financial (adj.) 金融的；financial crisis 金融危機", "tag": "新多益500分-F"}, {"word": "fine", "phonetic": "[faın]", "pos": "n./v.", "meaning": "罰金，罰款", "example": "Tim paid an eighty-dollar fine for tax evasion.", "example_zh": "提姆因為逃稅，而支付了80美元的罰金。", "related": "forfeit (n.) 罰金", "tag": "新多益500分-F"}, {"word": "fire", "phonetic": "['faıǝ]", "pos": "v.", "meaning": "解雇，開除", "example": "Affected by the economic crisis, the company was forced to fire half of its staff.", "example_zh": "受經濟危機的影響，這個公司被迫解雇了一半的員工。", "related": "dismiss (v.) 開除；dismissal (n.) 解雇", "tag": "新多益500分-F"}, {"word": "foreign", "phonetic": "['fərın]", "pos": "adj.", "meaning": "對外的，外交的，外國的", "example": "We need to enlarge our foreign trade to promote economic development.", "example_zh": "我們需要擴大對外貿易，以促進經濟增長。", "related": "foreign affairs 外交事務；foreigner (n.) 外國人", "tag": "新多益500分-F"}, {"word": "formal", "phonetic": "['form!]", "pos": "adj.", "meaning": "莊重的，正規的，正式的", "example": "You don't need to wear that formal suit on this occasion.", "example_zh": "在這種場合下，你不必穿得這麼正式。", "related": "formal dress 禮服；formal education 正規教育", "tag": "新多益500分-F"}, {"word": "found", "phonetic": "[faʊnd]", "pos": "v.", "meaning": "創建，創辦", "example": "I don't know the circumstances under which he founded his company.", "example_zh": "我不知道他在什麼情況下創辦公司。", "related": "founder (n.) 創辦人；foundation (n.) 基金會，創立", "tag": "新多益500分-F"}, {"word": "frustrate", "phonetic": "['frastret]", "pos": "v.", "meaning": "使懊惱，使沮喪", "example": "What frustrated him was that his father was too busy to take him to the park on the weekend.", "example_zh": "讓他懊惱的是爸爸因為週末太忙，而不能帶他去公園。", "related": "frustrated (adj.) 沮喪的；frustration (n.) 挫折感", "tag": "新多益500分-F"}, {"word": "fund", "phonetic": "[fand]", "pos": "n./v.", "meaning": "基金，專款；為…提供資金", "example": "She founded a public welfare fund to help the poor.", "example_zh": "她建立了一個公益基金來幫助窮人。", "related": "funding (n.) 資金；fund-raiser (n.) 募款者", "tag": "新多益500分-F"}, {"word": "gallery", "phonetic": "['gælərı]", "pos": "n.", "meaning": "畫廊，美術館", "example": "The gallery is exhibiting a series of portraits.", "example_zh": "這間畫廊正在展示一系列的肖像畫。", "related": "art gallery 美術館；photo gallery 圖庫", "tag": "新多益500分-G"}, {"word": "gender", "phonetic": "['dzɛndə]", "pos": "n.", "meaning": "性別", "example": "Some companies take the gender of applicants into consideration when they recruit.", "example_zh": "有些公司在應徵時，會考慮求職者的性別。", "related": "sex (n.) 性別；sexuality (n.) 性徵", "tag": "新多益500分-G"}, {"word": "generous", "phonetic": "['dzɛnərəs]", "pos": "adj.", "meaning": "慷慨的，大方的", "example": "Many beggars are disposed to solicit from this rich and generous man.", "example_zh": "許多乞丐想向這個富有而慷慨的人乞討。", "related": "generosity (n.) 慷慨", "tag": "新多益500分-G"}, {"word": "globe", "phonetic": "[glob]", "pos": "n.", "meaning": "地球，世界", "example": "This kind of plant can be found in many parts of the globe.", "example_zh": "在地球很多地方，都能找到這種植物。", "related": "global (adj.) 全球的；global warming 全球暖化；global village 地球村", "tag": "新多益500分-G"}, {"word": "government", "phonetic": "['gavənmənt]", "pos": "n.", "meaning": "政府，內閣", "example": "The Chinese government is about to form trade relations with some Third World countries.", "example_zh": "中國政府即將和第三世界國家建立貿易關係。", "related": "governmental (adj.) 政府的；governor (n.) 州長，總督", "tag": "新多益500分-G"}, {"word": "graduate", "phonetic": "['grædzu,et]", "pos": "v./n.", "meaning": "畢業；畢業生", "example": "Which school did you graduate from?", "example_zh": "你從哪個學校畢業的？", "related": "graduation (n.) 畢業；graduate school 研究所", "tag": "新多益500分-G"}, {"word": "guide", "phonetic": "[gaıd]", "pos": "n./v.", "meaning": "導遊，嚮導；指引", "example": "You can hire a guide to show you around this palace.", "example_zh": "你可以聘請一位嚮導，帶領你參觀宮殿。", "related": "guidance (n.) 指導；guidebook (n.) 旅遊指南", "tag": "新多益500分-G"}, {"word": "headline", "phonetic": "['hed,laın]", "pos": "n.", "meaning": "(報紙的)大標題，頭版頭條", "example": "There is no doubt that we should design an eye-catching headline.", "example_zh": "毫無疑問，我們應該設計一個醒目的標題。", "related": "front-page (adj.) 頭版的；banner headline 頭條大標題", "tag": "新多益500分-H"}, {"word": "heal", "phonetic": "[hil]", "pos": "v.", "meaning": "(使)康復，治癒", "example": "He still couldn't walk because the wound in his left leg healed slowly.", "example_zh": "他仍然不能走路，因為左腿上的傷口癒合得很慢。", "related": "cure (v.) 治癒；healing (n.) 康復", "tag": "新多益500分-H"}, {"word": "health", "phonetic": "[hclθ]", "pos": "n.", "meaning": "健康，保健", "example": "She was confined to bed because of poor health.", "example_zh": "因為身體不好，她必須臥床休息。", "related": "healthy (adj.) 健康的；health care 衛生保健", "tag": "新多益500分-H"}, {"word": "hospital", "phonetic": "['haspıt!]", "pos": "n.", "meaning": "醫院", "example": "Get an ambulance and send the injured man to the hospital.", "example_zh": "叫一輛救護車，把傷者送到醫院。", "related": "clinic (n.) 診所；hospitalize (v.) 送醫住院", "tag": "新多益500分-H"}, {"word": "humorous", "phonetic": "['hjumərəs]", "pos": "adj.", "meaning": "有幽默感的", "example": "The colleague who sits next to me is humorous and always tells jokes to us.", "example_zh": "坐我旁邊那個同事很幽默，總是講笑話給我們聽。", "related": "humor (n.) 幽默；funny (adj.) 滑稽的", "tag": "新多益500分-H"}, {"word": "import", "phonetic": "['ımport]", "pos": "v./n.", "meaning": "進口，輸入；輸入品", "example": "We need to import rubber from India.", "example_zh": "我們需要從印度進口橡膠。", "related": "importer (n.) 進口商；imports (n.) 進口商品", "tag": "新多益500分-I"}, {"word": "improve", "phonetic": "[ım'pruv]", "pos": "v.", "meaning": "改善，改進", "example": "In order to improve my English, I asked Mary to help me.", "example_zh": "為了提升我的英語程度，我請瑪麗來幫我。", "related": "improvement (n.) 改進；refine (v.) 改善", "tag": "新多益500分-I"}, {"word": "industry", "phonetic": "['ındəstrı]", "pos": "n.", "meaning": "工業，產業", "example": "What do you think of the prospects of the auto industry this year?", "example_zh": "你如何看待今年汽車工業的前景？", "related": "industrial (adj.) 工業的；Industrial Revolution 工業革命", "tag": "新多益500分-I"}, {"word": "influence", "phonetic": "['influəns]", "pos": "n./v.", "meaning": "影響，作用", "example": "I exerted all my influence to persuade my parents to accept my point.", "example_zh": "我用盡了一切影響力，說服父母接受我的觀點。", "related": "influential (adj.) 有很大影響的；impact (n.) 衝擊", "tag": "新多益500分-I"}, {"word": "information", "phonetic": "[,ınfə'meʃən]", "pos": "n.", "meaning": "資訊，消息", "example": "His capability of obtaining information is the best in our company.", "example_zh": "在我們公司，他獲取資訊的能力是最強的。", "related": "informative (adj.) 提供資訊的；information technology 資訊科技", "tag": "新多益500分-I"}, {"word": "insure", "phonetic": "[in'Sur]", "pos": "v.", "meaning": "投保，為…保險", "example": "I would like to insure this building against fire.", "example_zh": "我想為這座大樓投保火災險。", "related": "insurance (n.) 保險；insured (n.) 被保險人", "tag": "新多益500分-I"}, {"word": "interest", "phonetic": "['ıntərıst]", "pos": "n.", "meaning": "利息；興趣", "example": "Recently, the interest rates on deposits have been increasing.", "example_zh": "最近存款利率在不斷地提高。", "related": "interest rate 利率；interest-free (adj.) 免息的", "tag": "新多益500分-I"}, {"word": "introduce", "phonetic": "[,ıntrə'djus]", "pos": "v.", "meaning": "引薦，介紹", "example": "I introduced Lisa to my friends.", "example_zh": "我把莉莎介紹給朋友們。", "related": "introduction (n.) 介紹；letter of introduction 介紹信", "tag": "新多益500分-I"}, {"word": "journal", "phonetic": "['d33nl]", "pos": "n.", "meaning": "雜誌，期刊；日誌", "example": "He likes reading some medical journals.", "example_zh": "他喜歡讀一些醫學期刊。", "related": "journalism (n.) 新聞業；journalist (n.) 記者", "tag": "新多益500分-J"}, {"word": "judge", "phonetic": "[dzad3]", "pos": "n./v.", "meaning": "法官；審判，判決", "example": "He is said to be the wisest judge in the town.", "example_zh": "據說他是鎮上最有智慧的法官。", "related": "judgement (n.) 判決；judgemental (adj.) 批判性的", "tag": "新多益500分-J"}, {"word": "knowledge", "phonetic": "['nalıdz]", "pos": "n.", "meaning": "知識，學問，學識", "example": "Through further communication, she found that the man had a wide knowledge of arts.", "example_zh": "通過進一步的交流，她發現那位男士在藝術方面知識廣博。", "related": "knowledgeable (adj.) 博學的；general knowledge 常識", "tag": "新多益500分-K"}, {"word": "labor", "phonetic": "['lebǝ]", "pos": "n.", "meaning": "勞動，(尤指)體力勞動", "example": "I think it is time for us to enjoy the fruits of our labor.", "example_zh": "我想是享受辛勤工作後成果的時候了。", "related": "laborer (n.) 勞工；labor force 勞動力", "tag": "新多益500分-L"}, {"word": "lawyer", "phonetic": "['lɔjə]", "pos": "n.", "meaning": "律師", "example": "He dreams of becoming a lawyer someday.", "example_zh": "他希望有一天能實現他當律師的夢想。", "related": "attorney (n.) 律師；lawsuit (n.) 訴訟", "tag": "新多益500分-L"}, {"word": "leader", "phonetic": "['lidə]", "pos": "n.", "meaning": "領袖，領導者", "example": "He has proven to be a wonderful leader.", "example_zh": "他不愧是一位傑出的領袖。", "related": "leadership (n.) 領導才能；leading (adj.) 主導的", "tag": "新多益500分-L"}, {"word": "leak", "phonetic": "[lik]", "pos": "v./n.", "meaning": "洩露，滲漏", "example": "Water is leaking from the pipe, so we must take some measures to stop it.", "example_zh": "管子正在滲水，我們必須採取措施來阻止這種情況。", "related": "leakage (n.) 洩漏；crack (n.) 裂縫", "tag": "新多益500分-L"}, {"word": "legal", "phonetic": "['ligl]", "pos": "adj.", "meaning": "法律的，合法的", "example": "Make sure all your actions are legal.", "example_zh": "確保你所有的行為都是合法的。", "related": "legally (adv.) 合法地；legal action 法律訴訟", "tag": "新多益500分-L"}, {"word": "leisure", "phonetic": "['lizə]", "pos": "n.", "meaning": "休閒，閒暇", "example": "I'm busy now, and I have no leisure time for reading stories.", "example_zh": "我現在很忙，沒有閒暇時間可以閱讀故事。", "related": "leisure center 休閒中心；leisurewear (n.) 休閒服", "tag": "新多益500分-L"}, {"word": "lend", "phonetic": "[lend]", "pos": "v.", "meaning": "(銀行或機構)貸款；借出", "example": "I will lend you my dictionary.", "example_zh": "我會借給你字典的。", "related": "lender (n.) 放款人；lending rate 貸款利率", "tag": "新多益500分-L"}, {"word": "licence", "phonetic": "['larsns]", "pos": "n.", "meaning": "執照，許可證", "example": "I believe their licences have expired.", "example_zh": "我相信他們的執照已經過期。", "related": "certificate (n.) 證書；business licence 營業執照", "tag": "新多益500分-L"}, {"word": "load", "phonetic": "[lod]", "pos": "v.", "meaning": "(電腦)載入，存儲", "example": "Have you noticed how long it takes for web pages to load these days?", "example_zh": "你有注意最近網頁要花多久時間載入嗎？", "related": "download (v.) 下載；upload (v.) 上傳；server (n.) 伺服器", "tag": "新多益500分-L"}, {"word": "loss", "phonetic": "[los]", "pos": "n.", "meaning": "損失，虧損", "example": "Due to great loss of blood, he is unconscious at this moment.", "example_zh": "由於失血過多，他此刻昏迷不醒了。", "related": "loss-making (adj.) 虧損的", "tag": "新多益500分-L"}, {"word": "manager", "phonetic": "['mænıd3ə]", "pos": "n.", "meaning": "經理", "example": "This corporation supplied all its managers with cars.", "example_zh": "這家公司的所有經理都有配車。", "related": "managerial (adj.) 管理的；management (n.) 管理部門", "tag": "新多益500分-M"}, {"word": "market", "phonetic": "['markıt]", "pos": "n./v.", "meaning": "市場，銷路；銷售，推銷", "example": "We must take measures to open up new markets for our products.", "example_zh": "我們必須採取措施，為我們的產品開闢新市場。", "related": "marketplace (n.) 市場；market research 市調；market share 市占率", "tag": "新多益500分-M"}, {"word": "marketing", "phonetic": "['markıtıŋ]", "pos": "n.", "meaning": "促銷，行銷", "example": "The aim of this meeting is to find some effective marketing methods.", "example_zh": "這次會議的目的，就是找到一些有效的行銷方法。", "related": "marketing strategy 行銷策略", "tag": "新多益500分-M"}, {"word": "medical", "phonetic": "['medık!]", "pos": "adj.", "meaning": "醫療的，內科的", "example": "Medical knowledge has helped virtually all aspects of life.", "example_zh": "醫療知識在生活中的各層面上都對我們有幫助。", "related": "medical officer 衛生官員", "tag": "新多益500分-M"}, {"word": "medicine", "phonetic": "['mcdəsn]", "pos": "n.", "meaning": "醫學，藥", "example": "The doctor asked me to take the medicine three times a day.", "example_zh": "醫生要求我1天服3次藥。", "related": "medication (n.) 藥物；medicated (adj.) 含藥的", "tag": "新多益500分-M"}, {"word": "meeting record", "phonetic": "['mitıŋ] ['rckəd]", "pos": "n.", "meaning": "會議記錄", "example": "At the beginning, my job was to write the records for meetings.", "example_zh": "剛開始的時候，我的工作就是做會議記錄。", "related": "shorthand (n.) 速記", "tag": "新多益500分-M"}, {"word": "memory", "phonetic": "['mɛmərı]", "pos": "n.", "meaning": "回憶，記憶", "example": "She still had a vivid memory of that accident in which she lost her parents forever.", "example_zh": "她仍然清楚記得那場車禍，因為在那場車禍中，她永遠地失去了父母。", "related": "memorize (v.) 記住；memorial (adj.) 紀念的", "tag": "新多益500分-M"}, {"word": "method", "phonetic": "['mɛθəd]", "pos": "n.", "meaning": "方法", "example": "This is an effective method to improve English.", "example_zh": "這是一個提升英文能力的有效方法。", "related": "means (n.) 手段；manner (n.) 方式", "tag": "新多益500分-M"}, {"word": "military", "phonetic": "['mılə,terı]", "pos": "adj./n.", "meaning": "軍事的；軍隊", "example": "The only military base in this region was built in the town.", "example_zh": "這個地區唯一的軍事基地，建在這個小鎮裡。", "related": "military service 兵役；militant (adj.) 好戰的", "tag": "新多益500分-M"}, {"word": "multiply", "phonetic": "['mʌltəplaı]", "pos": "v.", "meaning": "乘，乘以", "example": "What will you get if you multiply fifty-nine by fifty-nine?", "example_zh": "如果用59乘以59，得多少？", "related": "multiplication (n.) 乘法；multiple (n.) 倍數", "tag": "新多益500分-M"}, {"word": "nature", "phonetic": "['netſə]", "pos": "n.", "meaning": "大自然；天性", "example": "I love being outdoors in nature.", "example_zh": "我喜愛徜徉在戶外大自然中。", "related": "natural (adj.) 自然的，天然的", "tag": "新多益500分-N"}, {"word": "neat", "phonetic": "[nit]", "pos": "adj.", "meaning": "整潔的，整齊的", "example": "Staying in the neat room, he felt relaxed and comfortable.", "example_zh": "待在整潔的房間裡，他感到既放鬆又舒適。", "related": "neatly (adv.) 整潔地；tidy (adj.) 整潔的", "tag": "新多益500分-N"}, {"word": "nervous", "phonetic": "['nзvəs]", "pos": "adj.", "meaning": "焦慮的，緊張的", "example": "I felt very nervous when I was interviewed by the boss.", "example_zh": "我在跟老闆面試時，感到非常緊張。", "related": "nerve-racking (adj.) 令人緊張的；tense (adj.) 緊張的", "tag": "新多益500分-N"}, {"word": "news", "phonetic": "[njuz]", "pos": "n.", "meaning": "新聞，消息", "example": "Today, I heard explosive news that Lisa was actually my boss's daughter.", "example_zh": "今天我聽到勁爆的新聞，麗莎竟然是我老闆的女兒。", "related": "news agency 通訊社；newsflash (n.) 快報", "tag": "新多益500分-N"}, {"word": "newspaper", "phonetic": "['njuz,pepǝ]", "pos": "n.", "meaning": "報紙", "example": "My father has a habit of reading the newspaper after dinner.", "example_zh": "父親有晚飯後讀報紙的習慣。", "related": "periodical (n.) 期刊", "tag": "新多益500分-N"}, {"word": "novel", "phonetic": "['navl]", "pos": "n.", "meaning": "(長篇)小說", "example": "I read this novel when I was in middle school.", "example_zh": "我在上初中時，就讀過這本小說了。", "related": "novelist (n.) 小說家；short story 短篇小說", "tag": "新多益500分-N"}, {"word": "nurse", "phonetic": "[n3s]", "pos": "n.", "meaning": "護士", "example": "I still remembered the nurse who took care of me carefully when I was in hospital for my illness.", "example_zh": "我仍然記得，那個在我生病住院時，細心照顧我的護士。", "related": "nursing (n.) 護理；paramedical (adj.) 輔助醫療的", "tag": "新多益500分-N"}, {"word": "object", "phonetic": "['abdzikt]", "pos": "n.", "meaning": "受詞；物體；目標", "example": "Please find the subject, predicate and object in the sentence.", "example_zh": "請找出句子中的主詞、謂語和受詞。", "related": "subject (n.) 主詞", "tag": "新多益500分-O"}, {"word": "office", "phonetic": "['ɔfıs]", "pos": "n.", "meaning": "辦公室", "example": "Tomorrow, I will go to the post office to send some books to my brother.", "example_zh": "明天我會去郵局，寄幾本書給我弟弟。", "related": "office hours 辦公時間；office worker 上班族", "tag": "新多益500分-O"}, {"word": "official", "phonetic": "[ə'fıfəl]", "pos": "adj./n.", "meaning": "公務的，公職的；官員", "example": "The pompous official offended the mayor.", "example_zh": "這個自命不凡的官員冒犯了市長。", "related": "officially (adv.) 正式地；official secret 國家機密", "tag": "新多益500分-O"}, {"word": "opinion", "phonetic": "[ə'pınjən]", "pos": "n.", "meaning": "意見，想法，看法", "example": "My suggestion is that you should consider others' opinions before you make the decision.", "example_zh": "我的建議是在你做決定前，應該好好考慮別人的意見。", "related": "viewpoint (n.) 觀點；standpoint (n.) 立場；perspective (n.) 視角", "tag": "新多益500分-O"}, {"word": "opportunity", "phonetic": "[,apǝ'tjunətı]", "pos": "n.", "meaning": "機會，時機", "example": "We should always be prepared, or our opportunities will disappear without our knowledge.", "example_zh": "我們應該時時刻刻做好準備，否則機會將會在我們沒意識到的時候消失。", "related": "chance (n.) 機會，可能性", "tag": "新多益500分-O"}, {"word": "order", "phonetic": "['ɔrdə]", "pos": "n./v.", "meaning": "訂貨，訂購，訂單", "example": "I am very glad that I have received your order.", "example_zh": "很高興收到你的訂單。", "related": "order form 訂貨單", "tag": "新多益500分-O"}, {"word": "outdated", "phonetic": "[,aʊt'detıd]", "pos": "adj.", "meaning": "過時的", "example": "My computer at work in the office is outdated, and I hope the company gives me a new one soon.", "example_zh": "辦公室裡我的那台電腦早就過時了，我希望公司能盡快幫我換一台新的。", "related": "antiquated (adj.) 陳舊的，過時的", "tag": "新多益500分-O"}, {"word": "pain", "phonetic": "[pen]", "pos": "n.", "meaning": "痛，痛苦", "example": "The old man was driven crazy by the extremity of pain.", "example_zh": "極度的痛苦，使老人發狂。", "related": "painful (adj.) 令人疼痛的；miserable (adj.) 痛苦的", "tag": "新多益500分-P"}, {"word": "partner", "phonetic": "['partnə]", "pos": "n.", "meaning": "合夥人，夥伴", "example": "At last, my partner came back to me.", "example_zh": "我的合夥人背叛了我，但是後來又回來了。", "related": "partnership (n.) 合作夥伴關係；copartner (n.) 合夥人", "tag": "新多益500分-P"}, {"word": "party", "phonetic": "['partı]", "pos": "n.", "meaning": "當事人；政黨", "example": "Contract parties should know their rights and duties.", "example_zh": "合約雙方當事人，應該知道彼此的權利和義務。", "related": "principal (n.) 委託人；party political 黨派政治的", "tag": "新多益500分-P"}, {"word": "patient", "phonetic": "['peſənt]", "pos": "adj./n.", "meaning": "有耐心的；病人", "example": "You must be patient, because the cure works slowly.", "example_zh": "你必須要有耐心，因為這種療法很慢才會見效。", "related": "patience (n.) 耐心；inpatient (n.) 住院病人", "tag": "新多益500分-P"}, {"word": "perform", "phonetic": "[pə'form]", "pos": "v.", "meaning": "表演，演出；履行", "example": "The girls performed a very graceful dance for their classmates.", "example_zh": "女孩為她們的同學，表演了優美的舞蹈。", "related": "performance (n.) 表演；performer (n.) 表演者", "tag": "新多益500分-P"}, {"word": "pet", "phonetic": "[pɛt]", "pos": "n.", "meaning": "寵物", "example": "The old lady thrust herself through the crowd to look for her pet dog.", "example_zh": "老婦人推擠並穿過人群，去尋找她的寵物狗。", "related": "pet shop 寵物店", "tag": "新多益500分-P"}, {"word": "picnic", "phonetic": "['pıknık]", "pos": "n.", "meaning": "野餐", "example": "The Browns intended to have a picnic in the woods yesterday, but the weather ruled it out.", "example_zh": "布朗一家昨天打算去野餐，但是天氣不好使得計畫告吹。", "related": "barbecue (n.) 烤肉", "tag": "新多益500分-P"}, {"word": "pill", "phonetic": "[pil]", "pos": "n.", "meaning": "藥丸，藥片", "example": "Your symptoms will ease after you take the pill.", "example_zh": "服下藥丸後，你的症狀會減輕一些。", "related": "tablet (n.) 藥片；capsule (n.) 膠囊", "tag": "新多益500分-P"}];
+<!-- Import Modal Dialog -->
+<div class="modal-overlay" id="importModal" onclick="handleModalOverlayClick(event)">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>匯入新單字 (Import Vocabulary)</h3>
+      <button class="modal-close-btn" onclick="closeImportModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="import-dropzone" onclick="document.getElementById('csvFileInput').click()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+        <span class="dropzone-title">點擊上傳 CSV 單字檔</span>
+        <span class="dropzone-sub">支援標準 Anki / Excel CSV 格式 (UTF-8 編碼)</span>
+        <input type="file" id="csvFileInput" accept=".csv,text/csv,text/plain" onchange="handleFileSelect(event)">
+      </div>
 
-  // App State
+      <div>
+        <div class="paste-area-label">
+          <span>或直接貼上 CSV / 文字內容：</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">欄位以逗號或 Tab 分隔</span>
+        </div>
+        <textarea class="paste-textarea" id="pasteInput" placeholder="單字,音標,詞性,中文釋義,例句,例句翻譯,相關詞,標籤
+例如：
+contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細審閱這份合約。,sign a contract,700分核心"></textarea>
+      </div>
+
+      <div style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
+        💡 <b>格式小提示：</b> 系統會自動比對欄位並略過首列標題；匯入的單字將安全儲存在瀏覽器的 LocalStorage 中，與既有題庫無縫合併。
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="downloadTemplateCsv()">下載 CSV 範本</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-secondary" onclick="clearCustomVocab()">清空已匯入 (<span id="customCountBadge">0</span>)</button>
+        <button class="btn-primary" onclick="processImport()">確認匯入</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Message -->
+<div class="toast" id="toastMsg"></div>
+
+<script>
+  // Base Vocabulary Database
+  const BASE_VOCAB = [{"word": "able", "phonetic": "['ebl]", "pos": "adj.", "meaning": "有才能的", "example": "It was said that the man she met yesterday at the bar was able to speak six foreign languages.", "example_zh": "據說她昨天在酒吧認識的那個男人，會講六種外語。", "related": "ability (n.) 能力，才能；unable (adj.) 未能，無法；inability (n.) 無能力", "tag": "新多益500分-A"}, {"word": "accident", "phonetic": "['æksədənt]", "pos": "n.", "meaning": "(交通)事故，意外事故", "example": "I wish there were no car accidents anywhere in the world. I hate to hear such bad news.", "example_zh": "我希望世界上不再有交通事故，我討厭那些壞消息。", "related": "accidental (adj.) 意外的；accident-prone (adj.) 易出事故的", "tag": "新多益500分-A"}, {"word": "acid", "phonetic": "['æsıd]", "pos": "n./adj.", "meaning": "酸；酸性的", "example": "Learning from his last failure, this time he decided to treat this substance with acid.", "example_zh": "從上次的失敗中吸取教訓，這次他決定用酸來處理這種物質。", "related": "acidic (adj.) 酸性的", "tag": "新多益500分-A"}, {"word": "act", "phonetic": "[ækt]", "pos": "v.", "meaning": "扮演", "example": "When I was a little girl playing with my friends, I often acted as the mother and took care of my children, which were dolls.", "example_zh": "當小時候和朋友玩扮家家酒遊戲時，我經常扮演媽媽照顧小寶寶(洋娃娃)。", "related": "acting (n.) 表演，演藝業；actor (n.) 演員；actress (n.) 女演員", "tag": "新多益500分-A"}, {"word": "add", "phonetic": "[æd]", "pos": "v.", "meaning": "加，添加", "example": "Add some sugar to the coffee and it will taste better.", "example_zh": "加一些糖到咖啡裡，味道會好一些。", "related": "addition (n.) 加法；additive (adj.) 加法的；plus (prep.) 加", "tag": "新多益500分-A"}, {"word": "adult", "phonetic": "[ə'dalt]", "pos": "n.", "meaning": "成年人", "example": "He is an adult, but often acts like a child.", "example_zh": "他已經成年了，可是行為舉止卻常像孩子一樣幼稚。", "related": "mature (adj.) 成熟的；maturity (n.) 成熟；adulthood (n.) 成年", "tag": "新多益500分-A"}, {"word": "advance", "phonetic": "[əd'væns]", "pos": "n./v.", "meaning": "發展，進步", "example": "The country has made great advances in the development of its economy during the past ten years.", "example_zh": "在過去的10年中，這個國家在經濟的發展，有重大的進步。", "related": "advanced (adj.) 先進的；advancement (n.) 前進，進步", "tag": "新多益500分-A"}, {"word": "age", "phonetic": "[ed3]", "pos": "n.", "meaning": "年齡", "example": "She looked older than the age she professed to be, so he thought that she was lying about her real age.", "example_zh": "因看上去比她所說的年紀還要老，所以他懷疑她隱瞞了真實的年齡。", "related": "age group 年齡族群；legal age 法定年齡", "tag": "新多益500分-A"}, {"word": "agree", "phonetic": "[ə'gri]", "pos": "v.", "meaning": "同意", "example": "I totally agree with what you said just now.", "example_zh": "我完全贊同你剛才所說的話。", "related": "agreement (n.) 應允，同意；agreeable (adj.) 欣然同意的", "tag": "新多益500分-A"}, {"word": "air conditioner", "phonetic": "[er] [kən'dıʃənə]", "pos": "n.", "meaning": "空調", "example": "All rooms are equipped with air conditioners and computers.", "example_zh": "每個房間都有空調和電腦。", "related": "air conditioning 空氣調節系統；air-conditioned (adj.) 裝有空調的", "tag": "新多益500分-A"}, {"word": "airline", "phonetic": "['er,laın]", "pos": "n.", "meaning": "航空公司", "example": "Everyone hates it when airlines change schedules for no apparent reason.", "example_zh": "每個人都討厭航空公司無故改變航班時刻。", "related": "airliner (n.) 大型客機；flight (n.) 航班", "tag": "新多益500分-A"}, {"word": "airport", "phonetic": "['er,port]", "pos": "n.", "meaning": "機場，航空站", "example": "This time, I have decided to buy the ticket at the airport.", "example_zh": "這次我決定去機場買機票。", "related": "airfield (n.) 飛機場", "tag": "新多益500分-A"}, {"word": "album", "phonetic": "['ælbəm]", "pos": "n.", "meaning": "相簿，專輯", "example": "He put the photos in the album.", "example_zh": "他把照片粘在相簿中。", "related": "photo album 相簿；picture frame 相框", "tag": "新多益500分-A"}, {"word": "amuse", "phonetic": "[ə'mjuz]", "pos": "v.", "meaning": "逗笑，逗樂", "example": "He told some jokes to amuse us.", "example_zh": "他講了一些笑話逗我們開心。", "related": "amused (adj.) 有趣的；amusement (n.) 娛樂；amusing (adj.) 引人發笑的", "tag": "新多益500分-A"}, {"word": "angle", "phonetic": "['ængl]", "pos": "n.", "meaning": "角", "example": "Please show me the way to find a supplementary angle.", "example_zh": "請告訴我找補角的方法。", "related": "acute angle 銳角；obtuse angle 鈍角", "tag": "新多益500分-A"}, {"word": "angry", "phonetic": "['ængri]", "pos": "adj.", "meaning": "憤怒的，生氣的", "example": "Having waited outside for three hours, he felt extremely angry when he was told to come back tomorrow.", "example_zh": "他在外面等了3個小時後，被告知明天再來，他感到非常憤怒。", "related": "anger (n.) 怒火；angrily (adv.) 憤怒地；rage (n.) 暴怒", "tag": "新多益500分-A"}, {"word": "answer", "phonetic": "['ænsə]", "pos": "n./v.", "meaning": "答案；回答", "example": "He is anxious to know the answer to this arithmetic question.", "example_zh": "他急於知道這道算術題的答案。", "related": "respond (v.) 回答；response (n.) 答覆；key (n.) 答案", "tag": "新多益500分-A"}, {"word": "apple", "phonetic": "['æpl]", "pos": "n.", "meaning": "蘋果", "example": "New York ranked second in the production of apples, producing 850,000,000 pounds this year.", "example_zh": "紐約的蘋果產量位居第二，今年達850,000,000磅。", "related": "the Big Apple 紐約市；core (n.) 果核", "tag": "新多益500分-A"}, {"word": "apply", "phonetic": "[ə'plaı]", "pos": "v.", "meaning": "申請，請求", "example": "After graduation, most of my classmates chose to apply for scholarships from foreign universities.", "example_zh": "畢業後，絕大多數同學，都選擇申請國外大學的獎學金。", "related": "application (n.) 應用，申請；applicant (n.) 申請人", "tag": "新多益500分-A"}, {"word": "arm", "phonetic": "[arm]", "pos": "v.", "meaning": "武裝，備戰", "example": "Don't try to resist the robbers, because each of them is armed with a shotgun.", "example_zh": "別小看那些劫匪，他們每人都配有一把霰彈槍。", "related": "armament (n.) 武裝；disarm (v.) 解除武裝", "tag": "新多益500分-A"}, {"word": "arm", "phonetic": "[arm]", "pos": "n.", "meaning": "手臂", "example": "He met his ex-wife accidentally on the street, who was shopping cheerfully arm-in-arm with a tall man.", "example_zh": "他偶然在街上碰到前妻，看到她正高興地購物，手挽著一位高大的男子。", "related": "forearm (n.) 前臂；elbow (n.) 肘", "tag": "新多益500分-A"}, {"word": "arms", "phonetic": "[armz]", "pos": "n.", "meaning": "兵器，武器", "example": "Our mission is to bomb the enemy's arms depot.", "example_zh": "我們的任務是炸毀敵軍的軍火庫。", "related": "armed (adj.) 武裝的；unarmed (adj.) 無武器的", "tag": "新多益500分-A"}, {"word": "army", "phonetic": "['armı]", "pos": "n.", "meaning": "軍隊，陸軍", "example": "The people in the town are fighting against the invading army.", "example_zh": "鎮民正在對抗入侵的軍隊。", "related": "troop (n.) 軍隊；force (n.) 武裝部隊", "tag": "新多益500分-A"}, {"word": "arrive", "phonetic": "[ə'raıv]", "pos": "v.", "meaning": "到達", "example": "Would you mind me arriving earlier tomorrow morning?", "example_zh": "你介意我明天早上早點來嗎？", "related": "arrival (n.) 到達；latecomer (n.) 遲到者", "tag": "新多益500分-A"}, {"word": "art", "phonetic": "[art]", "pos": "n.", "meaning": "藝術，美術", "example": "He is studying for a master's degree in modern art.", "example_zh": "他正在攻讀現代藝術碩士。", "related": "artist (n.) 藝術家；artistic (adj.) 藝術的；art gallery 美術館", "tag": "新多益500分-A"}, {"word": "attack", "phonetic": "[ə'tæk]", "pos": "n./v.", "meaning": "進攻，攻擊", "example": "It is the best chance we have to make a sneak attack on the enemy.", "example_zh": "這是偷襲敵人的最佳時機。", "related": "attacker (n.) 攻擊者；assault (n./v.) 襲擊；raid (n.) 突襲", "tag": "新多益500分-A"}, {"word": "attend", "phonetic": "[ə'tend]", "pos": "v.", "meaning": "出席，參加", "example": "I promised my son I would attend his school concert, so I will ask for a leave today.", "example_zh": "我答應兒子要出席他的演唱會，所以今天我想請假。", "related": "attendance (n.) 出席；present (adj.) 出席的", "tag": "新多益500分-A"}, {"word": "attitude", "phonetic": "['ætətjud]", "pos": "n.", "meaning": "態度", "example": "Whatever we meet, we should not lose our optimistic attitude towards life.", "example_zh": "不論我們遇到什麼困難，都不要失去對生活的樂觀態度。", "related": "manner (n.) 態度，行為", "tag": "新多益500分-A"}, {"word": "attract", "phonetic": "[ə'trækt]", "pos": "v.", "meaning": "吸引，引起……的好感", "example": "As we all know, some newspapers distort news to attract people's attention.", "example_zh": "眾所皆知，有些報紙為了吸引人們的目光而扭曲事實。", "related": "attractive (adj.) 有吸引力的；attraction (n.) 吸引力", "tag": "新多益500分-A"}, {"word": "baby", "phonetic": "['bebr]", "pos": "n.", "meaning": "嬰兒", "example": "Paul intended to name his baby after his grandfather, but his wife disagreed.", "example_zh": "保羅打算以他祖父的名字為自己孩子命名，但他妻子不同意。", "related": "baby boom 嬰兒潮；babysitter (n.) 保母", "tag": "新多益500分-B"}, {"word": "back", "phonetic": "[bæk]", "pos": "n.", "meaning": "背", "example": "The child's mother put him on the back of the ostrich, but he was so afraid that he burst into tears.", "example_zh": "孩子的媽把他放到鴕鳥的背上，可是他太害怕竟然大哭起來。", "related": "backache (n.) 背痛；back-breaking (adj.) 繁重的", "tag": "新多益500分-B"}, {"word": "bag", "phonetic": "[bæg]", "pos": "n.", "meaning": "包，袋", "example": "He got angry with me and kicked my bag out of the room.", "example_zh": "他生我的氣，所以把我的包包踢出了房間。", "related": "handbag (n.) 手提包；wallet (n.) 皮夾；purse (n.) 錢包", "tag": "新多益500分-B"}, {"word": "baggage", "phonetic": "['bægid3]", "pos": "n.", "meaning": "行李", "example": "It was terrible that I mistook another's baggage for mine at the carousel in the airport.", "example_zh": "在機場的行李傳送帶上，我拿錯別人的行李，還以為是自己的，真是太糟糕了。", "related": "baggage claim 提領行李處", "tag": "新多益500分-B"}, {"word": "ball", "phonetic": "[bol]", "pos": "n.", "meaning": "球", "example": "The exterior surface of the hollow ball is green.", "example_zh": "這個空心球的表面是綠色的。", "related": "ball game 球類運動", "tag": "新多益500分-B"}, {"word": "ban", "phonetic": "[bæn]", "pos": "v.", "meaning": "禁止，取締", "example": "Parking is banned on this street.", "example_zh": "這條街禁止停車。", "related": "forbid (v.) 禁止；forbidden (adj.) 被禁止的", "tag": "新多益500分-B"}, {"word": "band", "phonetic": "[bænd]", "pos": "n.", "meaning": "樂隊", "example": "He wanted to join the jazz band when he was a student in high school.", "example_zh": "當他是中學生時，他想加入爵士樂隊。", "related": "orchestra (n.) 管弦樂隊", "tag": "新多益500分-B"}, {"word": "bank", "phonetic": "[bænk]", "pos": "n.", "meaning": "銀行", "example": "I will go to the bank to establish an account.", "example_zh": "我要去銀行開個帳戶。", "related": "bank balance 銀行存款餘額；banker (n.) 銀行家", "tag": "新多益500分-B"}, {"word": "bar", "phonetic": "[bar]", "pos": "n.", "meaning": "酒吧", "example": "Every night he kills time in a bar.", "example_zh": "他每晚都在酒吧裡消磨時間。", "related": "counter (n.) 櫃檯；nightclub (n.) 夜總會", "tag": "新多益500分-B"}, {"word": "basin", "phonetic": "['besn]", "pos": "n.", "meaning": "盆子", "example": "Robert took off the dirty clothes and placed them in the basin.", "example_zh": "羅伯特把髒衣服脫下，並放在盆子裡。", "related": "tub (n.) 盆，桶；bucket (n.) 桶子", "tag": "新多益500分-B"}, {"word": "basketball", "phonetic": "['bæskıt,bol]", "pos": "n.", "meaning": "籃球", "example": "Most of the boys in my class are basketball fanatics.", "example_zh": "我們班大部分的男孩，都是籃球迷。", "related": "basket (n.) 籃；hoop (n.) 籃圈", "tag": "新多益500分-B"}, {"word": "bat", "phonetic": "[bæt]", "pos": "n.", "meaning": "蝙蝠", "example": "He said that bats were very ugly and he hated them.", "example_zh": "他說蝙蝠很醜陋，他痛恨牠們。", "related": "vampire bat 吸血蝠；owl (n.) 貓頭鷹", "tag": "新多益500分-B"}, {"word": "bath", "phonetic": "[bæθ]", "pos": "n.", "meaning": "浴缸，浴盆", "example": "The mother stripped the kid and put her in the bath.", "example_zh": "媽媽脫掉孩子的衣服，幫她洗澡。", "related": "bathtub (n.) 浴缸；shower (n.) 淋浴", "tag": "新多益500分-B"}, {"word": "battle", "phonetic": "['bætl]", "pos": "n./v.", "meaning": "戰鬥，爭鬥", "example": "After a fierce battle, we occupied the enemy's capital.", "example_zh": "一場激烈的戰鬥之後，我們佔領了敵國首都。", "related": "battlefield (n.) 戰場；battleground (n.) 戰地", "tag": "新多益500分-B"}, {"word": "bay", "phonetic": "[be]", "pos": "n.", "meaning": "海灣", "example": "Do you know that in a small bay big waves will never build up?", "example_zh": "你知道嗎，在小港灣裡永遠無法形成大波浪。", "related": "ocean wave 海浪", "tag": "新多益500分-B"}, {"word": "beach", "phonetic": "[bitf]", "pos": "n.", "meaning": "海灘", "example": "There are many beautiful shells on the beach.", "example_zh": "海灘上有很多漂亮的貝殼。", "related": "coast (n.) 海岸；shore (n.) 海濱；seaside (n.) 海濱", "tag": "新多益500分-B"}, {"word": "bear", "phonetic": "[ber]", "pos": "n.", "meaning": "熊", "example": "Can you tell me something about polar bears?", "example_zh": "你能講一些關於北極熊的事給我聽嗎？", "related": "panda (n.) 貓熊；koala (n.) 無尾熊", "tag": "新多益500分-B"}, {"word": "beautiful", "phonetic": "['bjutəfəl]", "pos": "adj.", "meaning": "漂亮的", "example": "The girl with the beautiful face behaved rudely towards the old lady.", "example_zh": "那個女孩長得很漂亮，卻對那位老太太很粗魯。", "related": "beauty (n.) 美人；good-looking (adj.) 好看的", "tag": "新多益500分-B"}, {"word": "bed", "phonetic": "[bed]", "pos": "n.", "meaning": "床", "example": "The patient lay quietly on his bed in the medical ward.", "example_zh": "病人安靜地躺在內科病房的床上。", "related": "bedside (n.) 床邊；bedhead (n.) 床頭", "tag": "新多益500分-B"}, {"word": "bee", "phonetic": "[bi]", "pos": "n.", "meaning": "蜜蜂", "example": "Don't touch the bee or else it will give you a sting.", "example_zh": "不要碰那隻蜜蜂，否則牠會蜇你的。", "related": "honeybee (n.) 蜜蜂；queen bee 女王蜂", "tag": "新多益500分-B"}, {"word": "beef", "phonetic": "[bif]", "pos": "n.", "meaning": "牛肉", "example": "The woman only rarely eats beef.", "example_zh": "那女士很少吃牛肉。", "related": "steak (n.) 牛排；veal (n.) 小牛肉", "tag": "新多益500分-B"}, {"word": "beer", "phonetic": "[bir]", "pos": "n.", "meaning": "啤酒", "example": "A large quantity of beer was sold last month.", "example_zh": "上個月賣了大量的啤酒。", "related": "ale (n.) 麥芽啤酒；beer belly 啤酒肚", "tag": "新多益500分-B"}, {"word": "begin", "phonetic": "[bı'gın]", "pos": "v.", "meaning": "開始", "example": "When did you begin reading this novel?", "example_zh": "你何時開始讀這本小說？", "related": "beginning (n.) 開頭；end (v./n.) 結束", "tag": "新多益500分-B"}, {"word": "belief", "phonetic": "[bı'lif]", "pos": "n.", "meaning": "信仰，信念", "example": "It is said that people in trouble are inclined to have a belief in God.", "example_zh": "據說處於困境中的人們傾向於信仰上帝。", "related": "creed (n.) 信念；believer (n.) 信徒", "tag": "新多益500分-B"}, {"word": "bend", "phonetic": "[bend]", "pos": "v.", "meaning": "彎腰，彎曲", "example": "He bent down to pick up all the coins that he had dropped on the ground carelessly.", "example_zh": "他彎下腰把自己不小心掉到地上的硬幣都撿了起來。", "related": "bow (v.) 鞠躬；kneel (v.) 跪下", "tag": "新多益500分-B"}, {"word": "bet", "phonetic": "[bet]", "pos": "v./n.", "meaning": "打賭，下賭注", "example": "I bet you haven't finished your work today.", "example_zh": "我打賭你還沒有完成今天的工作。", "related": "casino (n.) 賭場", "tag": "新多益500分-B"}, {"word": "bike", "phonetic": "[bark]", "pos": "n.", "meaning": "自行車", "example": "Riding a bike is one of my boss's favorite activities.", "example_zh": "騎自行車是我老闆很喜愛的活動之一。", "related": "bicycle (n.) 自行車；biker (n.) 騎車者", "tag": "新多益500分-B"}, {"word": "biology", "phonetic": "[bar'alǝdzı]", "pos": "n.", "meaning": "生物學", "example": "I study biology in university.", "example_zh": "我大學的時候唸生物學。", "related": "biologist (n.) 生物學家；biological (adj.) 生物的", "tag": "新多益500分-B"}, {"word": "bite", "phonetic": "[bart]", "pos": "v./n.", "meaning": "咬，叮咬", "example": "Tom promised that his dog didn't bite, but I was still afraid to approach it.", "example_zh": "湯姆保證說他的狗不會咬人，可我還是不敢靠近牠。", "related": "snap (v.) 猛咬", "tag": "新多益500分-B"}, {"word": "bitter", "phonetic": "['bitə]", "pos": "adj.", "meaning": "苦的", "example": "As is known to us, all bitter pills may have blessed effects.", "example_zh": "大家都知道良藥苦口這個道理。", "related": "bitterness (n.) 苦味；bittersweet (adj.) 苦甜參半的", "tag": "新多益500分-B"}, {"word": "black", "phonetic": "[blæk]", "pos": "adj.", "meaning": "黑色的", "example": "I bought a black hat yesterday in the store.", "example_zh": "我昨天在商店買了一頂黑帽子。", "related": "pitch-dark (adj.) 漆黑的", "tag": "新多益500分-B"}, {"word": "bless", "phonetic": "[bles]", "pos": "v.", "meaning": "求上帝降福，祝福", "example": "May God bless you and all the people you love.", "example_zh": "願上帝保佑你和所有你愛的人！", "related": "blessing (n.) 祝福；blessed (adj.) 神聖的", "tag": "新多益500分-B"}, {"word": "blind", "phonetic": "[blaınd]", "pos": "adj.", "meaning": "瞎的，失明的", "example": "He became blind in one eye after a fire accident.", "example_zh": "在一次火災事故後，他的一隻眼睛失明了。", "related": "blind spot 盲點；blindly (adv.) 盲目地", "tag": "新多益500分-B"}, {"word": "blood", "phonetic": "[blad]", "pos": "n.", "meaning": "血液", "example": "The police found the hiding place of the escaped convict by the trail of his blood.", "example_zh": "警方透過血跡，找到了逃犯的藏身之地。", "related": "blood type 血型；vessel (n.) 血管；vein (n.) 靜脈", "tag": "新多益500分-B"}, {"word": "blow", "phonetic": "[blo]", "pos": "v.", "meaning": "吹，吹氣", "example": "You can blow out all the candles on the birthday cake with a single puff, can't you?", "example_zh": "你能一口氣吹滅生日蛋糕上所有的蠟燭，對嗎？", "related": "blower (n.) 吹風機；blowout (n.) 爆胎", "tag": "新多益500分-B"}, {"word": "blue", "phonetic": "[blu]", "pos": "adj.", "meaning": "藍色的", "example": "My daughter likes this blue skirt very much.", "example_zh": "我女兒非常喜歡這條藍色短裙。", "related": "bluish (adj.) 帶藍色的", "tag": "新多益500分-B"}, {"word": "board", "phonetic": "[bord]", "pos": "v.", "meaning": "上飛機，登機", "example": "There are so many people in line that it will take a long time to board.", "example_zh": "很多人在排隊，登機將會花很長的時間。", "related": "boarding pass 登機證；check-in 辦理登機處", "tag": "新多益500分-B"}, {"word": "board", "phonetic": "[bord]", "pos": "n.", "meaning": "董事會", "example": "The board turned down his expansion plans.", "example_zh": "董事會否決了他的擴張計畫。", "related": "board member 董事；directorate (n.) 董事會", "tag": "新多益500分-B"}, {"word": "boat", "phonetic": "[bot]", "pos": "n.", "meaning": "小船，小艇", "example": "The bridge was ruined by the heavy rain, so we crossed the river by boat.", "example_zh": "橋被大雨沖壞了，於是我們坐小船渡河。", "related": "boatyard (n.) 造船廠", "tag": "新多益500分-B"}, {"word": "bodybuilding", "phonetic": "['badı,bıldın]", "pos": "n.", "meaning": "健身", "example": "He goes to a bodybuilding class every day to keep healthy.", "example_zh": "他每天都去健身房鍛鍊，以保持健康。", "related": "workout (n.) 鍛鍊；exercise (n.) 運動", "tag": "新多益500分-B"}, {"word": "bomb", "phonetic": "[bam]", "pos": "n./v.", "meaning": "炸彈；轟炸", "example": "They decided to drop bombs to blow up this fort.", "example_zh": "他們決定扔炸彈來炸毀這個堡壘。", "related": "bombing (n.) 轟炸；bombard (v.) 炮轟", "tag": "新多益500分-B"}, {"word": "bone", "phonetic": "[bon]", "pos": "n.", "meaning": "骨頭", "example": "The dog ran over here with a bone in its mouth.", "example_zh": "狗跑了過來，嘴裡還叼著一塊骨頭。", "related": "skeleton (n.) 骨骼；fracture (n.) 骨折", "tag": "新多益500分-B"}, {"word": "book", "phonetic": "[buk]", "pos": "v.", "meaning": "預訂", "example": "My boss asked me to book a flight to New York for tomorrow.", "example_zh": "老闆叫我幫他訂一張明天飛往紐約的機票。", "related": "booking (n.) 預訂；bookable (adj.) 可預訂的", "tag": "新多益500分-B"}, {"word": "book", "phonetic": "[buk]", "pos": "n.", "meaning": "書，書籍", "example": "I spend one hour reading books every day.", "example_zh": "我每天花一個小時讀書。", "related": "bookcase (n.) 書櫃；bookmark (n.) 書籤", "tag": "新多益500分-B"}, {"word": "borrow", "phonetic": "['baro]", "pos": "v.", "meaning": "借入", "example": "I want to borrow your dictionary.", "example_zh": "我想借一下你的字典。", "related": "borrower (n.) 借方；loan (v./n.) 借出/貸款", "tag": "新多益500分-B"}, {"word": "bottle", "phonetic": "['batl]", "pos": "n.", "meaning": "瓶子", "example": "I have drunk two bottles of beer, so I can't drink any more.", "example_zh": "我已經喝了兩瓶啤酒，不能再喝了。", "related": "bottle-opener (n.) 開瓶器；jar (n.) 廣口瓶", "tag": "新多益500分-B"}, {"word": "bowling", "phonetic": "['bolin]", "pos": "n.", "meaning": "保齡球運動", "example": "We are going to go bowling this Sunday; will you go with us?", "example_zh": "這周日我們去打保齡球，你要不要跟我們一塊去？", "related": "bowling alley 保齡球館；strike (n.) 全倒", "tag": "新多益500分-B"}, {"word": "boy", "phonetic": "[bor]", "pos": "n.", "meaning": "男孩", "example": "Some naughty boys splattered the wall with black ink.", "example_zh": "一些淘氣的男孩子在牆上亂潑灑黑墨水。", "related": "boyhood (n.) 少年時代；boy scout 童子軍", "tag": "新多益500分-B"}, {"word": "brain", "phonetic": "[bren]", "pos": "n.", "meaning": "腦", "example": "He suffered severe brain damage in the accident, which caused him to be a vegetable.", "example_zh": "他的大腦在意外中受了嚴重損傷，結果成了植物人。", "related": "brainstorm (n./v.) 腦力激盪；brain dead 腦死", "tag": "新多益500分-B"}, {"word": "brake", "phonetic": "[brek]", "pos": "n./v.", "meaning": "煞車", "example": "The driver braked suddenly to give way to a little cat on the road.", "example_zh": "司機忽然踩煞車，讓路給路上的小貓。", "related": "brake pedal 煞車踏板；handbrake (n.) 手煞車", "tag": "新多益500分-B"}, {"word": "brave", "phonetic": "[brev]", "pos": "adj.", "meaning": "勇敢的，無畏的", "example": "I think you were brave to protest to the boss that the salary was too low.", "example_zh": "我認為你真的很勇敢，敢向老闆抗議薪資太低。", "related": "bravery (n.) 勇敢；daring (adj.) 敢冒險的", "tag": "新多益500分-B"}, {"word": "bread", "phonetic": "[bred]", "pos": "n.", "meaning": "麵包", "example": "It tastes better if you spread the jam on your bread.", "example_zh": "把果醬塗到麵包上，這樣味道會好一點。", "related": "breaded (adj.) 裹麵包屑的", "tag": "新多益500分-B"}, {"word": "break", "phonetic": "[brek]", "pos": "v.", "meaning": "(使)破，裂，碎", "example": "Whenever I touch the vase, my mother says 'stop monkeying about with the vase, or you'll break it.'", "example_zh": "每當我觸摸花瓶時，媽媽就會說「別亂動花瓶，否則你會弄破的」。", "related": "breakdown (n.) 故障；broken (adj.) 損壞的", "tag": "新多益500分-B"}, {"word": "breathe", "phonetic": "[brið]", "pos": "v.", "meaning": "呼吸", "example": "The waves were so fierce that we could hardly breathe.", "example_zh": "風刮得很猛，以至於我們幾乎無法呼吸。", "related": "breath (n.) 呼吸；breathless (adj.) 氣喘吁吁的", "tag": "新多益500分-B"}, {"word": "bridge", "phonetic": "[brid3]", "pos": "n.", "meaning": "橋", "example": "This is one of the longest bridges in the world.", "example_zh": "這是世界上最長的橋之一。", "related": "suspension bridge 吊橋", "tag": "新多益500分-B"}, {"word": "bright", "phonetic": "[braıt]", "pos": "adj.", "meaning": "明亮的，光線充足的", "example": "The sun is very bright today.", "example_zh": "今天真是個陽光燦爛的日子。", "related": "brighten (v.) 使明亮；brightness (n.) 亮度", "tag": "新多益500分-B"}, {"word": "build", "phonetic": "[bıld]", "pos": "v.", "meaning": "建築，建造", "example": "People in the town are delighted to hear that a railway station will be built there.", "example_zh": "聽說鎮上要蓋火車站，鎮民都很高興。", "related": "builder (n.) 建築工；building site 工地", "tag": "新多益500分-B"}, {"word": "building", "phonetic": "['bıldıŋ]", "pos": "n.", "meaning": "建築物，房子", "example": "A tall building was erected in the center of the city recently.", "example_zh": "最近市中心蓋了一棟高樓。", "related": "skyscraper (n.) 摩天大樓；high-rise (adj.) 高層的", "tag": "新多益500分-B"}, {"word": "bus", "phonetic": "[bas]", "pos": "n.", "meaning": "公共汽車", "example": "The twin brothers go to work by bus every day.", "example_zh": "那對雙胞胎兄弟，每天都坐公車上班。", "related": "bus station 公車站；bus stop 公車站牌", "tag": "新多益500分-B"}, {"word": "business", "phonetic": "['biznis]", "pos": "n.", "meaning": "商業，生意", "example": "Nobody wanted to do business with him because of his dishonesty.", "example_zh": "因為他不誠實，沒有人願意跟他做生意。", "related": "businessman (n.) 企業家；business hours 營業時間", "tag": "新多益500分-B"}, {"word": "busy", "phonetic": "['bızı]", "pos": "adj.", "meaning": "忙碌的，無暇的", "example": "He has been busy drawing up the new plans for his company recently.", "example_zh": "他最近正忙著起草擬公司的新計畫。", "related": "bustle (v.) 使忙碌", "tag": "新多益500分-B"}, {"word": "buy", "phonetic": "[bar]", "pos": "v.", "meaning": "買，購買", "example": "I bought this umbrella at a 30% discount.", "example_zh": "我用七折的價錢買這把傘。", "related": "buyer (n.) 買主；afford (v.) 買得起", "tag": "新多益500分-B"}, {"word": "cabbage", "phonetic": "['kæbıd3]", "pos": "n.", "meaning": "高麗菜，包心菜", "example": "He is tired of having cabbage three times a day.", "example_zh": "他厭倦了一天三餐都吃高麗菜。", "related": "Chinese cabbage 大白菜；lettuce (n.) 萵苣", "tag": "新多益500分-C"}, {"word": "cafeteria", "phonetic": "[,kæfə'tıriə]", "pos": "n.", "meaning": "自助餐廳，自助食堂", "example": "We can have delicious roast duck in this cafeteria.", "example_zh": "我們可以在這家自助餐廳，吃到美味的烤鴨。", "related": "buffet (n.) 自助餐；fast food restaurant 速食店", "tag": "新多益500分-C"}, {"word": "cage", "phonetic": "[ked3]", "pos": "n.", "meaning": "籠子", "example": "Don't you feel sorry for birds that are always locked in a cage?", "example_zh": "你不覺得被關在籠子裡的小鳥很可憐嗎？", "related": "birdcage (n.) 鳥籠；caged (adj.) 關在籠中的", "tag": "新多益500分-C"}, {"word": "cake", "phonetic": "[kek]", "pos": "n.", "meaning": "蛋糕", "example": "He passed me one half of the cake.", "example_zh": "他給我一半的蛋糕。", "related": "brownie (n.) 布朗尼；bakery (n.) 麵包店", "tag": "新多益500分-C"}, {"word": "call", "phonetic": "[kɔl]", "pos": "v.", "meaning": "大聲呼叫，大聲說", "example": "He called his girlfriend's name loudly through the window of her house, but nobody answered him.", "example_zh": "他對著女友家的窗戶大喊女友的名字，但是卻沒有人回應。", "related": "yell (v.) 叫喊；roar (v.) 咆哮", "tag": "新多益500分-C"}, {"word": "camera", "phonetic": "['kæmərə]", "pos": "n.", "meaning": "照相機，攝影機", "example": "Each camera we sell comes with a three-year guarantee.", "example_zh": "我們出售的每台相機，都有三年的保固。", "related": "digital camera 數位相機；focus (n.) 焦點", "tag": "新多益500分-C"}, {"word": "camp", "phonetic": "[kæmp]", "pos": "v./n.", "meaning": "露營；營地", "example": "It's absurd to go camping in such terrible weather.", "example_zh": "在這麼惡劣的天氣裡去露營，簡直是荒謬。", "related": "campsite (n.) 營地；camping (n.) 野營", "tag": "新多益500分-C"}, {"word": "campaign", "phonetic": "[kæm'pen]", "pos": "n.", "meaning": "戰役，運動", "example": "The campaign to capture this fortress has proven to be a successful one.", "example_zh": "攻破這個堡壘的戰役，證明是成功的。", "related": "deploy (v.) 部署，調度", "tag": "新多益500分-C"}, {"word": "cancer", "phonetic": "['kænsə]", "pos": "n.", "meaning": "癌症", "example": "Quit smoking please! You know that lung cancer is a consequence of cigarette smoking.", "example_zh": "請戒煙吧！你知道嗎，肺癌就是吸煙的結果。", "related": "cancer cell 癌細胞；breast cancer 乳癌", "tag": "新多益500分-C"}, {"word": "candle", "phonetic": "['kændl]", "pos": "n.", "meaning": "蠟燭", "example": "The candle blew out when I opened the window.", "example_zh": "當我打開窗戶的時候，蠟燭被風吹滅了。", "related": "candlestick (n.) 燭臺；candlelight (n.) 燭光", "tag": "新多益500分-C"}, {"word": "career", "phonetic": "[kə'rır]", "pos": "n.", "meaning": "生涯，職業", "example": "My father has met many difficulties in his career over the years.", "example_zh": "這些年，爸爸的事業遇到了許多困難。", "related": "career woman 職業婦女；career break 職業假期", "tag": "新多益500分-C"}, {"word": "careful", "phonetic": "['kerfəl]", "pos": "adj.", "meaning": "小心的，細緻的", "example": "You have to be careful though the gangster was arrested, his confederate escaped.", "example_zh": "你必須小心，雖然那個歹徒被逮住了，但他的同夥卻逃之夭夭。", "related": "carefully (adv.) 仔細地；careless (adj.) 粗心的", "tag": "新多益500分-C"}, {"word": "case", "phonetic": "[kes]", "pos": "n.", "meaning": "訴訟案，案件", "example": "The case will be soon brought to trial.", "example_zh": "這個訴訟案，將會很快被審判。", "related": "case study 案例研究", "tag": "新多益500分-C"}, {"word": "cash", "phonetic": "[kæʃ]", "pos": "n.", "meaning": "現金，資金", "example": "I will pay for the shirt by cash.", "example_zh": "我會以現金方式支付這件襯衫。", "related": "cash card 提款卡；ATM 自動提款機", "tag": "新多益500分-C"}, {"word": "challenge", "phonetic": "['tfælınd3]", "pos": "n./v.", "meaning": "挑戰", "example": "I know this is a difficult problem, but are you prepared to face the challenge?", "example_zh": "我知道這是個難題，但是你準備好迎接這個挑戰了嗎？", "related": "challenger (n.) 挑戰者；challenging (adj.) 具挑戰性的", "tag": "新多益500分-C"}, {"word": "change", "phonetic": "[tfend3]", "pos": "v./n.", "meaning": "改變，變化", "example": "Our hometown has seen changes in the last twenty years.", "example_zh": "我們家鄉在最近20年內有顯而易見的改變。", "related": "unchangeable (adj.) 不可改變的", "tag": "新多益500分-C"}, {"word": "cheap", "phonetic": "[tip]", "pos": "adj.", "meaning": "便宜的，廉價的", "example": "Vegetables are cheap when they're in season.", "example_zh": "當季的蔬菜很便宜。", "related": "dirt cheap 非常便宜；inexpensive (adj.) 便宜的", "tag": "新多益500分-C"}, {"word": "check", "phonetic": "[tfck]", "pos": "v.", "meaning": "檢查", "example": "When we were children, adults often told us to check our homework carefully after we finished it.", "example_zh": "小時候，大人們經常告訴我們，做完作業以後，要仔細地檢查。", "related": "conveyor belt 傳送帶；metal detector 金屬探測儀", "tag": "新多益500分-C"}, {"word": "chef", "phonetic": "[Scf]", "pos": "n.", "meaning": "(餐館、飯店等的)主廚，廚師", "example": "As chef of the restaurant, he gets a higher salary than his coworkers.", "example_zh": "身為飯店的主廚，他的工資比其他同事高。", "related": "cook (n.) 廚師", "tag": "新多益500分-C"}, {"word": "choice question", "phonetic": "[tfois] ['kwɛstſən]", "pos": "n.", "meaning": "選擇題", "example": "There are too many choice questions in this paper.", "example_zh": "這張試卷上有太多的選擇題了。", "related": "multiple choice 選擇題；option (n.) 選項", "tag": "新多益500分-C"}, {"word": "choose", "phonetic": "[tfuz]", "pos": "v.", "meaning": "選擇，挑選", "example": "Tina is a popular girl in our school, so it is a difficult matter for her to choose a boyfriend among so many pursuers.", "example_zh": "蒂娜在我們學校很受歡迎，所以要在眾多追求者中挑一個作為她的男朋友，也是件頭疼的事。", "related": "choice (n.) 抉擇；optional (adj.) 可選的", "tag": "新多益500分-C"}, {"word": "clean", "phonetic": "[klin]", "pos": "v./adj.", "meaning": "打掃；乾淨的", "example": "Dust soon accumulates if you don't clean rooms regularly.", "example_zh": "如果你不經常打掃房間，很快就會累積灰塵。", "related": "clean-up (n.) 清理；vacuum cleaner 吸塵器", "tag": "新多益500分-C"}, {"word": "climate", "phonetic": "['klaımıt]", "pos": "n.", "meaning": "氣候", "example": "His wife couldn't adapt to the climate there and fell ill.", "example_zh": "他妻子不能適應那裡的氣候而病倒了。", "related": "climatic (adj.) 氣候的；climatology (n.) 氣候學", "tag": "新多益500分-C"}, {"word": "closet", "phonetic": "['klazıt]", "pos": "n.", "meaning": "壁櫥，衣櫥", "example": "There's still dampness in the closet.", "example_zh": "這個衣櫃還是有點潮濕。", "related": "wardrobe (n.) 衣櫥；drawer (n.) 抽屜", "tag": "新多益500分-C"}, {"word": "clothes", "phonetic": "[kloz]", "pos": "n.", "meaning": "衣服，服裝", "example": "He took a bundle of clothes and ran away.", "example_zh": "他拿了一包衣服跑掉了。", "related": "cloth (n.) 布料；clothing (n.) 服裝", "tag": "新多益500分-C"}, {"word": "clue", "phonetic": "[klu]", "pos": "n.", "meaning": "線索，跡象", "example": "A passerby gave the police an important clue, which helped them to solve the case.", "example_zh": "一個路人給警方一條重要線索，幫助他們偵破了案子。", "related": "fingerprint (n.) 指紋；evidence (n.) 證據", "tag": "新多益500分-C"}, {"word": "coach", "phonetic": "[kotf]", "pos": "n./v.", "meaning": "教練；訓練，指導", "example": "When will you coach me on how to improve my basketball playing?", "example_zh": "你何時可以教我提升自己的籃球技巧啊？", "related": "coaching (n.) 指導；tutor (n.) 家教", "tag": "新多益500分-C"}, {"word": "code", "phonetic": "[kod]", "pos": "n.", "meaning": "準則；法規；代碼", "example": "Every employee of this company must be familiar with the code of practice before working here.", "example_zh": "開始工作之前，公司的每個員工必須熟悉公司的業務守則。", "related": "code name 代號；coded (adj.) 編碼的", "tag": "新多益500分-C"}, {"word": "colleague", "phonetic": "['kalıg]", "pos": "n.", "meaning": "同事", "example": "My colleague, Mary, appeared to be even more beautiful after she returned from her honeymoon.", "example_zh": "我的同事瑪麗，自從度蜜月回來後，就變得更漂亮了。", "related": "coworker (n.) 同事；associate (n.) 同事", "tag": "新多益500分-C"}, {"word": "community", "phonetic": "[kə'mjunətı]", "pos": "n.", "meaning": "社區，團體", "example": "The young man was very diligent and went to the community library to study on weekends.", "example_zh": "那個年輕人很勤奮，每個週末都會去社區圖書館讀書。", "related": "community center 社區活動中心；community service 社區服務", "tag": "新多益500分-C"}, {"word": "compete", "phonetic": "[kəm'pit]", "pos": "v.", "meaning": "競爭，對抗", "example": "In fact, I don't want to compete with you for the contract.", "example_zh": "事實上，我不想因為合約和你競爭。", "related": "competition (n.) 競爭；competitive (adj.) 競爭的；competitor (n.) 對手", "tag": "新多益500分-C"}, {"word": "compute", "phonetic": "[kəm'pjut]", "pos": "v.", "meaning": "計算，估算", "example": "I computed my loss from the accident last night.", "example_zh": "我昨天晚上已經估算了一下，我在這次事故中的損失。", "related": "computational (adj.) 計算的；computing (n.) 計算", "tag": "新多益500分-C"}, {"word": "condition", "phonetic": "[kən'dıfən]", "pos": "n.", "meaning": "條件；狀況", "example": "I have no interest in meeting the conditions he raised.", "example_zh": "我對他提出的條件不感興趣。", "related": "terms (n.) 條件；conditional (adj.) 附帶條件的", "tag": "新多益500分-C"}, {"word": "confident", "phonetic": "['kanfədənt]", "pos": "adj.", "meaning": "自信的", "example": "I'm confident that these obstacles can be overcome.", "example_zh": "我有信心可以克服這些障礙。", "related": "confidence (n.) 自信心；confidently (adv.) 自信地", "tag": "新多益500分-C"}, {"word": "contribute", "phonetic": "[kən'tribjut]", "pos": "v.", "meaning": "捐贈，捐助，貢獻", "example": "People from all over the country have contributed food and clothing to the famine victims.", "example_zh": "全國各地的人們都捐獻食物和衣物給饑荒的災民。", "related": "contribution (n.) 貢獻，捐贈；contributor (n.) 捐贈者", "tag": "新多益500分-C"}, {"word": "custom", "phonetic": "['kʌstəm]", "pos": "n.", "meaning": "風俗，習俗", "example": "The tribal lore and customs have been passed down orally from generation to generation.", "example_zh": "部落的知識和風俗，透過口耳相傳一代代地保留下來。", "related": "customary (adj.) 習俗的；customize (v.) 訂做", "tag": "新多益500分-C"}, {"word": "dairy", "phonetic": "['derı]", "pos": "n.", "meaning": "牛奶廠，乳品公司", "example": "We bought milk at the dairy.", "example_zh": "我們在乳品公司買牛奶。", "related": "dairy cow 乳牛；dairy product 乳製品", "tag": "新多益500分-D"}, {"word": "danger", "phonetic": "['dendzə]", "pos": "n.", "meaning": "危險", "example": "Linda must be trapped in this storm. If so, she must be in danger.", "example_zh": "琳達肯定是被暴風雨困住了，如果這樣的話，她就有危險了。", "related": "dangerous (adj.) 危險的；risk (n.) 風險", "tag": "新多益500分-D"}, {"word": "data", "phonetic": "['detǝ]", "pos": "n.", "meaning": "(儲存在電腦中的)資料", "example": "This time, we have to write a composition about the language data related to ESL learning.", "example_zh": "這次我們必須寫一篇文章，是關於外語學習語言資料庫的。", "related": "database (n.) 資料庫；data mining 資料採擷技術", "tag": "新多益500分-D"}, {"word": "deal", "phonetic": "[dil]", "pos": "n./v.", "meaning": "協定，交易", "example": "Why don't we make a deal?", "example_zh": "我們為什麼不簽訂個協議呢？", "related": "dealer (n.) 交易商；dealership (n.) 經銷權", "tag": "新多益500分-D"}, {"word": "decide", "phonetic": "[dı'saıd]", "pos": "v.", "meaning": "決定，選定", "example": "I decided to go to Beijing for some sightseeing this weekend.", "example_zh": "這個週末，我決定去北京觀光旅遊。", "related": "decision (n.) 決定；decisive (adj.) 決定性的", "tag": "新多益500分-D"}, {"word": "deliver", "phonetic": "[dı'lıvə]", "pos": "v.", "meaning": "遞送，傳送", "example": "We want to check whether the goods have been delivered.", "example_zh": "我們想確認一下貨物是否已發送。", "related": "delivery (n.) 遞送；delivery system 配送系統", "tag": "新多益500分-D"}, {"word": "demand", "phonetic": "[dı'mænd]", "pos": "n./v.", "meaning": "要求，需求", "example": "I am afraid that I can't satisfy all your demands.", "example_zh": "我恐怕不能滿足你所有的需求。", "related": "demanding (adj.) 苛求的；require (v.) 要求", "tag": "新多益500分-D"}, {"word": "describe", "phonetic": "[dı'skraıb]", "pos": "v.", "meaning": "描述", "example": "The witness was required to describe the appearance of the murderer.", "example_zh": "目擊者被要求描述他看到的兇手模樣。", "related": "description (n.) 描述；descriptive (adj.) 描寫的", "tag": "新多益500分-D"}, {"word": "detail", "phonetic": "['ditel]", "pos": "v./n.", "meaning": "詳述；細節", "example": "Could you detail your experiences related to job-hunting?", "example_zh": "你能把找工作的經歷，詳細的跟我說明一下嗎？", "related": "detailed (adj.) 詳細的；elaborate (v.) 詳細說明", "tag": "新多益500分-D"}, {"word": "develop", "phonetic": "[dı'veləp]", "pos": "v.", "meaning": "開發，研製，發展", "example": "The scientists are developing a new kind of medicine which may be used to cure cancer.", "example_zh": "科學家們正在研製一種能夠治療癌症的新藥。", "related": "development (n.) 發展；developmental (adj.) 開發的", "tag": "新多益500分-D"}, {"word": "diet", "phonetic": "['darət]", "pos": "n.", "meaning": "日常飲食；節食", "example": "Could you recommend a diet for old people to me?", "example_zh": "你能推薦我一些適合老年人的飲食嗎？", "related": "dietician (n.) 營養師；go on a diet 節食", "tag": "新多益500分-D"}, {"word": "digital", "phonetic": "['dıdzıt!]", "pos": "adj.", "meaning": "數字的，數位的", "example": "It is convenient to use a digital camera.", "example_zh": "數位相機用起來很方便。", "related": "digital technology 數位科技", "tag": "新多益500分-D"}, {"word": "direct", "phonetic": "[də'rekt]", "pos": "v./adj.", "meaning": "導演；直接的", "example": "We must select a person to direct the play.", "example_zh": "我們必須挑選出一個人來導演這齣話劇。", "related": "director (n.) 導演；producer (n.) 製片人", "tag": "新多益500分-D"}, {"word": "disappoint", "phonetic": "[,dısə'pɔınt]", "pos": "v.", "meaning": "使失望", "example": "I really don't want to disappoint you, but I don't have any money to lend you.", "example_zh": "我真的不想讓你失望，但我真的沒有錢可以借你。", "related": "disappointment (n.) 失望；disappointed (adj.) 感到失望的", "tag": "新多益500分-D"}, {"word": "disease", "phonetic": "[dı'ziz]", "pos": "n.", "meaning": "疾病", "example": "The disease caused my little brother to bleed to death.", "example_zh": "這種疾病讓弟弟出血死亡。", "related": "illness (n.) 疾病；sick (adj.) 生病的", "tag": "新多益500分-D"}, {"word": "double", "phonetic": "['dabl]", "pos": "v./adj.", "meaning": "使加倍；雙重的", "example": "If we can finish this task on schedule, our boss will double our salary.", "example_zh": "如果我們如期完成這項任務，老闆會發雙倍薪資給我們。", "related": "double-digit (adj.) 兩位數的", "tag": "新多益500分-D"}, {"word": "duty", "phonetic": "['djutr]", "pos": "n.", "meaning": "稅；職責", "example": "Usually, the duty on cigarettes is very high.", "example_zh": "在一般情況下，對香菸課的稅是很高的。", "related": "tariff (n.) 關稅；duty-free (adj.) 免稅的", "tag": "新多益500分-D"}, {"word": "earn", "phonetic": "[3n]", "pos": "v.", "meaning": "賺錢，贏得", "example": "Everyone has such a lust that the more they earn, the more they want.", "example_zh": "賺得越多，想要的也越多，是每個人都有的慾求。", "related": "earnings (n.) 薪水，工資；income (n.) 收入", "tag": "新多益500分-E"}, {"word": "earthquake", "phonetic": "['30,kwek]", "pos": "n.", "meaning": "地震", "example": "Everybody hates earthquakes, because they can be so devastating.", "example_zh": "每個人都很討厭地震，因為它會造成災難。", "related": "tsunami (n.) 海嘯；landslide (n.) 山崩", "tag": "新多益500分-E"}, {"word": "economy", "phonetic": "[r'kanəmı]", "pos": "n.", "meaning": "經濟", "example": "If you want to be acquainted with the development of the economy in China, you can read some books about economics.", "example_zh": "如果你想對中國的經濟發展有所瞭解，你可以讀一些經濟學方面的書籍。", "related": "economics (n.) 經濟學；economist (n.) 經濟學家；economic (adj.) 經濟上的", "tag": "新多益500分-E"}, {"word": "edit", "phonetic": "['edit]", "pos": "v.", "meaning": "編輯，校訂", "example": "He spent three months editing this book.", "example_zh": "他花了3個月時間編輯這本書。", "related": "editor (n.) 編輯；edition (n.) 版本；editorial (n.) 社論", "tag": "新多益500分-E"}, {"word": "educate", "phonetic": "['edzə,ket]", "pos": "v.", "meaning": "(在學校)教育", "example": "Teachers should educate students to have good manners.", "example_zh": "教師應該教育學生要有禮貌。", "related": "education (n.) 學校教育；educated (adj.) 受過良好教育的", "tag": "新多益500分-E"}, {"word": "elect", "phonetic": "[r'lekt]", "pos": "v.", "meaning": "選舉，推選", "example": "We should elect a monitor for our class.", "example_zh": "我們應該在班上選出一位班長。", "related": "election (n.) 選舉；general election 普選", "tag": "新多益500分-E"}, {"word": "electric", "phonetic": "[r'lektrik]", "pos": "adj.", "meaning": "電的，電動的", "example": "I'm glad that my boyfriend sent me an electric hair dryer.", "example_zh": "真高興，男友送我一台吹風機。", "related": "electrical (adj.) 電氣的；electrician (n.) 電工", "tag": "新多益500分-E"}, {"word": "entrance", "phonetic": "['entrǝns]", "pos": "n.", "meaning": "入口", "example": "Turn right, and then you will see the subway entrance on your right.", "example_zh": "右轉，然後你就會看到地鐵站入口在你的右邊。", "related": "entry (n.) 入口；exit (n.) 出口", "tag": "新多益500分-E"}, {"word": "environment", "phonetic": "[in'vaırənmənt]", "pos": "n.", "meaning": "環境", "example": "It is highly important to preserve the environment.", "example_zh": "保護自然環境至關重要。", "related": "environmental (adj.) 環境的；environmentalist (n.) 環保人士", "tag": "新多益500分-E"}, {"word": "exceed", "phonetic": "[ık'sid]", "pos": "v.", "meaning": "超過，超出", "example": "The prices of all the goods will not exceed 1,000 dollars.", "example_zh": "所有商品的價格，都不會超過1000美元。", "related": "excess (n.) 超過量；excessive (adj.) 過度的", "tag": "新多益500分-E"}, {"word": "expend", "phonetic": "[ık'spend]", "pos": "v.", "meaning": "花費，消費", "example": "He has expended all his energy on his job.", "example_zh": "他把所有的精力都放在工作上。", "related": "expenditure (n.) 花費；expense (n.) 費用；expensive (adj.) 昂貴的", "tag": "新多益500分-E"}, {"word": "experience", "phonetic": "[ık'spırıəns]", "pos": "n./v.", "meaning": "經驗；經歷", "example": "Please hold on because this job will give you lots of precious experience.", "example_zh": "請堅持下去，因為這個工作會為你帶來許多寶貴的經驗。", "related": "experienced (adj.) 有經驗的；inexperience (n.) 無經驗", "tag": "新多益500分-E"}, {"word": "export", "phonetic": "[iks'port]", "pos": "v./n.", "meaning": "出口，輸出", "example": "Please tell me what Australia exports to other countries.", "example_zh": "請告訴我澳洲向其他國家出口哪些產品。", "related": "exporter (n.) 出口商；exports (n.) 輸出額", "tag": "新多益500分-E"}, {"word": "explain", "phonetic": "[ık'splen]", "pos": "v.", "meaning": "說明，解釋", "example": "Could you explain why you were late for your wedding?", "example_zh": "你能解釋一下在自己的婚禮上遲到的原因嗎？", "related": "explanation (n.) 解釋；illustrate (v.) 闡明", "tag": "新多益500分-E"}, {"word": "explode", "phonetic": "[ık'splod]", "pos": "v.", "meaning": "爆炸", "example": "When the balloon exploded, we were staring at it.", "example_zh": "氣球爆炸時，我們正盯著它看呢。", "related": "explosion (n.) 爆炸；explosive (adj./n.) 爆炸性的/炸藥", "tag": "新多益500分-E"}, {"word": "factory", "phonetic": "['fækt(ə)rı]", "pos": "n.", "meaning": "工廠，製造廠", "example": "She worked in a textile factory in her youth.", "example_zh": "她年輕時在一家紡織廠工作。", "related": "plant (n.) 工廠，發電廠", "tag": "新多益500分-F"}, {"word": "fail", "phonetic": "[fel]", "pos": "v.", "meaning": "不及格；失敗", "example": "I must review this term's work, or else I will fail my final exam.", "example_zh": "我必須複習這學期的功課，否則我期末考會不及格。", "related": "pass (v.) 及格；failure (n.) 失敗", "tag": "新多益500分-F"}, {"word": "fair", "phonetic": "[fer]", "pos": "adj.", "meaning": "公正的，公平的", "example": "He is an upright man, so I believe he will make a fair judgment.", "example_zh": "他是一個正直的人，所以我相信他會做出公正的判決。", "related": "fair play 公平競爭；unfair (adj.) 不公平的", "tag": "新多益500分-F"}, {"word": "familiar", "phonetic": "[fə'mılıə]", "pos": "adj.", "meaning": "熟悉的", "example": "I have become familiar with this job in just two weeks.", "example_zh": "僅花了兩周的時間，我對這份工作就已經上手了。", "related": "familiar friends 親密朋友", "tag": "新多益500分-F"}, {"word": "fashion", "phonetic": "['fæfən]", "pos": "n.", "meaning": "時尚，流行", "example": "I would like to do any kind of job related to fashion.", "example_zh": "我願意做任何和時尚有關的工作。", "related": "fashionable (adj.) 時髦的", "tag": "新多益500分-F"}, {"word": "figure", "phonetic": "['fıgjə]", "pos": "n.", "meaning": "身材；數字；人物", "example": "She used all her savings to have plastic surgery, and finally became a beautiful woman with a slender figure.", "example_zh": "她花費了所有積蓄去做整型手術，最終變成身材苗條的美女。", "related": "build (n.) 體型；height (n.) 身高；weight (n.) 體重", "tag": "新多益500分-F"}, {"word": "finance", "phonetic": "[far'næns]", "pos": "n.", "meaning": "資金，金融，財政", "example": "An expert in finance will tell you how to manage your money.", "example_zh": "財務專家會告訴你如何理財。", "related": "financial (adj.) 金融的；financial crisis 金融危機", "tag": "新多益500分-F"}, {"word": "fine", "phonetic": "[faın]", "pos": "n./v.", "meaning": "罰金，罰款", "example": "Tim paid an eighty-dollar fine for tax evasion.", "example_zh": "提姆因為逃稅，而支付了80美元的罰金。", "related": "forfeit (n.) 罰金", "tag": "新多益500分-F"}, {"word": "fire", "phonetic": "['faıǝ]", "pos": "v.", "meaning": "解雇，開除", "example": "Affected by the economic crisis, the company was forced to fire half of its staff.", "example_zh": "受經濟危機的影響，這個公司被迫解雇了一半的員工。", "related": "dismiss (v.) 開除；dismissal (n.) 解雇", "tag": "新多益500分-F"}, {"word": "foreign", "phonetic": "['fərın]", "pos": "adj.", "meaning": "對外的，外交的，外國的", "example": "We need to enlarge our foreign trade to promote economic development.", "example_zh": "我們需要擴大對外貿易，以促進經濟增長。", "related": "foreign affairs 外交事務；foreigner (n.) 外國人", "tag": "新多益500分-F"}, {"word": "formal", "phonetic": "['form!]", "pos": "adj.", "meaning": "莊重的，正規的，正式的", "example": "You don't need to wear that formal suit on this occasion.", "example_zh": "在這種場合下，你不必穿得這麼正式。", "related": "formal dress 禮服；formal education 正規教育", "tag": "新多益500分-F"}, {"word": "found", "phonetic": "[faʊnd]", "pos": "v.", "meaning": "創建，創辦", "example": "I don't know the circumstances under which he founded his company.", "example_zh": "我不知道他在什麼情況下創辦公司。", "related": "founder (n.) 創辦人；foundation (n.) 基金會，創立", "tag": "新多益500分-F"}, {"word": "frustrate", "phonetic": "['frastret]", "pos": "v.", "meaning": "使懊惱，使沮喪", "example": "What frustrated him was that his father was too busy to take him to the park on the weekend.", "example_zh": "讓他懊惱的是爸爸因為週末太忙，而不能帶他去公園。", "related": "frustrated (adj.) 沮喪的；frustration (n.) 挫折感", "tag": "新多益500分-F"}, {"word": "fund", "phonetic": "[fand]", "pos": "n./v.", "meaning": "基金，專款；為…提供資金", "example": "She founded a public welfare fund to help the poor.", "example_zh": "她建立了一個公益基金來幫助窮人。", "related": "funding (n.) 資金；fund-raiser (n.) 募款者", "tag": "新多益500分-F"}, {"word": "gallery", "phonetic": "['gælərı]", "pos": "n.", "meaning": "畫廊，美術館", "example": "The gallery is exhibiting a series of portraits.", "example_zh": "這間畫廊正在展示一系列的肖像畫。", "related": "art gallery 美術館；photo gallery 圖庫", "tag": "新多益500分-G"}, {"word": "gender", "phonetic": "['dzɛndə]", "pos": "n.", "meaning": "性別", "example": "Some companies take the gender of applicants into consideration when they recruit.", "example_zh": "有些公司在應徵時，會考慮求職者的性別。", "related": "sex (n.) 性別；sexuality (n.) 性徵", "tag": "新多益500分-G"}, {"word": "generous", "phonetic": "['dzɛnərəs]", "pos": "adj.", "meaning": "慷慨的，大方的", "example": "Many beggars are disposed to solicit from this rich and generous man.", "example_zh": "許多乞丐想向這個富有而慷慨的人乞討。", "related": "generosity (n.) 慷慨", "tag": "新多益500分-G"}, {"word": "globe", "phonetic": "[glob]", "pos": "n.", "meaning": "地球，世界", "example": "This kind of plant can be found in many parts of the globe.", "example_zh": "在地球很多地方，都能找到這種植物。", "related": "global (adj.) 全球的；global warming 全球暖化；global village 地球村", "tag": "新多益500分-G"}, {"word": "government", "phonetic": "['gavənmənt]", "pos": "n.", "meaning": "政府，內閣", "example": "The Chinese government is about to form trade relations with some Third World countries.", "example_zh": "中國政府即將和第三世界國家建立貿易關係。", "related": "governmental (adj.) 政府的；governor (n.) 州長，總督", "tag": "新多益500分-G"}, {"word": "graduate", "phonetic": "['grædzu,et]", "pos": "v./n.", "meaning": "畢業；畢業生", "example": "Which school did you graduate from?", "example_zh": "你從哪個學校畢業的？", "related": "graduation (n.) 畢業；graduate school 研究所", "tag": "新多益500分-G"}, {"word": "guide", "phonetic": "[gaıd]", "pos": "n./v.", "meaning": "導遊，嚮導；指引", "example": "You can hire a guide to show you around this palace.", "example_zh": "你可以聘請一位嚮導，帶領你參觀宮殿。", "related": "guidance (n.) 指導；guidebook (n.) 旅遊指南", "tag": "新多益500分-G"}, {"word": "headline", "phonetic": "['hed,laın]", "pos": "n.", "meaning": "(報紙的)大標題，頭版頭條", "example": "There is no doubt that we should design an eye-catching headline.", "example_zh": "毫無疑問，我們應該設計一個醒目的標題。", "related": "front-page (adj.) 頭版的；banner headline 頭條大標題", "tag": "新多益500分-H"}, {"word": "heal", "phonetic": "[hil]", "pos": "v.", "meaning": "(使)康復，治癒", "example": "He still couldn't walk because the wound in his left leg healed slowly.", "example_zh": "他仍然不能走路，因為左腿上的傷口癒合得很慢。", "related": "cure (v.) 治癒；healing (n.) 康復", "tag": "新多益500分-H"}, {"word": "health", "phonetic": "[hclθ]", "pos": "n.", "meaning": "健康，保健", "example": "She was confined to bed because of poor health.", "example_zh": "因為身體不好，她必須臥床休息。", "related": "healthy (adj.) 健康的；health care 衛生保健", "tag": "新多益500分-H"}, {"word": "hospital", "phonetic": "['haspıt!]", "pos": "n.", "meaning": "醫院", "example": "Get an ambulance and send the injured man to the hospital.", "example_zh": "叫一輛救護車，把傷者送到醫院。", "related": "clinic (n.) 診所；hospitalize (v.) 送醫住院", "tag": "新多益500分-H"}, {"word": "humorous", "phonetic": "['hjumərəs]", "pos": "adj.", "meaning": "有幽默感的", "example": "The colleague who sits next to me is humorous and always tells jokes to us.", "example_zh": "坐我旁邊那個同事很幽默，總是講笑話給我們聽。", "related": "humor (n.) 幽默；funny (adj.) 滑稽的", "tag": "新多益500分-H"}, {"word": "import", "phonetic": "['ımport]", "pos": "v./n.", "meaning": "進口，輸入；輸入品", "example": "We need to import rubber from India.", "example_zh": "我們需要從印度進口橡膠。", "related": "importer (n.) 進口商；imports (n.) 進口商品", "tag": "新多益500分-I"}, {"word": "improve", "phonetic": "[ım'pruv]", "pos": "v.", "meaning": "改善，改進", "example": "In order to improve my English, I asked Mary to help me.", "example_zh": "為了提升我的英語程度，我請瑪麗來幫我。", "related": "improvement (n.) 改進；refine (v.) 改善", "tag": "新多益500分-I"}, {"word": "industry", "phonetic": "['ındəstrı]", "pos": "n.", "meaning": "工業，產業", "example": "What do you think of the prospects of the auto industry this year?", "example_zh": "你如何看待今年汽車工業的前景？", "related": "industrial (adj.) 工業的；Industrial Revolution 工業革命", "tag": "新多益500分-I"}, {"word": "influence", "phonetic": "['influəns]", "pos": "n./v.", "meaning": "影響，作用", "example": "I exerted all my influence to persuade my parents to accept my point.", "example_zh": "我用盡了一切影響力，說服父母接受我的觀點。", "related": "influential (adj.) 有很大影響的；impact (n.) 衝擊", "tag": "新多益500分-I"}, {"word": "information", "phonetic": "[,ınfə'meʃən]", "pos": "n.", "meaning": "資訊，消息", "example": "His capability of obtaining information is the best in our company.", "example_zh": "在我們公司，他獲取資訊的能力是最強的。", "related": "informative (adj.) 提供資訊的；information technology 資訊科技", "tag": "新多益500分-I"}, {"word": "insure", "phonetic": "[in'Sur]", "pos": "v.", "meaning": "投保，為…保險", "example": "I would like to insure this building against fire.", "example_zh": "我想為這座大樓投保火災險。", "related": "insurance (n.) 保險；insured (n.) 被保險人", "tag": "新多益500分-I"}, {"word": "interest", "phonetic": "['ıntərıst]", "pos": "n.", "meaning": "利息；興趣", "example": "Recently, the interest rates on deposits have been increasing.", "example_zh": "最近存款利率在不斷地提高。", "related": "interest rate 利率；interest-free (adj.) 免息的", "tag": "新多益500分-I"}, {"word": "introduce", "phonetic": "[,ıntrə'djus]", "pos": "v.", "meaning": "引薦，介紹", "example": "I introduced Lisa to my friends.", "example_zh": "我把莉莎介紹給朋友們。", "related": "introduction (n.) 介紹；letter of introduction 介紹信", "tag": "新多益500分-I"}, {"word": "journal", "phonetic": "['d33nl]", "pos": "n.", "meaning": "雜誌，期刊；日誌", "example": "He likes reading some medical journals.", "example_zh": "他喜歡讀一些醫學期刊。", "related": "journalism (n.) 新聞業；journalist (n.) 記者", "tag": "新多益500分-J"}, {"word": "judge", "phonetic": "[dzad3]", "pos": "n./v.", "meaning": "法官；審判，判決", "example": "He is said to be the wisest judge in the town.", "example_zh": "據說他是鎮上最有智慧的法官。", "related": "judgement (n.) 判決；judgemental (adj.) 批判性的", "tag": "新多益500分-J"}, {"word": "knowledge", "phonetic": "['nalıdz]", "pos": "n.", "meaning": "知識，學問，學識", "example": "Through further communication, she found that the man had a wide knowledge of arts.", "example_zh": "通過進一步的交流，她發現那位男士在藝術方面知識廣博。", "related": "knowledgeable (adj.) 博學的；general knowledge 常識", "tag": "新多益500分-K"}, {"word": "labor", "phonetic": "['lebǝ]", "pos": "n.", "meaning": "勞動，(尤指)體力勞動", "example": "I think it is time for us to enjoy the fruits of our labor.", "example_zh": "我想是享受辛勤工作後成果的時候了。", "related": "laborer (n.) 勞工；labor force 勞動力", "tag": "新多益500分-L"}, {"word": "lawyer", "phonetic": "['lɔjə]", "pos": "n.", "meaning": "律師", "example": "He dreams of becoming a lawyer someday.", "example_zh": "他希望有一天能實現他當律師的夢想。", "related": "attorney (n.) 律師；lawsuit (n.) 訴訟", "tag": "新多益500分-L"}, {"word": "leader", "phonetic": "['lidə]", "pos": "n.", "meaning": "領袖，領導者", "example": "He has proven to be a wonderful leader.", "example_zh": "他不愧是一位傑出的領袖。", "related": "leadership (n.) 領導才能；leading (adj.) 主導的", "tag": "新多益500分-L"}, {"word": "leak", "phonetic": "[lik]", "pos": "v./n.", "meaning": "洩露，滲漏", "example": "Water is leaking from the pipe, so we must take some measures to stop it.", "example_zh": "管子正在滲水，我們必須採取措施來阻止這種情況。", "related": "leakage (n.) 洩漏；crack (n.) 裂縫", "tag": "新多益500分-L"}, {"word": "legal", "phonetic": "['ligl]", "pos": "adj.", "meaning": "法律的，合法的", "example": "Make sure all your actions are legal.", "example_zh": "確保你所有的行為都是合法的。", "related": "legally (adv.) 合法地；legal action 法律訴訟", "tag": "新多益500分-L"}, {"word": "leisure", "phonetic": "['lizə]", "pos": "n.", "meaning": "休閒，閒暇", "example": "I'm busy now, and I have no leisure time for reading stories.", "example_zh": "我現在很忙，沒有閒暇時間可以閱讀故事。", "related": "leisure center 休閒中心；leisurewear (n.) 休閒服", "tag": "新多益500分-L"}, {"word": "lend", "phonetic": "[lend]", "pos": "v.", "meaning": "(銀行或機構)貸款；借出", "example": "I will lend you my dictionary.", "example_zh": "我會借給你字典的。", "related": "lender (n.) 放款人；lending rate 貸款利率", "tag": "新多益500分-L"}, {"word": "licence", "phonetic": "['larsns]", "pos": "n.", "meaning": "執照，許可證", "example": "I believe their licences have expired.", "example_zh": "我相信他們的執照已經過期。", "related": "certificate (n.) 證書；business licence 營業執照", "tag": "新多益500分-L"}, {"word": "load", "phonetic": "[lod]", "pos": "v.", "meaning": "(電腦)載入，存儲", "example": "Have you noticed how long it takes for web pages to load these days?", "example_zh": "你有注意最近網頁要花多久時間載入嗎？", "related": "download (v.) 下載；upload (v.) 上傳；server (n.) 伺服器", "tag": "新多益500分-L"}, {"word": "loss", "phonetic": "[los]", "pos": "n.", "meaning": "損失，虧損", "example": "Due to great loss of blood, he is unconscious at this moment.", "example_zh": "由於失血過多，他此刻昏迷不醒了。", "related": "loss-making (adj.) 虧損的", "tag": "新多益500分-L"}, {"word": "manager", "phonetic": "['mænıd3ə]", "pos": "n.", "meaning": "經理", "example": "This corporation supplied all its managers with cars.", "example_zh": "這家公司的所有經理都有配車。", "related": "managerial (adj.) 管理的；management (n.) 管理部門", "tag": "新多益500分-M"}, {"word": "market", "phonetic": "['markıt]", "pos": "n./v.", "meaning": "市場，銷路；銷售，推銷", "example": "We must take measures to open up new markets for our products.", "example_zh": "我們必須採取措施，為我們的產品開闢新市場。", "related": "marketplace (n.) 市場；market research 市調；market share 市占率", "tag": "新多益500分-M"}, {"word": "marketing", "phonetic": "['markıtıŋ]", "pos": "n.", "meaning": "促銷，行銷", "example": "The aim of this meeting is to find some effective marketing methods.", "example_zh": "這次會議的目的，就是找到一些有效的行銷方法。", "related": "marketing strategy 行銷策略", "tag": "新多益500分-M"}, {"word": "medical", "phonetic": "['medık!]", "pos": "adj.", "meaning": "醫療的，內科的", "example": "Medical knowledge has helped virtually all aspects of life.", "example_zh": "醫療知識在生活中的各層面上都對我們有幫助。", "related": "medical officer 衛生官員", "tag": "新多益500分-M"}, {"word": "medicine", "phonetic": "['mcdəsn]", "pos": "n.", "meaning": "醫學，藥", "example": "The doctor asked me to take the medicine three times a day.", "example_zh": "醫生要求我1天服3次藥。", "related": "medication (n.) 藥物；medicated (adj.) 含藥的", "tag": "新多益500分-M"}, {"word": "meeting record", "phonetic": "['mitıŋ] ['rckəd]", "pos": "n.", "meaning": "會議記錄", "example": "At the beginning, my job was to write the records for meetings.", "example_zh": "剛開始的時候，我的工作就是做會議記錄。", "related": "shorthand (n.) 速記", "tag": "新多益500分-M"}, {"word": "memory", "phonetic": "['mɛmərı]", "pos": "n.", "meaning": "回憶，記憶", "example": "She still had a vivid memory of that accident in which she lost her parents forever.", "example_zh": "她仍然清楚記得那場車禍，因為在那場車禍中，她永遠地失去了父母。", "related": "memorize (v.) 記住；memorial (adj.) 紀念的", "tag": "新多益500分-M"}, {"word": "method", "phonetic": "['mɛθəd]", "pos": "n.", "meaning": "方法", "example": "This is an effective method to improve English.", "example_zh": "這是一個提升英文能力的有效方法。", "related": "means (n.) 手段；manner (n.) 方式", "tag": "新多益500分-M"}, {"word": "military", "phonetic": "['mılə,terı]", "pos": "adj./n.", "meaning": "軍事的；軍隊", "example": "The only military base in this region was built in the town.", "example_zh": "這個地區唯一的軍事基地，建在這個小鎮裡。", "related": "military service 兵役；militant (adj.) 好戰的", "tag": "新多益500分-M"}, {"word": "multiply", "phonetic": "['mʌltəplaı]", "pos": "v.", "meaning": "乘，乘以", "example": "What will you get if you multiply fifty-nine by fifty-nine?", "example_zh": "如果用59乘以59，得多少？", "related": "multiplication (n.) 乘法；multiple (n.) 倍數", "tag": "新多益500分-M"}, {"word": "nature", "phonetic": "['netſə]", "pos": "n.", "meaning": "大自然；天性", "example": "I love being outdoors in nature.", "example_zh": "我喜愛徜徉在戶外大自然中。", "related": "natural (adj.) 自然的，天然的", "tag": "新多益500分-N"}, {"word": "neat", "phonetic": "[nit]", "pos": "adj.", "meaning": "整潔的，整齊的", "example": "Staying in the neat room, he felt relaxed and comfortable.", "example_zh": "待在整潔的房間裡，他感到既放鬆又舒適。", "related": "neatly (adv.) 整潔地；tidy (adj.) 整潔的", "tag": "新多益500分-N"}, {"word": "nervous", "phonetic": "['nзvəs]", "pos": "adj.", "meaning": "焦慮的，緊張的", "example": "I felt very nervous when I was interviewed by the boss.", "example_zh": "我在跟老闆面試時，感到非常緊張。", "related": "nerve-racking (adj.) 令人緊張的；tense (adj.) 緊張的", "tag": "新多益500分-N"}, {"word": "news", "phonetic": "[njuz]", "pos": "n.", "meaning": "新聞，消息", "example": "Today, I heard explosive news that Lisa was actually my boss's daughter.", "example_zh": "今天我聽到勁爆的新聞，麗莎竟然是我老闆的女兒。", "related": "news agency 通訊社；newsflash (n.) 快報", "tag": "新多益500分-N"}, {"word": "newspaper", "phonetic": "['njuz,pepǝ]", "pos": "n.", "meaning": "報紙", "example": "My father has a habit of reading the newspaper after dinner.", "example_zh": "父親有晚飯後讀報紙的習慣。", "related": "periodical (n.) 期刊", "tag": "新多益500分-N"}, {"word": "novel", "phonetic": "['navl]", "pos": "n.", "meaning": "(長篇)小說", "example": "I read this novel when I was in middle school.", "example_zh": "我在上初中時，就讀過這本小說了。", "related": "novelist (n.) 小說家；short story 短篇小說", "tag": "新多益500分-N"}, {"word": "nurse", "phonetic": "[n3s]", "pos": "n.", "meaning": "護士", "example": "I still remembered the nurse who took care of me carefully when I was in hospital for my illness.", "example_zh": "我仍然記得，那個在我生病住院時，細心照顧我的護士。", "related": "nursing (n.) 護理；paramedical (adj.) 輔助醫療的", "tag": "新多益500分-N"}, {"word": "object", "phonetic": "['abdzikt]", "pos": "n.", "meaning": "受詞；物體；目標", "example": "Please find the subject, predicate and object in the sentence.", "example_zh": "請找出句子中的主詞、謂語和受詞。", "related": "subject (n.) 主詞", "tag": "新多益500分-O"}, {"word": "office", "phonetic": "['ɔfıs]", "pos": "n.", "meaning": "辦公室", "example": "Tomorrow, I will go to the post office to send some books to my brother.", "example_zh": "明天我會去郵局，寄幾本書給我弟弟。", "related": "office hours 辦公時間；office worker 上班族", "tag": "新多益500分-O"}, {"word": "official", "phonetic": "[ə'fıfəl]", "pos": "adj./n.", "meaning": "公務的，公職的；官員", "example": "The pompous official offended the mayor.", "example_zh": "這個自命不凡的官員冒犯了市長。", "related": "officially (adv.) 正式地；official secret 國家機密", "tag": "新多益500分-O"}, {"word": "opinion", "phonetic": "[ə'pınjən]", "pos": "n.", "meaning": "意見，想法，看法", "example": "My suggestion is that you should consider others' opinions before you make the decision.", "example_zh": "我的建議是在你做決定前，應該好好考慮別人的意見。", "related": "viewpoint (n.) 觀點；standpoint (n.) 立場；perspective (n.) 視角", "tag": "新多益500分-O"}, {"word": "opportunity", "phonetic": "[,apǝ'tjunətı]", "pos": "n.", "meaning": "機會，時機", "example": "We should always be prepared, or our opportunities will disappear without our knowledge.", "example_zh": "我們應該時時刻刻做好準備，否則機會將會在我們沒意識到的時候消失。", "related": "chance (n.) 機會，可能性", "tag": "新多益500分-O"}, {"word": "order", "phonetic": "['ɔrdə]", "pos": "n./v.", "meaning": "訂貨，訂購，訂單", "example": "I am very glad that I have received your order.", "example_zh": "很高興收到你的訂單。", "related": "order form 訂貨單", "tag": "新多益500分-O"}, {"word": "outdated", "phonetic": "[,aʊt'detıd]", "pos": "adj.", "meaning": "過時的", "example": "My computer at work in the office is outdated, and I hope the company gives me a new one soon.", "example_zh": "辦公室裡我的那台電腦早就過時了，我希望公司能盡快幫我換一台新的。", "related": "antiquated (adj.) 陳舊的，過時的", "tag": "新多益500分-O"}, {"word": "pain", "phonetic": "[pen]", "pos": "n.", "meaning": "痛，痛苦", "example": "The old man was driven crazy by the extremity of pain.", "example_zh": "極度的痛苦，使老人發狂。", "related": "painful (adj.) 令人疼痛的；miserable (adj.) 痛苦的", "tag": "新多益500分-P"}, {"word": "partner", "phonetic": "['partnə]", "pos": "n.", "meaning": "合夥人，夥伴", "example": "At last, my partner came back to me.", "example_zh": "我的合夥人背叛了我，但是後來又回來了。", "related": "partnership (n.) 合作夥伴關係；copartner (n.) 合夥人", "tag": "新多益500分-P"}, {"word": "party", "phonetic": "['partı]", "pos": "n.", "meaning": "當事人；政黨", "example": "Contract parties should know their rights and duties.", "example_zh": "合約雙方當事人，應該知道彼此的權利和義務。", "related": "principal (n.) 委託人；party political 黨派政治的", "tag": "新多益500分-P"}, {"word": "patient", "phonetic": "['peſənt]", "pos": "adj./n.", "meaning": "有耐心的；病人", "example": "You must be patient, because the cure works slowly.", "example_zh": "你必須要有耐心，因為這種療法很慢才會見效。", "related": "patience (n.) 耐心；inpatient (n.) 住院病人", "tag": "新多益500分-P"}, {"word": "perform", "phonetic": "[pə'form]", "pos": "v.", "meaning": "表演，演出；履行", "example": "The girls performed a very graceful dance for their classmates.", "example_zh": "女孩為她們的同學，表演了優美的舞蹈。", "related": "performance (n.) 表演；performer (n.) 表演者", "tag": "新多益500分-P"}, {"word": "pet", "phonetic": "[pɛt]", "pos": "n.", "meaning": "寵物", "example": "The old lady thrust herself through the crowd to look for her pet dog.", "example_zh": "老婦人推擠並穿過人群，去尋找她的寵物狗。", "related": "pet shop 寵物店", "tag": "新多益500分-P"}, {"word": "picnic", "phonetic": "['pıknık]", "pos": "n.", "meaning": "野餐", "example": "The Browns intended to have a picnic in the woods yesterday, but the weather ruled it out.", "example_zh": "布朗一家昨天打算去野餐，但是天氣不好使得計畫告吹。", "related": "barbecue (n.) 烤肉", "tag": "新多益500分-P"}, {"word": "pill", "phonetic": "[pil]", "pos": "n.", "meaning": "藥丸，藥片", "example": "Your symptoms will ease after you take the pill.", "example_zh": "服下藥丸後，你的症狀會減輕一些。", "related": "tablet (n.) 藥片；capsule (n.) 膠囊", "tag": "新多益500分-P"}];
+
+  // Storage Keys
+  const STORAGE_KEY_MASTERED = 'toeic_cards_mastered';
+  const STORAGE_KEY_REVIEW = 'toeic_cards_review';
+  const STORAGE_KEY_CUSTOM = 'toeic_cards_custom';
+  const STORAGE_KEY_THEME = 'toeic_cards_theme';
+
+  // State
+  let customVocab = JSON.parse(localStorage.getItem(STORAGE_KEY_CUSTOM) || '[]');
+  let allVocab = [];
+  let masteredSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERED) || '[]'));
+  let reviewSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEW) || '[]'));
+
   let currentIndex = 0;
   let isFlipped = false;
   let isShuffled = false;
   let currentFilter = 'all'; // 'all', 'review', 'mastered'
   let displayedIndices = [];
 
-  // LocalStorage Keys
-  const STORAGE_KEY_MASTERED = 'toeic_cards_mastered';
-  const STORAGE_KEY_REVIEW = 'toeic_cards_review';
-
-  let masteredSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERED) || '[]'));
-  let reviewSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEW) || '[]'));
-
-  // Initialize
+  // Init
   function initApp() {
+    initTheme();
+    mergeVocab();
     updateFilterList();
     renderCard();
     updateStats();
     setupKeyListeners();
   }
 
-  function saveState() {
+  /* ---------------- Theme Engine ---------------- */
+  function initTheme() {
+    const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    } else {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(prefersDark ? 'dark' : 'light');
+    }
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(STORAGE_KEY_THEME, theme);
+    const btn = document.getElementById('themeToggleBtn');
+    if (theme === 'dark') {
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    } else {
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+    }
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+    showToast(current === 'dark' ? '已切換為明亮主題' : '已切換為夜間暗色主題');
+  }
+
+  /* ---------------- Vocabulary State ---------------- */
+  function mergeVocab() {
+    // Avoid exact word duplicates: custom items override or append
+    const wordMap = new Map();
+    BASE_VOCAB.forEach(item => wordMap.set(item.word.toLowerCase(), item));
+    customVocab.forEach(item => wordMap.set(item.word.toLowerCase(), item));
+    allVocab = Array.from(wordMap.values());
+    document.getElementById('customCountBadge').innerText = customVocab.length;
+  }
+
+  function saveLearningState() {
     localStorage.setItem(STORAGE_KEY_MASTERED, JSON.stringify([...masteredSet]));
     localStorage.setItem(STORAGE_KEY_REVIEW, JSON.stringify([...reviewSet]));
   }
 
   function updateFilterList() {
     displayedIndices = [];
-    for (let i = 0; i < VOCAB_DATA.length; i++) {
-      const word = VOCAB_DATA[i].word;
+    for (let i = 0; i < allVocab.length; i++) {
+      const word = allVocab[i].word;
       if (currentFilter === 'all') {
         displayedIndices.push(i);
       } else if (currentFilter === 'review' && reviewSet.has(word)) {
@@ -728,12 +1082,14 @@
     const btn = document.getElementById('shuffleBtn');
     if (isShuffled) {
       btn.classList.add('active');
-      btn.querySelector('span').innerText = '已隨機 (點擊還原)';
+      btn.querySelector('span').innerText = '已隨機 (還原)';
       shuffleArray(displayedIndices);
+      showToast('已隨機打亂單字卡順序');
     } else {
       btn.classList.remove('active');
       btn.querySelector('span').innerText = '隨機打亂';
       updateFilterList();
+      showToast('已還原為預設字母排序');
     }
     currentIndex = 0;
     resetFlip();
@@ -752,7 +1108,6 @@
   }
 
   function renderCard() {
-    const cardEl = document.getElementById('flashcard');
     resetFlip();
 
     if (displayedIndices.length === 0) {
@@ -768,26 +1123,24 @@
     }
 
     const dataIndex = displayedIndices[currentIndex];
-    const item = VOCAB_DATA[dataIndex];
+    const item = allVocab[dataIndex];
 
     // Front
-    document.getElementById('frontWord').innerText = item.word;
-    document.getElementById('frontPhonetic').innerText = item.phonetic;
-    document.getElementById('frontPos').innerText = item.pos;
-    document.getElementById('cardTag').innerText = item.tag;
+    document.getElementById('frontWord').innerText = item.word || '';
+    document.getElementById('frontPhonetic').innerText = item.phonetic || '';
+    document.getElementById('frontPos').innerText = item.pos || '';
+    document.getElementById('cardTag').innerText = item.tag || '多益單字';
 
-    // Star status
     const isReview = reviewSet.has(item.word);
-    const starBtn = document.getElementById('starBtn');
-    starBtn.classList.toggle('active', isReview);
+    document.getElementById('starBtn').classList.toggle('active', isReview);
 
     // Back
-    document.getElementById('backWord').innerText = item.word;
-    document.getElementById('backPhonetic').innerText = item.phonetic;
-    document.getElementById('backPos').innerText = item.pos;
-    document.getElementById('backMeaning').innerText = item.meaning;
-    document.getElementById('backExample').innerText = item.example;
-    document.getElementById('backExampleZh').innerText = item.example_zh;
+    document.getElementById('backWord').innerText = item.word || '';
+    document.getElementById('backPhonetic').innerText = item.phonetic || '';
+    document.getElementById('backPos').innerText = item.pos || '';
+    document.getElementById('backMeaning').innerText = item.meaning || '';
+    document.getElementById('backExample').innerText = item.example || '';
+    document.getElementById('backExampleZh').innerText = item.example_zh || '';
 
     const relatedBox = document.getElementById('relatedBox');
     if (item.related && item.related.trim() !== "") {
@@ -797,7 +1150,7 @@
       relatedBox.style.display = "none";
     }
 
-    // Progress & Counter
+    // Stats
     const total = displayedIndices.length;
     const currentNum = currentIndex + 1;
     document.getElementById('cardCounter').innerText = `${currentNum} / ${total}`;
@@ -809,14 +1162,13 @@
   }
 
   function updateStats() {
-    document.getElementById('countAll').innerText = VOCAB_DATA.length;
+    document.getElementById('countAll').innerText = allVocab.length;
     document.getElementById('countReview').innerText = reviewSet.size;
     document.getElementById('countMastered').innerText = masteredSet.size;
     document.getElementById('deckStatText').innerText = `已掌握 ${masteredSet.size} · 待複習 ${reviewSet.size}`;
   }
 
   function handleCardClick(e) {
-    // If click on button inside card, don't flip
     if (e.target.closest('button')) return;
     flipCard();
   }
@@ -836,45 +1188,48 @@
     if (displayedIndices.length === 0) return;
     currentIndex = (currentIndex + 1) % displayedIndices.length;
     resetFlip();
-    setTimeout(renderCard, 100);
+    setTimeout(renderCard, 80);
   }
 
   function prevCard() {
     if (displayedIndices.length === 0) return;
     currentIndex = (currentIndex - 1 + displayedIndices.length) % displayedIndices.length;
     resetFlip();
-    setTimeout(renderCard, 100);
+    setTimeout(renderCard, 80);
   }
 
   function toggleStar(e) {
     if (e) e.stopPropagation();
     if (displayedIndices.length === 0) return;
-    const item = VOCAB_DATA[displayedIndices[currentIndex]];
+    const item = allVocab[displayedIndices[currentIndex]];
     if (reviewSet.has(item.word)) {
       reviewSet.delete(item.word);
+      showToast(`已從待複習清單移除：${item.word}`);
     } else {
       reviewSet.add(item.word);
       masteredSet.delete(item.word);
+      showToast(`已加入待複習清單：${item.word}`);
     }
-    saveState();
+    saveLearningState();
     renderCard();
   }
 
   function markCardStatus(e, status) {
     if (e) e.stopPropagation();
     if (displayedIndices.length === 0) return;
-    const item = VOCAB_DATA[displayedIndices[currentIndex]];
+    const item = allVocab[displayedIndices[currentIndex]];
     if (status === 'mastered') {
       masteredSet.add(item.word);
       reviewSet.delete(item.word);
+      showToast(`已掌握：${item.word}`);
     } else if (status === 'review') {
       reviewSet.add(item.word);
       masteredSet.delete(item.word);
+      showToast(`待複習：${item.word}`);
     }
-    saveState();
+    saveLearningState();
     updateStats();
 
-    // If currently filtering, refreshing view
     if (currentFilter !== 'all') {
       updateFilterList();
       renderCard();
@@ -884,19 +1239,20 @@
   }
 
   function resetProgress() {
-    if (confirm('確定要清除所有掌握與複習進度嗎？')) {
+    if (confirm('確定要清除所有掌握與待複習標記嗎？')) {
       masteredSet.clear();
       reviewSet.clear();
-      saveState();
+      saveLearningState();
       updateFilterList();
       renderCard();
+      showToast('已重置所有背誦進度');
     }
   }
 
   function speakCurrentWord(e) {
     if (e) e.stopPropagation();
     if (displayedIndices.length === 0) return;
-    const item = VOCAB_DATA[displayedIndices[currentIndex]];
+    const item = allVocab[displayedIndices[currentIndex]];
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(item.word);
@@ -906,6 +1262,153 @@
     }
   }
 
+  /* ---------------- Import System ---------------- */
+  function openImportModal() {
+    document.getElementById('importModal').classList.add('active');
+  }
+
+  function closeImportModal() {
+    document.getElementById('importModal').classList.remove('active');
+  }
+
+  function handleModalOverlayClick(e) {
+    if (e.target.id === 'importModal') {
+      closeImportModal();
+    }
+  }
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const text = e.target.result;
+      document.getElementById('pasteInput').value = text;
+      showToast(`檔案已載入：${file.name}，請點選「確認匯入」`);
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  // Parse CSV / TSV text robustly
+  function parseCSVText(text) {
+    const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+    const results = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      // Skip obvious headers
+      if (i === 0 && (line.includes('單字') || line.includes('Word') || line.includes('word'))) {
+        continue;
+      }
+      
+      let tokens = [];
+      let delimiter = line.includes('\t') ? '\t' : ',';
+      
+      if (delimiter === ',') {
+        let insideQuote = false;
+        let token = '';
+        for (let j = 0; j < line.length; j++) {
+          let c = line[j];
+          if (c === '"') {
+            insideQuote = !insideQuote;
+          } else if (c === ',' && !insideQuote) {
+            tokens.push(token.trim().replace(/^"|"$/g, ''));
+            token = '';
+          } else {
+            token += c;
+          }
+        }
+        tokens.push(token.trim().replace(/^"|"$/g, ''));
+      } else {
+        tokens = line.split('\t').map(t => t.trim().replace(/^"|"$/g, ''));
+      }
+
+      if (tokens.length >= 2 && tokens[0].length > 0) {
+        results.push({
+          word: tokens[0] || '',
+          phonetic: tokens[1] || '',
+          pos: tokens[2] || '',
+          meaning: tokens[3] || '',
+          example: tokens[4] || '',
+          example_zh: tokens[5] || '',
+          related: tokens[6] || '',
+          tag: tokens[7] || '自訂匯入'
+        });
+      }
+    }
+    return results;
+  }
+
+  function processImport() {
+    const rawText = document.getElementById('pasteInput').value.trim();
+    if (!rawText) {
+      alert('請先貼上單字內容或選取 CSV 檔案！');
+      return;
+    }
+
+    const parsed = parseCSVText(rawText);
+    if (parsed.length === 0) {
+      alert('無法解析任何有效單字，請檢查格式是否包含「單字,音標,詞性,中文」！');
+      return;
+    }
+
+    // Append to customVocab
+    const existingWordMap = new Map();
+    customVocab.forEach(item => existingWordMap.set(item.word.toLowerCase(), item));
+    parsed.forEach(item => existingWordMap.set(item.word.toLowerCase(), item));
+    customVocab = Array.from(existingWordMap.values());
+
+    localStorage.setItem(STORAGE_KEY_CUSTOM, JSON.stringify(customVocab));
+
+    mergeVocab();
+    updateFilterList();
+    renderCard();
+    closeImportModal();
+    document.getElementById('pasteInput').value = '';
+    showToast(`成功匯入 ${parsed.length} 個單字！總字數擴充至 ${allVocab.length} 字`);
+  }
+
+  function clearCustomVocab() {
+    if (customVocab.length === 0) {
+      showToast('目前沒有任何自訂匯入單字');
+      return;
+    }
+    if (confirm(`確定要清除已匯入的 ${customVocab.length} 個自訂單字嗎？（預設題庫不會受影響）`)) {
+      customVocab = [];
+      localStorage.removeItem(STORAGE_KEY_CUSTOM);
+      mergeVocab();
+      updateFilterList();
+      renderCard();
+      showToast('已清除自訂單字');
+    }
+  }
+
+  function downloadTemplateCsv() {
+    const sample = `"單字 (Word)","KK音標 (Phonetic)","詞性 (Part of Speech)","中文釋義 (Meaning)","例句 (Example)","例句翻譯 (Example Translation)","相關詞彙 (Related Words)","分類標籤 (Tags)"
+"negotiate","[nı'goʃı,et]","v.","談判，協商","We have been negotiating with them for two weeks.","我們已經和他們談判了兩星期。","negotiation (n.) 談判；negotiator (n.) 談判專家","新多益700分-商務"
+"revenue","['rɛvə,nju]","n.","收益，營業額","The company's annual revenue increased by 20%.","這家公司的年營業額增長了百分之二十。","income (n.) 收入；profit (n.) 利潤","新多益700分-財務"`;
+    
+    const blob = new Blob(["\uFEFF" + sample], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "TOEIC_Vocabulary_Import_Template.csv";
+    link.click();
+    showToast('已下載 CSV 單字範本檔案');
+  }
+
+  /* ---------------- Toast Notification ---------------- */
+  let toastTimer = null;
+  function showToast(msg) {
+    const toast = document.getElementById('toastMsg');
+    toast.innerText = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2400);
+  }
+
+  /* ---------------- Keyboard Shortcuts ---------------- */
   function setupKeyListeners() {
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -925,6 +1428,9 @@
       } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         speakCurrentWord();
+      } else if (e.key === 'd' || e.key === 'D') {
+        e.preventDefault();
+        toggleTheme();
       } else if (e.key === '1') {
         e.preventDefault();
         markCardStatus(null, 'review');
@@ -935,7 +1441,7 @@
     });
   }
 
-  // Run on start
+  // Run
   initApp();
 </script>
 </body>
