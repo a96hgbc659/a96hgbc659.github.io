@@ -6,7 +6,6 @@
   <title>多益核心單字閃卡 (TOEIC Flashcards)</title>
   <style>
     :root {
-      /* Warm Muji Light Theme */
       --bg-color: #f7f5f0;
       --card-bg: #ffffff;
       --card-back-bg: #fffdfa;
@@ -37,7 +36,6 @@
     }
 
     [data-theme="dark"] {
-      /* Elegant Warm Dark Theme */
       --bg-color: #1a1816;
       --card-bg: #262320;
       --card-back-bg: #2b2723;
@@ -85,7 +83,6 @@
       padding: 24px 16px 40px;
     }
 
-    /* Container */
     .app-container {
       width: 100%;
       max-width: 680px;
@@ -94,7 +91,6 @@
       gap: 16px;
     }
 
-    /* Header */
     header {
       display: flex;
       justify-content: space-between;
@@ -152,7 +148,6 @@
       white-space: nowrap;
     }
 
-    /* Progress bar */
     .progress-section {
       display: flex;
       flex-direction: column;
@@ -182,7 +177,6 @@
       transition: width 0.3s ease;
     }
 
-    /* Toolbar / Filter */
     .toolbar {
       display: flex;
       justify-content: space-between;
@@ -202,7 +196,7 @@
     .tab-btn {
       border: none;
       background: transparent;
-      padding: 6px 12px;
+      padding: 6px 11px;
       border-radius: 6px;
       font-size: 0.78rem;
       font-weight: 500;
@@ -248,7 +242,6 @@
       font-weight: 600;
     }
 
-    /* Flashcard 3D Stage */
     .flashcard-stage {
       perspective: 1200px;
       width: 100%;
@@ -292,7 +285,6 @@
       background: var(--card-back-bg);
     }
 
-    /* Empty state styling */
     .empty-state-view {
       display: flex;
       flex-direction: column;
@@ -373,7 +365,6 @@
       background: var(--btn-hover);
     }
 
-    /* Front Card Design */
     .card-top {
       display: flex;
       justify-content: space-between;
@@ -469,7 +460,6 @@
       user-select: none;
     }
 
-    /* Back Card Design */
     .back-header {
       display: flex;
       justify-content: space-between;
@@ -585,7 +575,6 @@
       background: rgba(104, 159, 56, 0.28);
     }
 
-    /* Controls Bar */
     .controls {
       display: flex;
       justify-content: space-between;
@@ -625,7 +614,6 @@
       background: var(--accent-hover);
     }
 
-    /* Modal (Import dialog) */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -699,7 +687,6 @@
       font-size: 0.88rem;
     }
 
-    /* GitHub Auto-sync Card */
     .github-sync-card {
       border: 1px solid var(--accent-border);
       background: var(--accent-soft);
@@ -887,7 +874,6 @@
       background: var(--accent-hover);
     }
 
-    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -911,7 +897,6 @@
       opacity: 1;
     }
 
-    /* Footer */
     footer {
       margin-top: 12px;
       display: flex;
@@ -964,7 +949,6 @@
 <body>
 
 <div class="app-container">
-  <!-- Header -->
   <header>
     <div class="title-group">
       <h1>多益核心單字閃卡</h1>
@@ -977,21 +961,20 @@
     </div>
   </header>
 
-  <!-- Progress Bar -->
   <div class="progress-section">
     <div class="progress-meta">
       <span id="currentStatusText">進度 0%</span>
-      <span id="deckStatText">已掌握 0 · 待複習 0</span>
+      <span id="deckStatText">已掌握 0 · 待複習 0 · 未學習 0</span>
     </div>
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" id="progressBar"></div>
     </div>
   </div>
 
-  <!-- Toolbar -->
   <div class="toolbar">
     <div class="filter-tabs">
       <button class="tab-btn active" data-filter="all" onclick="setFilter('all')">全部 (<span id="countAll">0</span>)</button>
+      <button class="tab-btn" data-filter="unlearned" onclick="setFilter('unlearned')">未學習 (<span id="countUnlearned">0</span>)</button>
       <button class="tab-btn" data-filter="review" onclick="setFilter('review')">待複習 (<span id="countReview">0</span>)</button>
       <button class="tab-btn" data-filter="mastered" onclick="setFilter('mastered')">已掌握 (<span id="countMastered">0</span>)</button>
     </div>
@@ -1016,10 +999,8 @@
     </div>
   </div>
 
-  <!-- 3D Flashcard Stage -->
   <div class="flashcard-stage" onclick="handleCardClick(event)">
     <div class="flashcard" id="flashcard">
-      <!-- Front Face -->
       <div class="card-face card-face-front" id="cardFrontFace">
         <div id="frontContentWrapper" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
           <div class="card-top">
@@ -1041,14 +1022,13 @@
           <div class="card-bottom-hint">點擊卡片或按 Space 翻面檢視釋義與例句</div>
         </div>
 
-        <!-- Empty State (Shown when no cards exist) -->
         <div class="empty-state-view" id="emptyStateView" style="display:none;">
-          <div class="empty-icon">
+          <div class="empty-icon" id="emptyIcon">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
           </div>
-          <div class="empty-title">目前字庫尚無單字</div>
-          <p class="empty-desc">若已將 <code>vocabulary.csv</code> 放在 GitHub 倉庫同層目錄，可直接點擊「從 GitHub 讀取」；亦可手動上傳本機檔案。</p>
-          <div class="empty-btn-group">
+          <div class="empty-title" id="emptyTitle">目前字庫尚無單字</div>
+          <p class="empty-desc" id="emptyDesc">若已將 <code>vocabulary.csv</code> 放在 GitHub 倉庫同層目錄，可直接點擊「從 GitHub 讀取」；亦可手動上傳本機檔案。</p>
+          <div class="empty-btn-group" id="emptyBtnGroup">
             <button class="empty-cta-btn" onclick="syncFromGitHub()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
               <span>從 GitHub 讀取 vocabulary.csv</span>
@@ -1060,7 +1040,6 @@
         </div>
       </div>
 
-      <!-- Back Face -->
       <div class="card-face card-face-back" id="cardBackFace">
         <div class="back-header">
           <div class="back-word-group">
@@ -1096,7 +1075,6 @@
     </div>
   </div>
 
-  <!-- Navigation Controls -->
   <div class="controls">
     <button class="btn-nav" onclick="prevCard()" title="上一張 (← 或 K)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
@@ -1112,7 +1090,6 @@
     </button>
   </div>
 
-  <!-- Footer Shortcuts -->
   <footer>
     <div class="shortcut-hints">
       <span><kbd>Space</kbd> 翻面</span>
@@ -1124,11 +1101,10 @@
       <span><kbd>1</kbd> 待複習</span>
       <span><kbd>2</kbd> 已掌握</span>
     </div>
-    <div class="stat-text">支援讀取 GitHub 同層目錄 vocabulary.csv · 靜態託管</div>
+    <div class="stat-text">純靜態無寫死單字架構 · 支援離線與 GitHub Pages 託管</div>
   </footer>
 </div>
 
-<!-- Import Modal Dialog -->
 <div class="modal-overlay" id="importModal" onclick="handleModalOverlayClick(event)">
   <div class="modal-dialog">
     <div class="modal-header">
@@ -1136,7 +1112,6 @@
       <button class="modal-close-btn" onclick="closeImportModal()">&times;</button>
     </div>
     <div class="modal-body">
-      <!-- 1. GitHub Direct / Remote URL Section -->
       <div class="github-sync-card">
         <div class="github-sync-header">
           <span class="github-sync-title">
@@ -1154,7 +1129,6 @@
         </div>
       </div>
 
-      <!-- 2. Local File Dropzone -->
       <div class="import-dropzone" onclick="document.getElementById('csvFileInput').click()">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
         <span class="dropzone-title">手動上傳本機 CSV 檔案</span>
@@ -1162,7 +1136,6 @@
         <input type="file" id="csvFileInput" accept=".csv,text/csv,text/plain" onchange="handleFileSelect(event)">
       </div>
 
-      <!-- 3. Direct Paste Textarea -->
       <div>
         <div class="paste-area-label">
           <span>或直接貼上單字內容：</span>
@@ -1173,7 +1146,6 @@
 contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細審閱這份合約。,sign a contract,700分核心"></textarea>
       </div>
 
-      <!-- Mode selection -->
       <div class="import-mode-group">
         <span style="font-weight:600;">匯入模式：</span>
         <label>
@@ -1196,18 +1168,15 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   </div>
 </div>
 
-<!-- Toast Message -->
 <div class="toast" id="toastMsg"></div>
 
 <script>
-  // Storage Keys
   const STORAGE_KEY_VOCAB = 'toeic_pure_vocab_list';
   const STORAGE_KEY_MASTERED = 'toeic_cards_mastered';
   const STORAGE_KEY_REVIEW = 'toeic_cards_review';
   const STORAGE_KEY_THEME = 'toeic_cards_theme';
   const STORAGE_KEY_GITHUB_URL = 'toeic_github_url';
 
-  // State
   let allVocab = JSON.parse(localStorage.getItem(STORAGE_KEY_VOCAB) || '[]');
   let masteredSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERED) || '[]'));
   let reviewSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEW) || '[]'));
@@ -1215,10 +1184,37 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   let currentIndex = 0;
   let isFlipped = false;
   let isShuffled = false;
-  let currentFilter = 'all'; // 'all', 'review', 'mastered'
+  let currentFilter = 'all'; // 'all', 'unlearned', 'review', 'mastered'
   let displayedIndices = [];
 
-  // Init
+  function getWordKey(word) {
+    return (word || '').trim().toLowerCase();
+  }
+
+  function getDeckStats() {
+    let masteredCount = 0;
+    let reviewCount = 0;
+    let unlearnedCount = 0;
+
+    for (let i = 0; i < allVocab.length; i++) {
+      const k = getWordKey(allVocab[i].word);
+      if (masteredSet.has(k)) {
+        masteredCount++;
+      } else if (reviewSet.has(k)) {
+        reviewCount++;
+      } else {
+        unlearnedCount++;
+      }
+    }
+
+    return {
+      total: allVocab.length,
+      mastered: masteredCount,
+      review: reviewCount,
+      unlearned: unlearnedCount
+    };
+  }
+
   async function initApp() {
     initTheme();
 
@@ -1227,7 +1223,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       document.getElementById('githubUrlInput').value = savedUrl;
     }
 
-    // If local storage is empty, auto-attempt loading ./vocabulary.csv from GitHub Pages
     if (allVocab.length === 0) {
       await fetchVocabularyFile(document.getElementById('githubUrlInput').value || './vocabulary.csv', false);
     } else {
@@ -1239,13 +1234,11 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     setupKeyListeners();
   }
 
-  /* ---------------- GitHub CSV Fetch Engine ---------------- */
   async function fetchVocabularyFile(url, isUserTriggered = true) {
     const statusLabel = document.getElementById('githubFetchStatus');
     if (statusLabel) statusLabel.innerText = "連線讀取中...";
 
     try {
-      // Prevent browser cache when reading from GitHub
       const fetchUrl = url.includes('?') ? `${url}&_t=${Date.now()}` : `${url}?_t=${Date.now()}`;
       const response = await fetch(fetchUrl);
 
@@ -1260,7 +1253,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
         throw new Error("CSV 內容為空或無法辨識有效單字");
       }
 
-      // Check import mode if modal is open, default to append with deduplication
       const modeRadio = document.querySelector('input[name="importMode"]:checked');
       const mode = modeRadio ? modeRadio.value : 'append';
 
@@ -1268,8 +1260,8 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
         allVocab = parsed;
       } else {
         const existingWordMap = new Map();
-        allVocab.forEach(item => existingWordMap.set(item.word.toLowerCase(), item));
-        parsed.forEach(item => existingWordMap.set(item.word.toLowerCase(), item));
+        allVocab.forEach(item => existingWordMap.set(getWordKey(item.word), item));
+        parsed.forEach(item => existingWordMap.set(getWordKey(item.word), item));
         allVocab = Array.from(existingWordMap.values());
       }
 
@@ -1278,6 +1270,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       updateFilterList();
       currentIndex = 0;
       renderCard();
+      updateStats();
 
       if (statusLabel) statusLabel.innerText = `成功載入 ${parsed.length} 字`;
       showToast(`成功自 GitHub 讀取 ${parsed.length} 個單字！目前字庫共 ${allVocab.length} 字`);
@@ -1291,10 +1284,10 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       if (statusLabel) statusLabel.innerText = "讀取失敗";
       
       if (isUserTriggered) {
-        alert(`讀取失敗：${err.message}\n\n可能原因：\n1. GitHub 倉庫中尚未上傳 vocabulary.csv\n2. 本機直接雙擊 index.html 以 file:// 開啟（瀏覽器會阻擋安全性網路請求，請部署至 GitHub Pages 或以 Live Server 開啟）\n3. 網址輸入有誤`);
+        alert(`讀取失敗：${err.message}\n\n可能原因：\n1. GitHub 倉庫中尚未上傳 vocabulary.csv\n2. 本機直接以 file:// 開啟被瀏覽器攔截（請使用 Live Server 或部署至 GitHub Pages）\n3. 網址輸入有誤`);
       } else {
-        // If auto-fetch failed silently on first load, render empty state cleanly
         renderCard();
+        updateStats();
       }
       return false;
     }
@@ -1314,7 +1307,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     fetchVocabularyFile(url, true);
   }
 
-  /* ---------------- Theme Engine ---------------- */
   function initTheme() {
     const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
     if (savedTheme) {
@@ -1342,7 +1334,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     showToast(current === 'dark' ? '已切換為明亮主題' : '已切換為夜間暗色主題');
   }
 
-  /* ---------------- Vocabulary State ---------------- */
   function saveVocabList() {
     localStorage.setItem(STORAGE_KEY_VOCAB, JSON.stringify(allVocab));
   }
@@ -1355,13 +1346,21 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   function updateFilterList() {
     displayedIndices = [];
     for (let i = 0; i < allVocab.length; i++) {
-      const word = allVocab[i].word;
+      const k = getWordKey(allVocab[i].word);
       if (currentFilter === 'all') {
         displayedIndices.push(i);
-      } else if (currentFilter === 'review' && reviewSet.has(word)) {
-        displayedIndices.push(i);
-      } else if (currentFilter === 'mastered' && masteredSet.has(word)) {
-        displayedIndices.push(i);
+      } else if (currentFilter === 'unlearned') {
+        if (!masteredSet.has(k) && !reviewSet.has(k)) {
+          displayedIndices.push(i);
+        }
+      } else if (currentFilter === 'review') {
+        if (reviewSet.has(k)) {
+          displayedIndices.push(i);
+        }
+      } else if (currentFilter === 'mastered') {
+        if (masteredSet.has(k)) {
+          displayedIndices.push(i);
+        }
       }
     }
 
@@ -1413,6 +1412,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     currentIndex = 0;
     resetFlip();
     renderCard();
+    updateStats();
   }
 
   function renderCard() {
@@ -1424,6 +1424,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     if (allVocab.length === 0) {
       emptyView.style.display = "flex";
       frontContent.style.display = "none";
+      document.getElementById('emptyTitle').innerText = "目前字庫尚無單字";
+      document.getElementById('emptyDesc').innerHTML = "若已將 <code>vocabulary.csv</code> 放在 GitHub 倉庫同層目錄，可直接點擊「從 GitHub 讀取」；亦可手動上傳本機檔案。";
+      document.getElementById('emptyBtnGroup').style.display = "flex";
       document.getElementById('cardCounter').innerText = "0 / 0";
       document.getElementById('progressBar').style.width = "0%";
       document.getElementById('currentStatusText').innerText = "字庫空空如也";
@@ -1431,35 +1434,37 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       return;
     }
 
-    emptyView.style.display = "none";
-    frontContent.style.display = "flex";
-
     if (displayedIndices.length === 0) {
-      document.getElementById('frontWord').innerText = "無符合卡片";
-      document.getElementById('frontPhonetic').innerText = "";
-      document.getElementById('frontPos').innerText = "";
-      document.getElementById('cardTag').innerText = "篩選提示";
-      document.getElementById('starBtn').classList.remove('active');
+      emptyView.style.display = "flex";
+      frontContent.style.display = "none";
+      document.getElementById('emptyTitle').innerText = "🎉 本分類無待複習單字！";
+      
+      const filterNames = { unlearned: '未學習', review: '待複習', mastered: '已掌握', all: '全部' };
+      document.getElementById('emptyDesc').innerText = `太棒了！「${filterNames[currentFilter] || ''}」清單中目前沒有單字。您可以切換其他標籤繼續練習。`;
+      document.getElementById('emptyBtnGroup').style.display = "none";
+      
       document.getElementById('cardCounter').innerText = "0 / 0";
-      document.getElementById('progressBar').style.width = "0%";
-      document.getElementById('currentStatusText').innerText = "此分類目前沒有單字";
+      document.getElementById('progressBar').style.width = "100%";
+      document.getElementById('currentStatusText').innerText = "本分類已完成";
       updateStats();
       return;
     }
 
+    emptyView.style.display = "none";
+    frontContent.style.display = "flex";
+
     const dataIndex = displayedIndices[currentIndex];
     const item = allVocab[dataIndex];
+    const k = getWordKey(item.word);
 
-    // Front
     document.getElementById('frontWord').innerText = item.word || '';
     document.getElementById('frontPhonetic').innerText = item.phonetic || '';
     document.getElementById('frontPos').innerText = item.pos || '';
     document.getElementById('cardTag').innerText = item.tag || '多益單字';
 
-    const isReview = reviewSet.has(item.word);
+    const isReview = reviewSet.has(k);
     document.getElementById('starBtn').classList.toggle('active', isReview);
 
-    // Back
     document.getElementById('backWord').innerText = item.word || '';
     document.getElementById('backPhonetic').innerText = item.phonetic || '';
     document.getElementById('backPos').innerText = item.pos || '';
@@ -1482,7 +1487,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       relatedBox.style.display = "none";
     }
 
-    // Stats
     const total = displayedIndices.length;
     const currentNum = currentIndex + 1;
     document.getElementById('cardCounter').innerText = `${currentNum} / ${total}`;
@@ -1494,15 +1498,17 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   function updateStats() {
-    document.getElementById('countAll').innerText = allVocab.length;
-    document.getElementById('countReview').innerText = reviewSet.size;
-    document.getElementById('countMastered').innerText = masteredSet.size;
-    document.getElementById('deckStatText').innerText = `已掌握 ${masteredSet.size} · 待複習 ${reviewSet.size}`;
+    const stats = getDeckStats();
+    document.getElementById('countAll').innerText = stats.total;
+    document.getElementById('countUnlearned').innerText = stats.unlearned;
+    document.getElementById('countReview').innerText = stats.review;
+    document.getElementById('countMastered').innerText = stats.mastered;
+    document.getElementById('deckStatText').innerText = `已掌握 ${stats.mastered} · 待複習 ${stats.review} · 未學習 ${stats.unlearned}`;
   }
 
   function handleCardClick(e) {
     if (e.target.closest('button')) return;
-    if (allVocab.length === 0) return;
+    if (displayedIndices.length === 0) return;
     flipCard();
   }
 
@@ -1521,45 +1527,57 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     if (displayedIndices.length === 0) return;
     currentIndex = (currentIndex + 1) % displayedIndices.length;
     resetFlip();
-    setTimeout(renderCard, 80);
+    renderCard();
   }
 
   function prevCard() {
     if (displayedIndices.length === 0) return;
     currentIndex = (currentIndex - 1 + displayedIndices.length) % displayedIndices.length;
     resetFlip();
-    setTimeout(renderCard, 80);
+    renderCard();
   }
 
   function toggleStar(e) {
     if (e) e.stopPropagation();
     if (displayedIndices.length === 0) return;
     const item = allVocab[displayedIndices[currentIndex]];
-    if (reviewSet.has(item.word)) {
-      reviewSet.delete(item.word);
+    const k = getWordKey(item.word);
+    
+    if (reviewSet.has(k)) {
+      reviewSet.delete(k);
       showToast(`已從待複習清單移除：${item.word}`);
     } else {
-      reviewSet.add(item.word);
-      masteredSet.delete(item.word);
+      reviewSet.add(k);
+      masteredSet.delete(k);
       showToast(`已加入待複習清單：${item.word}`);
     }
+    
     saveLearningState();
+    updateStats();
+
+    if (currentFilter !== 'all') {
+      updateFilterList();
+    }
     renderCard();
   }
 
   function markCardStatus(e, status) {
     if (e) e.stopPropagation();
     if (displayedIndices.length === 0) return;
+    
     const item = allVocab[displayedIndices[currentIndex]];
+    const k = getWordKey(item.word);
+
     if (status === 'mastered') {
-      masteredSet.add(item.word);
-      reviewSet.delete(item.word);
+      masteredSet.add(k);
+      reviewSet.delete(k);
       showToast(`已掌握：${item.word}`);
     } else if (status === 'review') {
-      reviewSet.add(item.word);
-      masteredSet.delete(item.word);
+      reviewSet.add(k);
+      masteredSet.delete(k);
       showToast(`待複習：${item.word}`);
     }
+
     saveLearningState();
     updateStats();
 
@@ -1567,7 +1585,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       updateFilterList();
       renderCard();
     } else {
-      nextCard();
+      currentIndex = (currentIndex + 1) % displayedIndices.length;
+      resetFlip();
+      renderCard();
     }
   }
 
@@ -1578,7 +1598,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       reviewSet.clear();
       saveLearningState();
       updateFilterList();
+      currentIndex = 0;
       renderCard();
+      updateStats();
       showToast('已重置所有單字的記憶狀態');
     }
   }
@@ -1595,7 +1617,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       localStorage.removeItem(STORAGE_KEY_VOCAB);
       saveLearningState();
       updateFilterList();
+      currentIndex = 0;
       renderCard();
+      updateStats();
       closeImportModal();
       showToast('已清空全部字庫');
     }
@@ -1614,7 +1638,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
   }
 
-  /* ---------------- Import & Export System ---------------- */
   function openImportModal() {
     document.getElementById('importModal').classList.add('active');
   }
@@ -1647,7 +1670,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      // Skip header
       if (i === 0 && (line.includes('單字') || line.includes('Word') || line.includes('word'))) {
         continue;
       }
@@ -1674,9 +1696,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
         tokens = line.split('\t').map(t => t.trim().replace(/^"|"$/g, ''));
       }
 
-      if (tokens.length >= 2 && tokens[0].length > 0) {
+      if (tokens.length >= 2 && tokens[0].trim().length > 0) {
         results.push({
-          word: tokens[0] || '',
+          word: tokens[0].trim(),
           phonetic: tokens[1] || '',
           pos: tokens[2] || '',
           meaning: tokens[3] || '',
@@ -1712,8 +1734,8 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       saveLearningState();
     } else {
       const existingWordMap = new Map();
-      allVocab.forEach(item => existingWordMap.set(item.word.toLowerCase(), item));
-      parsed.forEach(item => existingWordMap.set(item.word.toLowerCase(), item));
+      allVocab.forEach(item => existingWordMap.set(getWordKey(item.word), item));
+      parsed.forEach(item => existingWordMap.set(getWordKey(item.word), item));
       allVocab = Array.from(existingWordMap.values());
     }
 
@@ -1721,6 +1743,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     updateFilterList();
     currentIndex = 0;
     renderCard();
+    updateStats();
     closeImportModal();
     document.getElementById('pasteInput').value = '';
     showToast(`成功匯入 ${parsed.length} 個單字！目前字庫總計 ${allVocab.length} 字`);
@@ -1746,7 +1769,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     showToast(`已備份匯出 ${allVocab.length} 個單字！`);
   }
 
-  /* ---------------- Keyboard Shortcuts ---------------- */
   function setupKeyListeners() {
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -1779,7 +1801,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     });
   }
 
-  // Run
   initApp();
 </script>
 </body>
