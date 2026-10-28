@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多益核心單字閃卡 (TOEIC Flashcards)</title>
+  <style>
+    :root {
+      --bg-color: #f7f5f0;
+      --card-bg: #ffffff;
+      --card-back-bg: #fffdfa;
+      --text-main: #2d2926;
+      --text-muted: #79716b;
+      --text-sub: #a8a29e;
+      --border-color: #e7e2d9;
+      --border-dashed: #dcd5c9;
+      --tab-bg: #ece7de;
+      --chip-bg: #f3efe9;
+      --accent: #b85d38;
+      --accent-hover: #9e4a29;
+      --accent-soft: #fbf3ee;
+      --accent-border: rgba(184, 93, 56, 0.25);
+      --green: #4f7942;
+      --green-soft: #f0f6ee;
+      --green-border: rgba(79, 121, 66, 0.3);
+      --amber: #c87d2a;
+      --amber-soft: #fdf6ec;
+      --amber-border: rgba(200, 125, 42, 0.3);
+      --btn-hover: #f0ebe2;
+      --example-bg: #fbf9f5;
+      --shadow-sm: 0 2px 8px rgba(45, 41, 38, 0.04);
+      --shadow-md: 0 10px 25px -5px rgba(45, 41, 38, 0.07), 0 8px 10px -6px rgba(45, 41, 38, 0.04);
+      --shadow-lg: 0 20px 30px -10px rgba(45, 41, 38, 0.12);
+      --modal-overlay: rgba(30, 26, 23, 0.5);
+      --radius: 14px;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #1a1816;
+      --card-bg: #262320;
+      --card-back-bg: #2b2723;
+      --text-main: #f3eee8;
+      --text-muted: #aba39a;
+      --text-sub: #78716a;
+      --border-color: #3d3833;
+      --border-dashed: #4a443e;
+      --tab-bg: #2c2824;
+      --chip-bg: #35302b;
+      --accent: #d4764e;
+      --accent-hover: #e08a63;
+      --accent-soft: rgba(212, 118, 78, 0.18);
+      --accent-border: rgba(212, 118, 78, 0.35);
+      --green: #689f38;
+      --green-soft: rgba(104, 159, 56, 0.18);
+      --green-border: rgba(104, 159, 56, 0.35);
+      --amber: #d97706;
+      --amber-soft: rgba(217, 119, 6, 0.18);
+      --amber-border: rgba(217, 119, 6, 0.35);
+      --btn-hover: #332e29;
+      --example-bg: #221f1c;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+      --modal-overlay: rgba(0, 0, 0, 0.75);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .title-group h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-main);
+    }
+
+    .title-group p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--btn-hover);
+      transform: scale(1.05);
+    }
+
+    .status-badge {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--accent-border);
+      white-space: nowrap;
+    }
+
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      width: 100%;
+      background: var(--border-color);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      background: var(--tab-bg);
+      padding: 3px;
+      border-radius: 8px;
+      gap: 2px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 11px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--card-bg);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      font-weight: 600;
+    }
+
+    .action-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tool-btn {
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tool-btn:hover {
+      background: var(--btn-hover);
+    }
+
+    .tool-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .flashcard-stage {
+      perspective: 1200px;
+      width: 100%;
+      height: 430px;
+      cursor: pointer;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+    }
+
+    .flashcard.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 30px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+
+    .card-face-back {
+      transform: rotateY(180deg);
+      background: var(--card-back-bg);
+    }
+
+    .empty-state-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--chip-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .empty-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      max-width: 400px;
+      line-height: 1.5;
+    }
+
+    .empty-btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .empty-cta-btn {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .empty-cta-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .empty-secondary-btn {
+      background: var(--chip-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .empty-secondary-btn:hover {
+      background: var(--btn-hover);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tag-chip {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .star-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.35rem;
+      color: var(--text-sub);
+      transition: transform 0.2s ease, color 0.2s ease;
+      padding: 4px;
+    }
+
+    .star-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .star-btn.active {
+      color: #f59e0b;
+    }
+
+    .card-center-front {
+      text-align: center;
+      margin: auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .word-text {
+      font-size: 2.7rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    .phonetic-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .phonetic-text {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      font-family: "Lucida Sans Unicode", "DejaVu Sans", sans-serif;
+    }
+
+    .audio-btn {
+      background: var(--chip-bg);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+    }
+
+    .audio-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      transform: scale(1.08);
+    }
+
+    .pos-badge {
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .card-bottom-hint {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      user-select: none;
+    }
+
+    .back-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border-dashed);
+    }
+
+    .back-word-group {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .back-word {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .back-pos {
+      font-size: 0.9rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .back-meaning {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 14px 0 16px;
+      line-height: 1.3;
+    }
+
+    .example-container {
+      background: var(--example-bg);
+      border-left: 3px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 14px;
+    }
+
+    .example-en {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .example-zh {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .related-container {
+      background: var(--chip-bg);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+    }
+
+    .related-label {
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .related-body {
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .back-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 10px;
+    }
+
+    .rate-btn {
+      flex: 1;
+      padding: 11px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: auto;
+    }
+
+    .rate-btn-again {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border: 1px solid var(--amber-border);
+    }
+
+    .rate-btn-again:hover {
+      background: rgba(217, 119, 6, 0.28);
+    }
+
+    .rate-btn-good {
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+
+    .rate-btn-good:hover {
+      background: rgba(104, 159, 56, 0.28);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .btn-nav {
+      flex: 1;
+      padding: 14px 0;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-nav:hover {
+      background: var(--btn-hover);
+    }
+
+    .btn-flip {
+      flex: 1.4;
+      background: var(--accent);
+      color: #ffffff;
+      border: 1px solid var(--accent);
+    }
+
+    .btn-flip:hover {
+      background: var(--accent-hover);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-dialog {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .modal-dialog {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.15rem;
+      color: var(--text-main);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 20px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 0.88rem;
+    }
+
+    .github-sync-card {
+      border: 1px solid var(--accent-border);
+      background: var(--accent-soft);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .github-sync-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .github-sync-title {
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .github-url-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .github-url-input {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-family: monospace;
+    }
+
+    .github-url-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .github-fetch-btn {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .github-fetch-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .import-dropzone {
+      border: 2px dashed var(--border-dashed);
+      border-radius: 10px;
+      padding: 20px 16px;
+      text-align: center;
+      background: var(--chip-bg);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .import-dropzone:hover {
+      border-color: var(--accent);
+    }
+
+    .import-dropzone input {
+      display: none;
+    }
+
+    .dropzone-title {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .dropzone-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .paste-area-label {
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .paste-textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-family: monospace;
+      font-size: 0.8rem;
+      resize: vertical;
+    }
+
+    .paste-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .import-mode-group {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+
+    .import-mode-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .modal-footer {
+      padding: 14px 22px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--chip-bg);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-bg);
+      color: var(--text-main);
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1px solid rgba(220, 53, 69, 0.3);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: #dc3545;
+      cursor: pointer;
+    }
+
+    .btn-danger:hover {
+      background: rgba(220, 53, 69, 0.1);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 12px 22px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .shortcut-hints {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .shortcut-hints kbd {
+      background: var(--tab-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .stat-text {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+    }
+
+    @media (max-width: 500px) {
+      .flashcard-stage {
+        height: 460px;
+      }
+      .word-text {
+        font-size: 2.2rem;
+      }
+      .card-face {
+        padding: 24px 18px;
+      }
+      .btn-nav {
+        padding: 12px 0;
+        font-size: 0.88rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <div class="title-group">
+      <h1>多益核心單字閃卡</h1>
+      <p>TOEIC Flashcards</p>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換明暗主題 (D)">
+      </button>
+      <div class="status-badge" id="cardCounter">0 / 0</div>
+    </div>
+  </header>
+
+  <div class="progress-section">
+    <div class="progress-meta">
+      <span id="currentStatusText">進度 0%</span>
+      <span id="deckStatText">已掌握 0 · 待複習 0 · 未學習 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="filter-tabs">
+      <button class="tab-btn active" data-filter="all" onclick="setFilter('all')">全部 (<span id="countAll">0</span>)</button>
+      <button class="tab-btn" data-filter="unlearned" onclick="setFilter('unlearned')">未學習 (<span id="countUnlearned">0</span>)</button>
+      <button class="tab-btn" data-filter="review" onclick="setFilter('review')">待複習 (<span id="countReview">0</span>)</button>
+      <button class="tab-btn" data-filter="mastered" onclick="setFilter('mastered')">已掌握 (<span id="countMastered">0</span>)</button>
+    </div>
+
+    <div class="action-tools">
+      <button class="tool-btn" id="shuffleBtn" onclick="toggleShuffle()" title="打亂順序 (R)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+        <span>隨機打亂</span>
+      </button>
+      <button class="tool-btn" onclick="syncFromGitHub()" title="自動重新自 GitHub 的 ./vocabulary.csv 同步單字">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        <span>同步 GitHub</span>
+      </button>
+      <button class="tool-btn" onclick="openImportModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>匯入 / 來源</span>
+      </button>
+      <button class="tool-btn" onclick="resetProgress()" title="重置已掌握與待複習標記">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+        <span>重置進度</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flashcard-stage" onclick="handleCardClick(event)">
+    <div class="flashcard" id="flashcard">
+      <div class="card-face card-face-front" id="cardFrontFace">
+        <div id="frontContentWrapper" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+          <div class="card-top">
+            <span class="tag-chip" id="cardTag">多益單字</span>
+            <button class="star-btn" id="starBtn" title="標記待複習" onclick="toggleStar(event)">★</button>
+          </div>
+
+          <div class="card-center-front">
+            <h2 class="word-text" id="frontWord">Loading...</h2>
+            <div class="phonetic-row" id="frontPhoneticRow">
+              <span class="phonetic-text" id="frontPhonetic"></span>
+              <button class="audio-btn" title="聆聽發音 (S)" onclick="speakCurrentWord(event)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+            </div>
+            <span class="pos-badge" id="frontPos"></span>
+          </div>
+
+          <div class="card-bottom-hint">點擊卡片或按 Space 翻面檢視釋義與例句</div>
+        </div>
+
+        <div class="empty-state-view" id="emptyStateView" style="display:none;">
+          <div class="empty-icon" id="emptyIcon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </div>
+          <div class="empty-title" id="emptyTitle">目前字庫尚無單字</div>
+          <p class="empty-desc" id="emptyDesc">若已將 <code>vocabulary.csv</code> 放在 GitHub 倉庫同層目錄，可直接點擊「從 GitHub 讀取」；亦可手動上傳本機檔案。</p>
+          <div class="empty-btn-group" id="emptyBtnGroup">
+            <button class="empty-cta-btn" onclick="syncFromGitHub()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <span>從 GitHub 讀取 vocabulary.csv</span>
+            </button>
+            <button class="empty-secondary-btn" onclick="openImportModal()">
+              <span>手動上傳 / 自訂 URL</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-face card-face-back" id="cardBackFace">
+        <div class="back-header">
+          <div class="back-word-group">
+            <span class="back-word" id="backWord"></span>
+            <span class="phonetic-text" id="backPhonetic" style="font-size:0.95rem;"></span>
+          </div>
+          <span class="back-pos" id="backPos"></span>
+        </div>
+
+        <div class="back-meaning" id="backMeaning"></div>
+
+        <div class="example-container" id="exampleBox">
+          <div class="example-en" id="backExample"></div>
+          <div class="example-zh" id="backExampleZh"></div>
+        </div>
+
+        <div class="related-container" id="relatedBox">
+          <div class="related-label">延伸相關詞：</div>
+          <div class="related-body" id="backRelated"></div>
+        </div>
+
+        <div class="back-actions">
+          <button class="rate-btn rate-btn-again" onclick="markCardStatus(event, 'review')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span>還不熟 (待複習)</span>
+          </button>
+          <button class="rate-btn rate-btn-good" onclick="markCardStatus(event, 'mastered')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span>已掌握 (熟記)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-nav" onclick="prevCard()" title="上一張 (← 或 K)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>上一張</span>
+    </button>
+    <button class="btn-nav btn-flip" onclick="flipCard()" title="翻面 (Space)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+      <span>翻面 (Space)</span>
+    </button>
+    <button class="btn-nav" onclick="nextCard()" title="下一張 (→ 或 J)">
+      <span>下一張</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+
+  <footer>
+    <div class="shortcut-hints">
+      <span><kbd>Space</kbd> 翻面</span>
+      <span><kbd>→</kbd> / <kbd>J</kbd> 下一張</span>
+      <span><kbd>←</kbd> / <kbd>K</kbd> 上一張</span>
+      <span><kbd>R</kbd> 隨機洗牌</span>
+      <span><kbd>S</kbd> 單字發音</span>
+      <span><kbd>D</kbd> 暗色切換</span>
+      <span><kbd>1</kbd> 待複習</span>
+      <span><kbd>2</kbd> 已掌握</span>
+    </div>
+    <div class="stat-text">純靜態無寫死單字架構 · 支援離線與 GitHub Pages 託管</div>
+  </footer>
+</div>
+
+<div class="modal-overlay" id="importModal" onclick="handleModalOverlayClick(event)">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>單字庫管理與匯入來源</h3>
+      <button class="modal-close-btn" onclick="closeImportModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="github-sync-card">
+        <div class="github-sync-header">
+          <span class="github-sync-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            從 GitHub 或線上 URL 讀取
+          </span>
+          <span style="font-size:0.75rem; color:var(--text-muted);" id="githubFetchStatus">就緒</span>
+        </div>
+        <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
+          只要將 <code>vocabulary.csv</code> 放在 GitHub 倉庫中，網站預設會自動讀取 <code>./vocabulary.csv</code>。您也可貼上任意 GitHub Raw CSV 網址：
+        </p>
+        <div class="github-url-input-group">
+          <input type="text" class="github-url-input" id="githubUrlInput" value="./vocabulary.csv" placeholder="例如：./vocabulary.csv 或 GitHub raw 網址">
+          <button class="github-fetch-btn" onclick="fetchCustomUrl()">載入讀取</button>
+        </div>
+      </div>
+
+      <div class="import-dropzone" onclick="document.getElementById('csvFileInput').click()">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+        <span class="dropzone-title">手動上傳本機 CSV 檔案</span>
+        <span class="dropzone-sub">支援標準 UTF-8 編碼 CSV</span>
+        <input type="file" id="csvFileInput" accept=".csv,text/csv,text/plain" onchange="handleFileSelect(event)">
+      </div>
+
+      <div>
+        <div class="paste-area-label">
+          <span>或直接貼上單字內容：</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">支援逗號 (CSV) 或 Tab 分隔</span>
+        </div>
+        <textarea class="paste-textarea" id="pasteInput" placeholder="單字,音標,詞性,中文釋義,例句,例句翻譯,相關詞,標籤
+例如：
+contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細審閱這份合約。,sign a contract,700分核心"></textarea>
+      </div>
+
+      <div class="import-mode-group">
+        <span style="font-weight:600;">匯入模式：</span>
+        <label>
+          <input type="radio" name="importMode" value="append" checked>
+          <span>追加合併 (保留目前已有單字)</span>
+        </label>
+        <label>
+          <input type="radio" name="importMode" value="replace">
+          <span>覆蓋替換 (清空並替換為新字庫)</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div style="display:flex; gap:8px;">
+        <button class="btn-secondary" onclick="exportVocabCSV()">備份匯出</button>
+        <button class="btn-danger" onclick="clearAllVocab()">清空字庫</button>
+      </div>
+      <button class="btn-primary" onclick="processImport()">手動貼上匯入</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toastMsg"></div>
+
+<script>
+  const STORAGE_KEY_VOCAB = 'toeic_pure_vocab_list';
+  const STORAGE_KEY_MASTERED = 'toeic_cards_mastered';
+  const STORAGE_KEY_REVIEW = 'toeic_cards_review';
+  const STORAGE_KEY_THEME = 'toeic_cards_theme';
+  const STORAGE_KEY_GITHUB_URL = 'toeic_github_url';
+
+  let allVocab = JSON.parse(localStorage.getItem(STORAGE_KEY_VOCAB) || '[]');
+  let masteredSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERED) || '[]'));
+  let reviewSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEW) || '[]'));
+
+  let currentIndex = 0;
+  let isFlipped = false;
+  let isShuffled = false;
+  let currentFilter = 'all'; // 'all', 'unlearned', 'review', 'mastered'
+  let displayedIndices = [];
+
+  function getWordKey(word) {
+    return (word || '').trim().toLowerCase();
+  }
+
+  function getDeckStats() {
+    let masteredCount = 0;
+    let reviewCount = 0;
+    let unlearnedCount = 0;
+
+    for (let i = 0; i < allVocab.length; i++) {
+      const k = getWordKey(allVocab[i].word);
+      if (masteredSet.has(k)) {
+        masteredCount++;
+      } else if (reviewSet.has(k)) {
+        reviewCount++;
+      } else {
+        unlearnedCount++;
+      }
+    }
+
+    return {
+      total: allVocab.length,
+      mastered: masteredCount,
+      review: reviewCount,
+      unlearned: unlearnedCount
+    };
+  }
+
+  async function initApp() {
+    initTheme();
+
+    const savedUrl = localStorage.getItem(STORAGE_KEY_GITHUB_URL);
+    if (savedUrl) {
+      document.getElementById('githubUrlInput').value = savedUrl;
+    }
+
+    if (allVocab.length === 0) {
+      await fetchVocabularyFile(document.getElementById('githubUrlInput').value || './vocabulary.csv', false);
+    } else {
+      updateFilterList();
+      renderCard();
+      updateStats();
+    }
+
+    setupKeyListeners();
+  }
+
+  async function fetchVocabularyFile(url, isUserTriggered = true) {
+    const statusLabel = document.getElementById('githubFetchStatus');
+    if (statusLabel) statusLabel.innerText = "連線讀取中...";
+
+    try {
+      const fetchUrl = url.includes('?') ? `${url}&_t=${Date.now()}` : `${url}?_t=${Date.now()}`;
+      const response = await fetch(fetchUrl);
+
+      if (!response.ok) {
+        throw new Error(`HTTP 錯誤：${response.status}`);
+      }
+
+      const csvText = await response.text();
+      const parsed = parseCSVText(csvText);
+
+      if (parsed.length === 0) {
+        throw new Error("CSV 內容為空或無法辨識有效單字");
+      }
+
+      const modeRadio = document.querySelector('input[name="importMode"]:checked');
+      const mode = modeRadio ? modeRadio.value : 'append';
+
+      if (mode === 'replace' || allVocab.length === 0) {
+        allVocab = parsed;
+      } else {
+        const existingWordMap = new Map();
+        allVocab.forEach(item => existingWordMap.set(getWordKey(item.word), item));
+        parsed.forEach(item => existingWordMap.set(getWordKey(item.word), item));
+        allVocab = Array.from(existingWordMap.values());
+      }
+
+      saveVocabList();
+      localStorage.setItem(STORAGE_KEY_GITHUB_URL, url);
+      updateFilterList();
+      currentIndex = 0;
+      renderCard();
+      updateStats();
+
+      if (statusLabel) statusLabel.innerText = `成功載入 ${parsed.length} 字`;
+      showToast(`成功自 GitHub 讀取 ${parsed.length} 個單字！目前字庫共 ${allVocab.length} 字`);
+
+      if (isUserTriggered) {
+        closeImportModal();
+      }
+      return true;
+    } catch (err) {
+      console.warn("無法自動讀取 GitHub vocabulary.csv:", err);
+      if (statusLabel) statusLabel.innerText = "讀取失敗";
+      
+      if (isUserTriggered) {
+        alert(`讀取失敗：${err.message}\n\n可能原因：\n1. GitHub 倉庫中尚未上傳 vocabulary.csv\n2. 本機直接以 file:// 開啟被瀏覽器攔截（請使用 Live Server 或部署至 GitHub Pages）\n3. 網址輸入有誤`);
+      } else {
+        renderCard();
+        updateStats();
+      }
+      return false;
+    }
+  }
+
+  function syncFromGitHub() {
+    const url = document.getElementById('githubUrlInput').value.trim() || './vocabulary.csv';
+    fetchVocabularyFile(url, true);
+  }
+
+  function fetchCustomUrl() {
+    const url = document.getElementById('githubUrlInput').value.trim();
+    if (!url) {
+      alert("請輸入有效的 CSV 檔案路徑或 URL！");
+      return;
+    }
+    fetchVocabularyFile(url, true);
+  }
+
+  function initTheme() {
+    const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    } else {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(prefersDark ? 'dark' : 'light');
+    }
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(STORAGE_KEY_THEME, theme);
+    const btn = document.getElementById('themeToggleBtn');
+    if (theme === 'dark') {
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    } else {
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+    }
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+    showToast(current === 'dark' ? '已切換為明亮主題' : '已切換為夜間暗色主題');
+  }
+
+  function saveVocabList() {
+    localStorage.setItem(STORAGE_KEY_VOCAB, JSON.stringify(allVocab));
+  }
+
+  function saveLearningState() {
+    localStorage.setItem(STORAGE_KEY_MASTERED, JSON.stringify([...masteredSet]));
+    localStorage.setItem(STORAGE_KEY_REVIEW, JSON.stringify([...reviewSet]));
+  }
+
+  function updateFilterList() {
+    displayedIndices = [];
+    for (let i = 0; i < allVocab.length; i++) {
+      const k = getWordKey(allVocab[i].word);
+      if (currentFilter === 'all') {
+        displayedIndices.push(i);
+      } else if (currentFilter === 'unlearned') {
+        if (!masteredSet.has(k) && !reviewSet.has(k)) {
+          displayedIndices.push(i);
+        }
+      } else if (currentFilter === 'review') {
+        if (reviewSet.has(k)) {
+          displayedIndices.push(i);
+        }
+      } else if (currentFilter === 'mastered') {
+        if (masteredSet.has(k)) {
+          displayedIndices.push(i);
+        }
+      }
+    }
+
+    if (isShuffled) {
+      shuffleArray(displayedIndices);
+    }
+
+    if (currentIndex >= displayedIndices.length) {
+      currentIndex = 0;
+    }
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  function toggleShuffle() {
+    if (allVocab.length === 0) {
+      showToast('目前尚無單字可供洗牌');
+      return;
+    }
+    isShuffled = !isShuffled;
+    const btn = document.getElementById('shuffleBtn');
+    if (isShuffled) {
+      btn.classList.add('active');
+      btn.querySelector('span').innerText = '已隨機 (還原)';
+      shuffleArray(displayedIndices);
+      showToast('已隨機打亂單字卡順序');
+    } else {
+      btn.classList.remove('active');
+      btn.querySelector('span').innerText = '隨機打亂';
+      updateFilterList();
+      showToast('已還原為原本排序');
+    }
+    currentIndex = 0;
+    resetFlip();
+    renderCard();
+  }
+
+  function setFilter(filterType) {
+    currentFilter = filterType;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.filter === filterType);
+    });
+    updateFilterList();
+    currentIndex = 0;
+    resetFlip();
+    renderCard();
+    updateStats();
+  }
+
+  function renderCard() {
+    resetFlip();
+
+    const emptyView = document.getElementById('emptyStateView');
+    const frontContent = document.getElementById('frontContentWrapper');
+
+    if (allVocab.length === 0) {
+      emptyView.style.display = "flex";
+      frontContent.style.display = "none";
+      document.getElementById('emptyTitle').innerText = "目前字庫尚無單字";
+      document.getElementById('emptyDesc').innerHTML = "若已將 <code>vocabulary.csv</code> 放在 GitHub 倉庫同層目錄，可直接點擊「從 GitHub 讀取」；亦可手動上傳本機檔案。";
+      document.getElementById('emptyBtnGroup').style.display = "flex";
+      document.getElementById('cardCounter').innerText = "0 / 0";
+      document.getElementById('progressBar').style.width = "0%";
+      document.getElementById('currentStatusText').innerText = "字庫空空如也";
+      updateStats();
+      return;
+    }
+
+    if (displayedIndices.length === 0) {
+      emptyView.style.display = "flex";
+      frontContent.style.display = "none";
+      document.getElementById('emptyTitle').innerText = "🎉 本分類無待複習單字！";
+      
+      const filterNames = { unlearned: '未學習', review: '待複習', mastered: '已掌握', all: '全部' };
+      document.getElementById('emptyDesc').innerText = `太棒了！「${filterNames[currentFilter] || ''}」清單中目前沒有單字。您可以切換其他標籤繼續練習。`;
+      document.getElementById('emptyBtnGroup').style.display = "none";
+      
+      document.getElementById('cardCounter').innerText = "0 / 0";
+      document.getElementById('progressBar').style.width = "100%";
+      document.getElementById('currentStatusText').innerText = "本分類已完成";
+      updateStats();
+      return;
+    }
+
+    emptyView.style.display = "none";
+    frontContent.style.display = "flex";
+
+    const dataIndex = displayedIndices[currentIndex];
+    const item = allVocab[dataIndex];
+    const k = getWordKey(item.word);
+
+    document.getElementById('frontWord').innerText = item.word || '';
+    document.getElementById('frontPhonetic').innerText = item.phonetic || '';
+    document.getElementById('frontPos').innerText = item.pos || '';
+    document.getElementById('cardTag').innerText = item.tag || '多益單字';
+
+    const isReview = reviewSet.has(k);
+    document.getElementById('starBtn').classList.toggle('active', isReview);
+
+    document.getElementById('backWord').innerText = item.word || '';
+    document.getElementById('backPhonetic').innerText = item.phonetic || '';
+    document.getElementById('backPos').innerText = item.pos || '';
+    document.getElementById('backMeaning').innerText = item.meaning || '';
+
+    const exBox = document.getElementById('exampleBox');
+    if ((item.example && item.example.trim()) || (item.example_zh && item.example_zh.trim())) {
+      exBox.style.display = "block";
+      document.getElementById('backExample').innerText = item.example || '';
+      document.getElementById('backExampleZh').innerText = item.example_zh || '';
+    } else {
+      exBox.style.display = "none";
+    }
+
+    const relatedBox = document.getElementById('relatedBox');
+    if (item.related && item.related.trim() !== "") {
+      relatedBox.style.display = "block";
+      document.getElementById('backRelated').innerText = item.related;
+    } else {
+      relatedBox.style.display = "none";
+    }
+
+    const total = displayedIndices.length;
+    const currentNum = currentIndex + 1;
+    document.getElementById('cardCounter').innerText = `${currentNum} / ${total}`;
+    const pct = Math.round((currentNum / total) * 100);
+    document.getElementById('progressBar').style.width = `${pct}%`;
+    document.getElementById('currentStatusText').innerText = `目前進度 ${pct}% (第 ${currentNum} 張)`;
+
+    updateStats();
+  }
+
+  function updateStats() {
+    const stats = getDeckStats();
+    document.getElementById('countAll').innerText = stats.total;
+    document.getElementById('countUnlearned').innerText = stats.unlearned;
+    document.getElementById('countReview').innerText = stats.review;
+    document.getElementById('countMastered').innerText = stats.mastered;
+    document.getElementById('deckStatText').innerText = `已掌握 ${stats.mastered} · 待複習 ${stats.review} · 未學習 ${stats.unlearned}`;
+  }
+
+  function handleCardClick(e) {
+    if (e.target.closest('button')) return;
+    if (displayedIndices.length === 0) return;
+    flipCard();
+  }
+
+  function flipCard() {
+    if (displayedIndices.length === 0) return;
+    isFlipped = !isFlipped;
+    document.getElementById('flashcard').classList.toggle('is-flipped', isFlipped);
+  }
+
+  function resetFlip() {
+    isFlipped = false;
+    document.getElementById('flashcard').classList.remove('is-flipped');
+  }
+
+  function nextCard() {
+    if (displayedIndices.length === 0) return;
+    currentIndex = (currentIndex + 1) % displayedIndices.length;
+    resetFlip();
+    renderCard();
+  }
+
+  function prevCard() {
+    if (displayedIndices.length === 0) return;
+    currentIndex = (currentIndex - 1 + displayedIndices.length) % displayedIndices.length;
+    resetFlip();
+    renderCard();
+  }
+
+  function toggleStar(e) {
+    if (e) e.stopPropagation();
+    if (displayedIndices.length === 0) return;
+    const item = allVocab[displayedIndices[currentIndex]];
+    const k = getWordKey(item.word);
+    
+    if (reviewSet.has(k)) {
+      reviewSet.delete(k);
+      showToast(`已從待複習清單移除：${item.word}`);
+    } else {
+      reviewSet.add(k);
+      masteredSet.delete(k);
+      showToast(`已加入待複習清單：${item.word}`);
+    }
+    
+    saveLearningState();
+    updateStats();
+
+    if (currentFilter !== 'all') {
+      updateFilterList();
+    }
+    renderCard();
+  }
+
+  function markCardStatus(e, status) {
+    if (e) e.stopPropagation();
+    if (displayedIndices.length === 0) return;
+    
+    const item = allVocab[displayedIndices[currentIndex]];
+    const k = getWordKey(item.word);
+
+    if (status === 'mastered') {
+      masteredSet.add(k);
+      reviewSet.delete(k);
+      showToast(`已掌握：${item.word}`);
+    } else if (status === 'review') {
+      reviewSet.add(k);
+      masteredSet.delete(k);
+      showToast(`待複習：${item.word}`);
+    }
+
+    saveLearningState();
+    updateStats();
+
+    if (currentFilter !== 'all') {
+      updateFilterList();
+      renderCard();
+    } else {
+      currentIndex = (currentIndex + 1) % displayedIndices.length;
+      resetFlip();
+      renderCard();
+    }
+  }
+
+  function resetProgress() {
+    if (allVocab.length === 0) return;
+    if (confirm('確定要清除所有已掌握與待複習標記嗎？（單字資料不會被刪除）')) {
+      masteredSet.clear();
+      reviewSet.clear();
+      saveLearningState();
+      updateFilterList();
+      currentIndex = 0;
+      renderCard();
+      updateStats();
+      showToast('已重置所有單字的記憶狀態');
+    }
+  }
+
+  function clearAllVocab() {
+    if (allVocab.length === 0) {
+      showToast('字庫目前已經是空的了');
+      return;
+    }
+    if (confirm(`⚠️ 警告：確定要清空全部 ${allVocab.length} 個單字嗎？此動作無法復原！`)) {
+      allVocab = [];
+      masteredSet.clear();
+      reviewSet.clear();
+      localStorage.removeItem(STORAGE_KEY_VOCAB);
+      saveLearningState();
+      updateFilterList();
+      currentIndex = 0;
+      renderCard();
+      updateStats();
+      closeImportModal();
+      showToast('已清空全部字庫');
+    }
+  }
+
+  function speakCurrentWord(e) {
+    if (e) e.stopPropagation();
+    if (displayedIndices.length === 0) return;
+    const item = allVocab[displayedIndices[currentIndex]];
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(item.word);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  function openImportModal() {
+    document.getElementById('importModal').classList.add('active');
+  }
+
+  function closeImportModal() {
+    document.getElementById('importModal').classList.remove('active');
+  }
+
+  function handleModalOverlayClick(e) {
+    if (e.target.id === 'importModal') {
+      closeImportModal();
+    }
+  }
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const text = e.target.result;
+      document.getElementById('pasteInput').value = text;
+      showToast(`檔案已載入：${file.name}，請點選「確認匯入」`);
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  function parseCSVText(text) {
+    const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+    const results = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (i === 0 && (line.includes('單字') || line.includes('Word') || line.includes('word'))) {
+        continue;
+      }
+      
+      let tokens = [];
+      let delimiter = line.includes('\t') ? '\t' : ',';
+      
+      if (delimiter === ',') {
+        let insideQuote = false;
+        let token = '';
+        for (let j = 0; j < line.length; j++) {
+          let c = line[j];
+          if (c === '"') {
+            insideQuote = !insideQuote;
+          } else if (c === ',' && !insideQuote) {
+            tokens.push(token.trim().replace(/^"|"$/g, ''));
+            token = '';
+          } else {
+            token += c;
+          }
+        }
+        tokens.push(token.trim().replace(/^"|"$/g, ''));
+      } else {
+        tokens = line.split('\t').map(t => t.trim().replace(/^"|"$/g, ''));
+      }
+
+      if (tokens.length >= 2 && tokens[0].trim().length > 0) {
+        results.push({
+          word: tokens[0].trim(),
+          phonetic: tokens[1] || '',
+          pos: tokens[2] || '',
+          meaning: tokens[3] || '',
+          example: tokens[4] || '',
+          example_zh: tokens[5] || '',
+          related: tokens[6] || '',
+          tag: tokens[7] || '匯入字庫'
+        });
+      }
+    }
+    return results;
+  }
+
+  function processImport() {
+    const rawText = document.getElementById('pasteInput').value.trim();
+    if (!rawText) {
+      alert('請先貼上單字內容或選取 CSV 檔案！');
+      return;
+    }
+
+    const parsed = parseCSVText(rawText);
+    if (parsed.length === 0) {
+      alert('無法解析任何有效單字，請檢查格式是否包含「單字,音標,詞性,中文」！');
+      return;
+    }
+
+    const mode = document.querySelector('input[name="importMode"]:checked').value;
+
+    if (mode === 'replace') {
+      allVocab = parsed;
+      masteredSet.clear();
+      reviewSet.clear();
+      saveLearningState();
+    } else {
+      const existingWordMap = new Map();
+      allVocab.forEach(item => existingWordMap.set(getWordKey(item.word), item));
+      parsed.forEach(item => existingWordMap.set(getWordKey(item.word), item));
+      allVocab = Array.from(existingWordMap.values());
+    }
+
+    saveVocabList();
+    updateFilterList();
+    currentIndex = 0;
+    renderCard();
+    updateStats();
+    closeImportModal();
+    document.getElementById('pasteInput').value = '';
+    showToast(`成功匯入 ${parsed.length} 個單字！目前字庫總計 ${allVocab.length} 字`);
+  }
+
+  function exportVocabCSV() {
+    if (allVocab.length === 0) {
+      showToast('目前字庫是空的，無可匯出資料');
+      return;
+    }
+
+    let csvContent = "單字 (Word),KK音標 (Phonetic),詞性 (Part of Speech),中文釋義 (Meaning),例句 (Example),例句翻譯 (Example Translation),相關詞彙 (Related Words),分類標籤 (Tags)\n";
+    allVocab.forEach(item => {
+      const escape = (text) => `"${(text || '').replace(/"/g, '""')}"`;
+      csvContent += `${escape(item.word)},${escape(item.phonetic)},${escape(item.pos)},${escape(item.meaning)},${escape(item.example)},${escape(item.example_zh)},${escape(item.related)},${escape(item.tag)}\n`;
+    });
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `TOEIC_Vocabulary_Backup_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    showToast(`已備份匯出 ${allVocab.length} 個單字！`);
+  }
+
+  function setupKeyListeners() {
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipCard();
+      } else if (e.code === 'ArrowRight' || e.key === 'j' || e.key === 'J') {
+        e.preventDefault();
+        nextCard();
+      } else if (e.code === 'ArrowLeft' || e.key === 'k' || e.key === 'K') {
+        e.preventDefault();
+        prevCard();
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        toggleShuffle();
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        speakCurrentWord();
+      } else if (e.key === 'd' || e.key === 'D') {
+        e.preventDefault();
+        toggleTheme();
+      } else if (e.key === '1') {
+        e.preventDefault();
+        markCardStatus(null, 'review');
+      } else if (e.key === '2') {
+        e.preventDefault();
+        markCardStatus(null, 'mastered');
+      }
+    });
+  }
+
+  initApp();
+</script>
+</body>
+</html>
