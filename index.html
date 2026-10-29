@@ -6,6 +6,7 @@
   <title>多益核心單字閃卡 (TOEIC Flashcards)</title>
   <style>
     :root {
+      /* Warm Muji Light Theme */
       --bg-color: #f7f5f0;
       --card-bg: #ffffff;
       --card-back-bg: #fffdfa;
@@ -36,6 +37,7 @@
     }
 
     [data-theme="dark"] {
+      /* Elegant Warm Dark Theme */
       --bg-color: #1a1816;
       --card-bg: #262320;
       --card-back-bg: #2b2723;
@@ -242,6 +244,7 @@
       font-weight: 600;
     }
 
+    /* Flashcard 3D Stage */
     .flashcard-stage {
       perspective: 1200px;
       width: 100%;
@@ -254,7 +257,7 @@
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
       border-radius: var(--radius);
       box-shadow: var(--shadow-md);
     }
@@ -286,6 +289,25 @@
       background: var(--card-back-bg);
     }
 
+    /* Ensure clean pointer events between 3D faces */
+    .flashcard:not(.is-flipped) .card-face-front {
+      pointer-events: auto;
+      z-index: 2;
+    }
+    .flashcard:not(.is-flipped) .card-face-back {
+      pointer-events: none;
+      z-index: 1;
+    }
+    .flashcard.is-flipped .card-face-front {
+      pointer-events: none;
+      z-index: 1;
+    }
+    .flashcard.is-flipped .card-face-back {
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    /* Empty state styling */
     .empty-state-view {
       display: flex;
       flex-direction: column;
@@ -366,6 +388,7 @@
       background: var(--btn-hover);
     }
 
+    /* Front Card Design */
     .card-top {
       display: flex;
       justify-content: space-between;
@@ -385,10 +408,10 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      font-size: 1.35rem;
+      font-size: 1.45rem;
       color: var(--text-sub);
       transition: transform 0.2s ease, color 0.2s ease;
-      padding: 4px;
+      padding: 4px 8px;
     }
 
     .star-btn:hover {
@@ -431,8 +454,8 @@
     .audio-btn {
       background: var(--chip-bg);
       border: none;
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
@@ -461,6 +484,7 @@
       user-select: none;
     }
 
+    /* Back Card Design */
     .back-header {
       display: flex;
       justify-content: space-between;
@@ -544,17 +568,16 @@
 
     .rate-btn {
       flex: 1;
-      padding: 11px 0;
+      padding: 12px 0;
       border-radius: 8px;
       border: none;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      pointer-events: auto;
     }
 
     .rate-btn-again {
@@ -577,6 +600,7 @@
       background: rgba(104, 159, 56, 0.28);
     }
 
+    /* Controls Bar */
     .controls {
       display: flex;
       justify-content: space-between;
@@ -616,6 +640,7 @@
       background: var(--accent-hover);
     }
 
+    /* Modal (Import dialog) */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -876,6 +901,7 @@
       background: var(--accent-hover);
     }
 
+    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -904,26 +930,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-    }
-
-    .shortcut-hints {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .shortcut-hints kbd {
-      background: var(--tab-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-family: inherit;
-      font-weight: 600;
-      color: var(--text-main);
+      gap: 6px;
     }
 
     .stat-text {
@@ -951,18 +958,20 @@
 <body>
 
 <div class="app-container">
+  <!-- Header -->
   <header>
     <div class="title-group">
       <h1>多益核心單字閃卡</h1>
       <p>TOEIC Flashcards</p>
     </div>
     <div class="header-actions">
-      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換明暗主題 (D)">
+      <button class="theme-toggle-btn" id="themeToggleBtn" type="button" onclick="toggleTheme()" title="切換明暗主題">
       </button>
       <div class="status-badge" id="cardCounter">0 / 0</div>
     </div>
   </header>
 
+  <!-- Progress Bar -->
   <div class="progress-section">
     <div class="progress-meta">
       <span id="currentStatusText">進度 0%</span>
@@ -973,57 +982,61 @@
     </div>
   </div>
 
+  <!-- Toolbar -->
   <div class="toolbar">
     <div class="filter-tabs">
-      <button class="tab-btn active" data-filter="all" onclick="setFilter('all')">全部 (<span id="countAll">0</span>)</button>
-      <button class="tab-btn" data-filter="unlearned" onclick="setFilter('unlearned')">未學習 (<span id="countUnlearned">0</span>)</button>
-      <button class="tab-btn" data-filter="review" onclick="setFilter('review')">待複習 (<span id="countReview">0</span>)</button>
-      <button class="tab-btn" data-filter="mastered" onclick="setFilter('mastered')">已掌握 (<span id="countMastered">0</span>)</button>
+      <button class="tab-btn active" type="button" data-filter="all" onclick="setFilter('all')">全部 (<span id="countAll">0</span>)</button>
+      <button class="tab-btn" type="button" data-filter="unlearned" onclick="setFilter('unlearned')">未學習 (<span id="countUnlearned">0</span>)</button>
+      <button class="tab-btn" type="button" data-filter="review" onclick="setFilter('review')">待複習 (<span id="countReview">0</span>)</button>
+      <button class="tab-btn" type="button" data-filter="mastered" onclick="setFilter('mastered')">已掌握 (<span id="countMastered">0</span>)</button>
     </div>
 
     <div class="action-tools">
-      <button class="tool-btn" id="shuffleBtn" onclick="toggleShuffle()" title="打亂順序 (R)">
+      <button class="tool-btn" id="shuffleBtn" type="button" onclick="toggleShuffle()" title="隨機打亂順序">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
         <span>隨機打亂</span>
       </button>
-      <button class="tool-btn" onclick="syncFromGitHub()" title="自動重新自 GitHub 的 ./vocabulary.csv 同步單字">
+      <button class="tool-btn" type="button" onclick="syncFromGitHub()" title="重新從 GitHub 同步 vocabulary.csv">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
         <span>同步 GitHub</span>
       </button>
-      <button class="tool-btn" onclick="openImportModal()">
+      <button class="tool-btn" type="button" onclick="openImportModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
         <span>匯入 / 來源</span>
       </button>
-      <button class="tool-btn" onclick="resetProgress()" title="重置已掌握與待複習標記">
+      <button class="tool-btn" type="button" onclick="resetProgress()" title="重置已掌握與待複習紀錄">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
         <span>重置進度</span>
       </button>
     </div>
   </div>
 
+  <!-- 3D Flashcard Stage -->
   <div class="flashcard-stage" onclick="handleCardClick(event)">
     <div class="flashcard" id="flashcard">
+      <!-- Front Face -->
       <div class="card-face card-face-front" id="cardFrontFace">
         <div id="frontContentWrapper" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
           <div class="card-top">
             <span class="tag-chip" id="cardTag">多益單字</span>
-            <button class="star-btn" id="starBtn" title="標記待複習" onclick="toggleStar(event)">★</button>
+            <button class="star-btn" id="starBtn" type="button" title="加入或移除待複習" onclick="toggleStar(event)">★</button>
           </div>
 
           <div class="card-center-front">
             <h2 class="word-text" id="frontWord">Loading...</h2>
             <div class="phonetic-row" id="frontPhoneticRow">
               <span class="phonetic-text" id="frontPhonetic"></span>
-              <button class="audio-btn" title="聆聽發音 (S)" onclick="speakCurrentWord(event)">
+              <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentWord(event)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
               </button>
             </div>
             <span class="pos-badge" id="frontPos"></span>
           </div>
 
-          <div class="card-bottom-hint">點擊卡片或按 Space 翻面檢視釋義與例句</div>
+          <div class="card-bottom-hint">點擊卡片或下方「翻轉卡片」按鈕檢視釋義與例句</div>
         </div>
 
+        <!-- Empty State -->
         <div class="empty-state-view" id="emptyStateView" style="display:none;">
           <div class="empty-icon" id="emptyIcon">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
@@ -1031,17 +1044,18 @@
           <div class="empty-title" id="emptyTitle">目前字庫尚無單字</div>
           <p class="empty-desc" id="emptyDesc">若已將 <code>vocabulary.csv</code> 放在 GitHub 倉庫同層目錄，可直接點擊「從 GitHub 讀取」；亦可手動上傳本機檔案。</p>
           <div class="empty-btn-group" id="emptyBtnGroup">
-            <button class="empty-cta-btn" onclick="syncFromGitHub()">
+            <button class="empty-cta-btn" type="button" onclick="syncFromGitHub()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
               <span>從 GitHub 讀取 vocabulary.csv</span>
             </button>
-            <button class="empty-secondary-btn" onclick="openImportModal()">
+            <button class="empty-secondary-btn" type="button" onclick="openImportModal()">
               <span>手動上傳 / 自訂 URL</span>
             </button>
           </div>
         </div>
       </div>
 
+      <!-- Back Face -->
       <div class="card-face card-face-back" id="cardBackFace">
         <div class="back-header">
           <div class="back-word-group">
@@ -1064,11 +1078,11 @@
         </div>
 
         <div class="back-actions">
-          <button class="rate-btn rate-btn-again" onclick="markCardStatus(event, 'review')">
+          <button class="rate-btn rate-btn-again" type="button" onclick="markCardStatus(event, 'review')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
             <span>還不熟 (待複習)</span>
           </button>
-          <button class="rate-btn rate-btn-good" onclick="markCardStatus(event, 'mastered')">
+          <button class="rate-btn rate-btn-good" type="button" onclick="markCardStatus(event, 'mastered')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             <span>已掌握 (熟記)</span>
           </button>
@@ -1077,41 +1091,33 @@
     </div>
   </div>
 
+  <!-- Navigation Controls -->
   <div class="controls">
-    <button class="btn-nav" onclick="prevCard()" title="上一張 (← 或 K)">
+    <button class="btn-nav" type="button" onclick="prevCard()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
       <span>上一張</span>
     </button>
-    <button class="btn-nav btn-flip" onclick="flipCard()" title="翻面 (Space)">
+    <button class="btn-nav btn-flip" type="button" onclick="flipCard()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
-      <span>翻面 (Space)</span>
+      <span>翻轉卡片</span>
     </button>
-    <button class="btn-nav" onclick="nextCard()" title="下一張 (→ 或 J)">
+    <button class="btn-nav" type="button" onclick="nextCard()">
       <span>下一張</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </button>
   </div>
 
   <footer>
-    <div class="shortcut-hints">
-      <span><kbd>Space</kbd> 翻面</span>
-      <span><kbd>→</kbd> / <kbd>J</kbd> 下一張</span>
-      <span><kbd>←</kbd> / <kbd>K</kbd> 上一張</span>
-      <span><kbd>R</kbd> 隨機洗牌</span>
-      <span><kbd>S</kbd> 單字發音</span>
-      <span><kbd>D</kbd> 暗色切換</span>
-      <span><kbd>1</kbd> 待複習</span>
-      <span><kbd>2</kbd> 已掌握</span>
-    </div>
-    <div class="stat-text">純靜態無寫死單字架構 · 支援離線與 GitHub Pages 託管</div>
+    <div class="stat-text">純靜態架構 · 支援自動讀取 GitHub 同層目錄 vocabulary.csv</div>
   </footer>
 </div>
 
+<!-- Import Modal Dialog -->
 <div class="modal-overlay" id="importModal" onclick="handleModalOverlayClick(event)">
   <div class="modal-dialog">
     <div class="modal-header">
       <h3>單字庫管理與匯入來源</h3>
-      <button class="modal-close-btn" onclick="closeImportModal()">&times;</button>
+      <button class="modal-close-btn" type="button" onclick="closeImportModal()">&times;</button>
     </div>
     <div class="modal-body">
       <div class="github-sync-card">
@@ -1127,7 +1133,7 @@
         </p>
         <div class="github-url-input-group">
           <input type="text" class="github-url-input" id="githubUrlInput" value="./vocabulary.csv" placeholder="例如：./vocabulary.csv 或 GitHub raw 網址">
-          <button class="github-fetch-btn" onclick="fetchCustomUrl()">載入讀取</button>
+          <button class="github-fetch-btn" type="button" onclick="fetchCustomUrl()">載入讀取</button>
         </div>
       </div>
 
@@ -1162,35 +1168,56 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     </div>
     <div class="modal-footer">
       <div style="display:flex; gap:8px;">
-        <button class="btn-secondary" onclick="exportVocabCSV()">備份匯出</button>
-        <button class="btn-danger" onclick="clearAllVocab()">清空字庫</button>
+        <button class="btn-secondary" type="button" onclick="downloadTemplateCsv()">下載範本</button>
+        <button class="btn-secondary" type="button" onclick="exportVocabCSV()">備份匯出</button>
+        <button class="btn-danger" type="button" onclick="clearAllVocab()">清空字庫</button>
       </div>
-      <button class="btn-primary" onclick="processImport()">手動貼上匯入</button>
+      <button class="btn-primary" type="button" onclick="processImport()">確認匯入</button>
     </div>
   </div>
 </div>
 
+<!-- Toast Message -->
 <div class="toast" id="toastMsg"></div>
 
 <script>
+  // Storage Keys
   const STORAGE_KEY_VOCAB = 'toeic_pure_vocab_list';
   const STORAGE_KEY_MASTERED = 'toeic_cards_mastered';
   const STORAGE_KEY_REVIEW = 'toeic_cards_review';
   const STORAGE_KEY_THEME = 'toeic_cards_theme';
   const STORAGE_KEY_GITHUB_URL = 'toeic_github_url';
 
+  // State
   let allVocab = JSON.parse(localStorage.getItem(STORAGE_KEY_VOCAB) || '[]');
-  let masteredSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERED) || '[]'));
-  let reviewSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEW) || '[]'));
+  // Normalize all existing saved keys to lowercase trimmed strings
+  let masteredSet = new Set(
+    JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERED) || '[]').map(w => String(w).trim().toLowerCase())
+  );
+  let reviewSet = new Set(
+    JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEW) || '[]').map(w => String(w).trim().toLowerCase())
+  );
 
   let currentIndex = 0;
   let isFlipped = false;
   let isShuffled = false;
   let currentFilter = 'all'; // 'all', 'unlearned', 'review', 'mastered'
   let displayedIndices = [];
+  let toastTimer = null;
 
   function getWordKey(word) {
-    return (word || '').trim().toLowerCase();
+    return String(word || '').trim().toLowerCase();
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toastMsg');
+    if (!toast) return;
+    toast.innerText = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2200);
   }
 
   function getDeckStats() {
@@ -1232,10 +1259,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       renderCard();
       updateStats();
     }
-
-    setupKeyListeners();
   }
 
+  /* ---------------- GitHub CSV Fetch Engine ---------------- */
   async function fetchVocabularyFile(url, isUserTriggered = true) {
     const statusLabel = document.getElementById('githubFetchStatus');
     if (statusLabel) statusLabel.innerText = "連線讀取中...";
@@ -1309,6 +1335,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     fetchVocabularyFile(url, true);
   }
 
+  /* ---------------- Theme Engine ---------------- */
   function initTheme() {
     const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
     if (savedTheme) {
@@ -1336,6 +1363,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     showToast(current === 'dark' ? '已切換為明亮主題' : '已切換為夜間暗色主題');
   }
 
+  /* ---------------- Vocabulary State ---------------- */
   function saveVocabList() {
     localStorage.setItem(STORAGE_KEY_VOCAB, JSON.stringify(allVocab));
   }
@@ -1439,10 +1467,10 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     if (displayedIndices.length === 0) {
       emptyView.style.display = "flex";
       frontContent.style.display = "none";
-      document.getElementById('emptyTitle').innerText = "🎉 本分類無待複習單字！";
+      document.getElementById('emptyTitle').innerText = "🎉 本分類無單字！";
       
       const filterNames = { unlearned: '未學習', review: '待複習', mastered: '已掌握', all: '全部' };
-      document.getElementById('emptyDesc').innerText = `太棒了！「${filterNames[currentFilter] || ''}」清單中目前沒有單字。您可以切換其他標籤繼續練習。`;
+      document.getElementById('emptyDesc').innerText = `太棒了！「${filterNames[currentFilter] || ''}」清單中目前沒有單字。您可以點擊上方其他分類標籤繼續練習。`;
       document.getElementById('emptyBtnGroup').style.display = "none";
       
       document.getElementById('cardCounter').innerText = "0 / 0";
@@ -1459,6 +1487,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     const item = allVocab[dataIndex];
     const k = getWordKey(item.word);
 
+    // Front
     document.getElementById('frontWord').innerText = item.word || '';
     document.getElementById('frontPhonetic').innerText = item.phonetic || '';
     document.getElementById('frontPos').innerText = item.pos || '';
@@ -1467,6 +1496,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     const isReview = reviewSet.has(k);
     document.getElementById('starBtn').classList.toggle('active', isReview);
 
+    // Back
     document.getElementById('backWord').innerText = item.word || '';
     document.getElementById('backPhonetic').innerText = item.phonetic || '';
     document.getElementById('backPos').innerText = item.pos || '';
@@ -1509,7 +1539,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   function handleCardClick(e) {
-    if (e.target.closest('button')) return;
+    if (e && e.target && e.target.closest('button')) return;
     if (displayedIndices.length === 0) return;
     flipCard();
   }
@@ -1540,7 +1570,10 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   function toggleStar(e) {
-    if (e) e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (displayedIndices.length === 0) return;
     const item = allVocab[displayedIndices[currentIndex]];
     const k = getWordKey(item.word);
@@ -1564,7 +1597,10 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   function markCardStatus(e, status) {
-    if (e) e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (displayedIndices.length === 0) return;
     
     const item = allVocab[displayedIndices[currentIndex]];
@@ -1628,7 +1664,10 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   function speakCurrentWord(e) {
-    if (e) e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (displayedIndices.length === 0) return;
     const item = allVocab[displayedIndices[currentIndex]];
     if ('speechSynthesis' in window) {
@@ -1640,6 +1679,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
   }
 
+  /* ---------------- Import & Export System ---------------- */
   function openImportModal() {
     document.getElementById('importModal').classList.add('active');
   }
@@ -1751,6 +1791,19 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     showToast(`成功匯入 ${parsed.length} 個單字！目前字庫總計 ${allVocab.length} 字`);
   }
 
+  function downloadTemplateCsv() {
+    const sample = `"單字 (Word)","KK音標 (Phonetic)","詞性 (Part of Speech)","中文釋義 (Meaning)","例句 (Example)","例句翻譯 (Example Translation)","相關詞彙 (Related Words)","分類標籤 (Tags)"
+"negotiate","[nı'goʃı,et]","v.","談判，協商","We have been negotiating with them for two weeks.","我們已經和他們談判了兩星期。","negotiation (n.) 談判；negotiator (n.) 談判專家","新多益700分-商務"
+"revenue","['rɛvə,nju]","n.","收益，營業額","The company's annual revenue increased by 20%.","這家公司的年營業額增長了百分之二十。","income (n.) 收入；profit (n.) 利潤","新多益700分-財務"`;
+    
+    const blob = new Blob(["\uFEFF" + sample], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "TOEIC_Vocabulary_Template.csv";
+    link.click();
+    showToast('已下載 CSV 範本');
+  }
+
   function exportVocabCSV() {
     if (allVocab.length === 0) {
       showToast('目前字庫是空的，無可匯出資料');
@@ -1771,38 +1824,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     showToast(`已備份匯出 ${allVocab.length} 個單字！`);
   }
 
-  function setupKeyListeners() {
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-      if (e.code === 'Space') {
-        e.preventDefault();
-        flipCard();
-      } else if (e.code === 'ArrowRight' || e.key === 'j' || e.key === 'J') {
-        e.preventDefault();
-        nextCard();
-      } else if (e.code === 'ArrowLeft' || e.key === 'k' || e.key === 'K') {
-        e.preventDefault();
-        prevCard();
-      } else if (e.key === 'r' || e.key === 'R') {
-        e.preventDefault();
-        toggleShuffle();
-      } else if (e.key === 's' || e.key === 'S') {
-        e.preventDefault();
-        speakCurrentWord();
-      } else if (e.key === 'd' || e.key === 'D') {
-        e.preventDefault();
-        toggleTheme();
-      } else if (e.key === '1') {
-        e.preventDefault();
-        markCardStatus(null, 'review');
-      } else if (e.key === '2') {
-        e.preventDefault();
-        markCardStatus(null, 'mastered');
-      }
-    });
-  }
-
+  // Run
   initApp();
 </script>
 </body>
