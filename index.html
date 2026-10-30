@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShihCheng Huang | Profile & Utilities</title>
+    <style>
+        :root {
+            --bg-color: #f9f8f6;
+            --text-color: #5c544d;
+            --accent-color: #8f857d;
+            --card-bg: #ffffff;
+            --border-color: #e5e0d8;
+            --tag-bg: #f0eee9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #2c2a29;
+                --text-color: #d1cbc5;
+                --accent-color: #a89f96;
+                --card-bg: #363432;
+                --border-color: #4a4744;
+                --tag-bg: #403e3c;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin-top: 10vh;
+            margin-bottom: 5rem;
+        }
+
+        header {
+            margin-bottom: 4rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .role {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin: 0 0 1rem 0;
+            font-weight: 400;
+        }
+
+        .tenure {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background-color: var(--tag-bg);
+            color: var(--text-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .utilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: var(--accent-color);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title::after {
+            content: '→';
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateX(-5px);
+        }
+
+        .card:hover .card-title::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ShihCheng Huang</h1>
+            <p class="role">CAD Engineer</p>
+            <span class="tenure">2023 — Present</span>
+            <div class="tags">
+                <span class="tag">EDA Tools</span>
+                <span class="tag">Innovus</span>
+                <span class="tag">Cerebrus</span>
+                <span class="tag">JedAI</span>
+            </div>
+        </header>
+
+        <main>
+            <h2>Utilities</h2>
+            <div class="utilities-grid">
+                <a href="./utilities/pomodoro/" class="card">
+                    <h3 class="card-title">Pomodoro Timer</h3>
+                    <p class="card-desc">A focus timer with customizable work and break intervals, featuring iOS lock-screen background push capabilities.</p>
+                </a>
+                
+                <a href="./utilities/flashcards/" class="card">
+                    <h3 class="card-title">Flashcards</h3>
+                    <p class="card-desc">Spaced repetition memory tool for study and review.</p>
+                </a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
