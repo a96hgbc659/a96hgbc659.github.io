@@ -1129,10 +1129,10 @@
           <span style="font-size:0.75rem; color:var(--text-muted);" id="githubFetchStatus">就緒</span>
         </div>
         <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
-          只要將 <code>vocabulary.csv</code> 放在 GitHub 倉庫中，網站預設會自動讀取 <code>./testcase.csv</code>。您也可貼上任意 GitHub Raw CSV 網址：
+          只要將 <code>vocabulary.csv</code> 放在 GitHub 倉庫中，網站預設會自動讀取 <code>./vocabulary.csv</code>。您也可貼上任意 GitHub Raw CSV 網址：
         </p>
         <div class="github-url-input-group">
-          <input type="text" class="github-url-input" id="githubUrlInput" value="./testcase.csv" placeholder="例如：./testcase.csv 或 GitHub raw 網址">
+          <input type="text" class="github-url-input" id="githubUrlInput" value="./vocabulary.csv" placeholder="例如：./vocabulary.csv 或 GitHub raw 網址">
           <button class="github-fetch-btn" type="button" onclick="fetchCustomUrl()">載入讀取</button>
         </div>
       </div>
@@ -1253,7 +1253,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
 
     if (allVocab.length === 0) {
-      await fetchVocabularyFile(document.getElementById('githubUrlInput').value || './testcase.csv', false);
+      await fetchVocabularyFile(document.getElementById('githubUrlInput').value || './vocabulary.csv', false);
     } else {
       updateFilterList();
       renderCard();
@@ -1322,7 +1322,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   function syncFromGitHub() {
-    const url = document.getElementById('githubUrlInput').value.trim() || './testcase.csv';
+    const url = document.getElementById('githubUrlInput').value.trim() || './vocabulary.csv';
     fetchVocabularyFile(url, true);
   }
 
