@@ -3,145 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShihCheng Huang | Profile & Utilities</title>
+    <title>ShihCheng Huang | CAD Engineer</title>
     <style>
         :root {
-            --bg-color: #f9f8f6;
-            --text-color: #5c544d;
-            --accent-color: #8f857d;
-            --card-bg: #ffffff;
-            --border-color: #e5e0d8;
-            --tag-bg: #f0eee9;
+            --bg-color: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --accent-color: #0056b3;
+            --border-color: #eaeaea;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #2c2a29;
-                --text-color: #d1cbc5;
-                --accent-color: #a89f96;
-                --card-bg: #363432;
-                --border-color: #4a4744;
-                --tag-bg: #403e3c;
+                --bg-color: #1e1e1e;
+                --text-main: #dfdfdf;
+                --text-muted: #a0a0a0;
+                --accent-color: #4da3ff;
+                --border-color: #333333;
             }
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 760px;
             width: 90%;
-            margin-top: 10vh;
-            margin-bottom: 5rem;
+            margin: 4rem 0;
         }
 
         header {
-            margin-bottom: 4rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
         }
 
         h1 {
             font-size: 2.5rem;
-            font-weight: 300;
             margin: 0 0 0.5rem 0;
             letter-spacing: -0.02em;
         }
 
-        .role {
-            font-size: 1.2rem;
-            color: var(--accent-color);
-            margin: 0 0 1rem 0;
-            font-weight: 400;
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin: 0;
         }
 
-        .tenure {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .tag {
-            background-color: var(--tag-bg);
-            color: var(--text-color);
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
+        section {
+            margin-bottom: 3rem;
         }
 
         h2 {
-            font-size: 1.5rem;
-            font-weight: 400;
+            font-size: 1.3rem;
+            color: var(--accent-color);
             margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .utilities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-decoration: none;
-            color: var(--text-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border-color: var(--accent-color);
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin: 0 0 0.5rem 0;
+        .job-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: baseline;
+            margin-bottom: 0.5rem;
         }
 
-        .card-title::after {
-            content: '→';
-            opacity: 0;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            transform: translateX(-5px);
-        }
-
-        .card:hover .card-title::after {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .card-desc {
-            font-size: 0.95rem;
-            opacity: 0.8;
+        .job-title {
+            font-size: 1.2rem;
+            font-weight: 600;
             margin: 0;
+        }
+
+        .job-date {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .job-description {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+        .job-description li {
+            margin-bottom: 0.8rem;
+            color: var(--text-main);
+        }
+
+        .tags {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .utilities {
+            font-size: 0.9rem;
+        }
+
+        .utilities h3 {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0 0 0.8rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .utility-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .utility-list a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .utility-list a:hover {
+            color: var(--accent-color);
         }
     </style>
 </head>
@@ -149,28 +158,46 @@
     <div class="container">
         <header>
             <h1>ShihCheng Huang</h1>
-            <p class="role">Global Unichip CAD Engineer</p>
-            <span class="tenure">2023 — Present</span>
-            <div class="tags">
-                <span class="tag">EDA tools flow developments</span>
-                <span class="tag">Innovus</span>
-                <span class="tag">Cerebrus</span>
-                <span class="tag">JedAI</span>
-            </div>
+            <p class="subtitle">CAD Engineer</p>
         </header>
 
         <main>
-            <h2>Utilities</h2>
-            <div class="utilities-grid">
-                <a href="./utilities/pomodoro-timer/" class="card">
-                    <h2 class="card-title">Pomodoro Timer</h3>
-                </a>
+            <section class="experience">
+                <h2>Work Experience</h2>
                 
-                <a href="./utilities/flashcards_eng/" class="card">
-                    <h2 class="card-title">Flashcards</h3>
-                </a>
-            </div>
+                <div class="job">
+                    <div class="job-header">
+                        <h3 class="job-title">CAD Engineer</h3>
+                        <span class="job-date">2023 — Present</span>
+                    </div>
+                    <ul class="job-description">
+                        <li>Maintain and optimize Electronic Design Automation (EDA) flows, assisting the Physical Design team in improving chip development and routing efficiency.</li>
+                        <li><b>Cadence Innovus Application & Automation:</b> Develop and maintain Tcl scripts to automate the Place and Route (PnR) flow, reducing human errors and accelerating design convergence.</li>
+                        <li><b>Cerebrus AI Integration:</b> Leverage the machine learning-driven EDA tool, Cerebrus, for PPA (Power, Performance, Area) space exploration and model training to optimize overall chip design performance.</li>
+                        <li><b>JedAI Data Analysis:</b> Utilize the Joint Enterprise Data and AI (JedAI) platform for design data collection and analysis, establishing visual metrics to facilitate cross-functional design decisions.</li>
+                        <li>Troubleshoot software integration issues encountered during the design process and collaborate with cross-functional teams to build a more stable and scalable design environment.</li>
+                    </ul>
+                    <div class="tags">
+                        <span class="tag">EDA Tools</span>
+                        <span class="tag">Innovus</span>
+                        <span class="tag">Cerebrus</span>
+                        <span class="tag">JedAI</span>
+                        <span class="tag">Tcl / Python</span>
+                    </div>
+                </div>
+            </section>
         </main>
+
+        <footer>
+            <div class="utilities">
+                <h3>Utilities & Links</h3>
+                <ul class="utility-list">
+                    <li><a href="./utilities/pomodoro-timer/index.html">⏱️ Pomodoro Timer</a></li>
+                    <li><a href="./utilities/flashcards_eng/index.html">📇 English Flashcards</a></li>
+                    <li><a href="./trips/employee_travel_2026/index.html">✈️ 2026 Employee Travel</a></li>
+                </ul>
+            </div>
+        </footer>
     </div>
 </body>
 </html>
