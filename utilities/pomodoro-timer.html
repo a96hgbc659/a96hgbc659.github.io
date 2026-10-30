@@ -12,7 +12,17 @@
             --text-color: #5c544d;
             --accent-color: #8f857d;
             --btn-hover: #7a7068;
+            --modal-bg: rgba(249, 248, 246, 0.95);
         }
+        
+        [data-theme="dark"] {
+            --bg-color: #2c2a29;
+            --text-color: #d1cbc5;
+            --accent-color: #a89f96;
+            --btn-hover: #b8b1a8;
+            --modal-bg: rgba(44, 42, 41, 0.95);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
             background-color: var(--bg-color);
@@ -23,12 +33,36 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        .top-controls {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover {
+            color: var(--accent-color);
+        }
+
         .container {
             text-align: center;
             padding: 2rem;
         }
+
         #mode {
             font-size: 1.2rem;
             letter-spacing: 0.1em;
@@ -36,6 +70,7 @@
             margin-bottom: 1rem;
             opacity: 0.8;
         }
+
         #timer {
             font-size: 5rem;
             font-weight: 300;
@@ -43,12 +78,14 @@
             margin: 0 0 2rem 0;
             letter-spacing: -0.02em;
         }
+
         .controls {
             display: flex;
             gap: 1rem;
             justify-content: center;
         }
-        button {
+
+        button.action-btn {
             background-color: transparent;
             color: var(--text-color);
             border: 1px solid var(--accent-color);
@@ -59,40 +96,120 @@
             transition: all 0.2s;
             outline: none;
         }
-        button:hover:not(:disabled) {
+
+        button.action-btn:hover:not(:disabled) {
             background-color: var(--accent-color);
             color: var(--bg-color);
         }
-        button:disabled {
+
+        button.action-btn:disabled {
             opacity: 0.3;
             cursor: not-allowed;
             border-color: #ccc;
         }
+
         #startBtn {
             background-color: var(--accent-color);
             color: var(--bg-color);
         }
+
         #startBtn:hover {
             background-color: var(--btn-hover);
+        }
+        
+        #settingsModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: var(--modal-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--accent-color);
+            width: 250px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            font-weight: normal;
+        }
+
+        .setting-group {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-group input {
+            width: 60px;
+            padding: 0.3rem;
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
         }
     </style>
 </head>
 <body>
+    <div class="top-controls">
+        <button class="icon-btn" id="themeToggle" title="Toggle Dark Mode">☾</button>
+        <button class="icon-btn" id="settingsToggle" title="Settings">⚙</button>
+    </div>
+
     <div class="container">
         <div id="mode">Work</div>
         <div id="timer">25:00</div>
         <div class="controls">
-            <button id="startBtn">Start</button>
-            <button id="pauseBtn" disabled>Pause</button>
-            <button id="resetBtn">Reset</button>
+            <button class="action-btn" id="startBtn">Start</button>
+            <button class="action-btn" id="pauseBtn" disabled>Pause</button>
+            <button class="action-btn" id="resetBtn">Reset</button>
         </div>
     </div>
     
-    <!-- A gentle chime for the alarm -->
+    <div id="settingsModal">
+        <div class="modal-content">
+            <h2>Settings</h2>
+            <div class="setting-group">
+                <label for="workInput">Work (min):</label>
+                <input type="number" id="workInput" min="1" max="120" value="25">
+            </div>
+            <div class="setting-group">
+                <label for="breakInput">Break (min):</label>
+                <input type="number" id="breakInput" min="1" max="60" value="5">
+            </div>
+            <div class="modal-actions">
+                <button class="action-btn" id="cancelSettings">Cancel</button>
+                <button class="action-btn" id="saveSettings" style="background-color: var(--accent-color); color: var(--bg-color);">Save</button>
+            </div>
+        </div>
+    </div>
+
     <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
     <script>
-        let duration = 25 * 60; 
+        let workDuration = 25 * 60;
+        let breakDuration = 5 * 60;
+        let duration = workDuration; 
         let remaining = duration;
         let targetEndTime = null;
         let timerInterval = null;
@@ -105,8 +222,58 @@
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
         const alarm = document.getElementById('alarmSound');
+        
+        const settingsModal = document.getElementById('settingsModal');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const cancelSettings = document.getElementById('cancelSettings');
+        const saveSettings = document.getElementById('saveSettings');
+        const workInput = document.getElementById('workInput');
+        const breakInput = document.getElementById('breakInput');
+        const themeToggle = document.getElementById('themeToggle');
 
-        // Request notification permission for background alerts on iOS
+        // Preserve Theme Preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeToggle.textContent = '☀';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '☾';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '☀';
+            }
+        });
+
+        // Settings Handling
+        settingsToggle.addEventListener('click', () => {
+            workInput.value = workDuration / 60;
+            breakInput.value = breakDuration / 60;
+            settingsModal.style.display = 'flex';
+        });
+
+        cancelSettings.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+
+        saveSettings.addEventListener('click', () => {
+            workDuration = Math.max(1, parseInt(workInput.value)) * 60;
+            breakDuration = Math.max(1, parseInt(breakInput.value)) * 60;
+            
+            duration = isWorkMode ? workDuration : breakDuration;
+            if (!isRunning) {
+                remaining = duration;
+                updateDisplay(remaining);
+            }
+            settingsModal.style.display = 'none';
+        });
+
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission();
@@ -121,7 +288,7 @@
         }
 
         function playAlarmAndNotify() {
-            alarm.play().catch(e => console.log("Audio play prevented by browser:", e));
+            alarm.play().catch(e => console.log("Audio play prevented:", e));
             
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Pomodoro Timer", {
@@ -135,7 +302,7 @@
             pause();
             playAlarmAndNotify();
             isWorkMode = !isWorkMode;
-            duration = (isWorkMode ? 25 : 5) * 60;
+            duration = isWorkMode ? workDuration : breakDuration;
             remaining = duration;
             modeDisplay.textContent = isWorkMode ? "Work" : "Break";
             updateDisplay(remaining);
@@ -143,8 +310,6 @@
 
         function tick() {
             if (!isRunning) return;
-            
-            // Calculate remaining time using absolute timestamps to survive background throttling
             const now = Date.now();
             remaining = Math.round((targetEndTime - now) / 1000);
 
@@ -160,8 +325,6 @@
         function start() {
             if (isRunning) return;
             requestNotificationPermission();
-            
-            // iOS audio unlocking: must play/pause on direct user interaction
             alarm.play().then(() => alarm.pause()).catch(() => {});
 
             isRunning = true;
@@ -170,7 +333,6 @@
             startBtn.disabled = true;
             pauseBtn.disabled = false;
             
-            // Run interval frequently to catch up smoothly after backgrounding
             timerInterval = setInterval(tick, 250); 
         }
 
@@ -191,7 +353,6 @@
         pauseBtn.addEventListener('click', pause);
         resetBtn.addEventListener('click', reset);
 
-        // Sync timer immediately when returning from background
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible' && isRunning) {
                 tick(); 
