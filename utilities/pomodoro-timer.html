@@ -41,17 +41,18 @@
             top: 2rem;
             right: 2rem;
             display: flex;
-            gap: 1rem;
+            gap: 1.2rem;
+            align-items: center;
         }
 
         .icon-btn {
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             cursor: pointer;
             color: var(--text-color);
             padding: 0;
-            transition: color 0.2s;
+            transition: color 0.2s, opacity 0.2s;
         }
 
         .icon-btn:hover {
@@ -172,6 +173,7 @@
 </head>
 <body>
     <div class="top-controls">
+        <button class="icon-btn" id="muteToggle" title="Toggle Mute">🔊</button>
         <button class="icon-btn" id="themeToggle" title="Toggle Dark Mode">☾</button>
         <button class="icon-btn" id="settingsToggle" title="Settings">⚙</button>
     </div>
@@ -204,6 +206,7 @@
         </div>
     </div>
 
+    <!-- Alarm Chime -->
     <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
     <script>
@@ -215,6 +218,7 @@
         let timerInterval = null;
         let isRunning = false;
         let isWorkMode = true;
+        let isMuted = localStorage.getItem('muted') === 'true';
 
         const timerDisplay = document.getElementById('timer');
         const modeDisplay = document.getElementById('mode');
@@ -223,15 +227,71 @@
         const resetBtn = document.getElementById('resetBtn');
         const alarm = document.getElementById('alarmSound');
         
-        const settingsModal = document.getElementById('settingsModal');
+        const muteToggle = document.getElementById('muteToggle');
+        const themeToggle = document.getElementById('themeToggle');
         const settingsToggle = document.getElementById('settingsToggle');
+        const settingsModal = document.getElementById('settingsModal');
         const cancelSettings = document.getElementById('cancelSettings');
         const saveSettings = document.getElementById('saveSettings');
         const workInput = document.getElementById('workInput');
         const breakInput = document.getElementById('breakInput');
-        const themeToggle = document.getElementById('themeToggle');
 
-        // Preserve Theme Preference
+        // Generate a 1-second silent WAV file dynamically to keep iOS Safari awake in the background
+        function createSilentAudio() {
+            const sampleRate = 8000;
+            const numSamples = sampleRate;
+            const buffer = new ArrayBuffer(44 + numSamples * 2);
+            const view = new DataView(buffer);
+            const writeString = (v, offset, str) => {
+                for (let i = 0; i < str.length; i++) v.setUint8(offset + i, str.charCodeAt(i));
+            };
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + numSamples * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, numSamples * 2, true);
+            const blob = new Blob([buffer], { type: 'audio/wav' });
+            const audio = new Audio(URL.createObjectURL(blob));
+            audio.loop = true;
+            return audio;
+        }
+
+        const silentAudio = createSilentAudio();
+
+        // Update Lock Screen Media Player info on iOS
+        function updateMediaSession() {
+            if ('mediaSession' in navigator) {
+                const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+                const s = (remaining % 60).toString().padStart(2, '0');
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: `${isWorkMode ? 'Work' : 'Break'} (${m}:${s})`,
+                    artist: 'Pomodoro Timer'
+                });
+            }
+        }
+
+        // Mute state initialization
+        function updateMuteUI() {
+            muteToggle.textContent = isMuted ? '🔇' : '🔊';
+            alarm.muted = isMuted;
+        }
+        updateMuteUI();
+
+        muteToggle.addEventListener('click', () => {
+            isMuted = !isMuted;
+            localStorage.setItem('muted', isMuted);
+            updateMuteUI();
+        });
+
+        // Theme initialization
         const savedTheme = localStorage.getItem('theme') || 'light';
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -251,7 +311,7 @@
             }
         });
 
-        // Settings Handling
+        // Settings Modal
         settingsToggle.addEventListener('click', () => {
             workInput.value = workDuration / 60;
             breakInput.value = breakDuration / 60;
@@ -263,8 +323,8 @@
         });
 
         saveSettings.addEventListener('click', () => {
-            workDuration = Math.max(1, parseInt(workInput.value)) * 60;
-            breakDuration = Math.max(1, parseInt(breakInput.value)) * 60;
+            workDuration = Math.max(1, parseInt(workInput.value) || 25) * 60;
+            breakDuration = Math.max(1, parseInt(breakInput.value) || 5) * 60;
             
             duration = isWorkMode ? workDuration : breakDuration;
             if (!isRunning) {
@@ -285,14 +345,18 @@
             const s = (seconds % 60).toString().padStart(2, '0');
             timerDisplay.textContent = `${m}:${s}`;
             document.title = `${m}:${s} - Pomodoro`;
+            updateMediaSession();
         }
 
         function playAlarmAndNotify() {
-            alarm.play().catch(e => console.log("Audio play prevented:", e));
+            if (!isMuted) {
+                alarm.currentTime = 0;
+                alarm.play().catch(e => console.log("Audio play prevented:", e));
+            }
             
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Pomodoro Timer", {
-                    body: isWorkMode ? "Break time!" : "Back to work!",
+                    body: isWorkMode ? "Work session complete! Time for a break." : "Break is over! Back to work.",
                     requireInteraction: true
                 });
             }
@@ -325,7 +389,15 @@
         function start() {
             if (isRunning) return;
             requestNotificationPermission();
-            alarm.play().then(() => alarm.pause()).catch(() => {});
+            
+            // Start silent audio loop to prevent iOS from suspending the web app when screen is locked
+            silentAudio.play().catch(e => console.log("Silent audio blocked:", e));
+
+            // Prime alarm audio on user tap so iOS permits playing it later when timer ends
+            alarm.play().then(() => {
+                alarm.pause();
+                alarm.currentTime = 0;
+            }).catch(() => {});
 
             isRunning = true;
             targetEndTime = Date.now() + (remaining * 1000);
@@ -333,12 +405,13 @@
             startBtn.disabled = true;
             pauseBtn.disabled = false;
             
-            timerInterval = setInterval(tick, 250); 
+            timerInterval = setInterval(tick, 500); 
         }
 
         function pause() {
             isRunning = false;
             clearInterval(timerInterval);
+            silentAudio.pause();
             startBtn.disabled = false;
             pauseBtn.disabled = true;
         }
