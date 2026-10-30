@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="./manifest.json">
     <title>Pomodoro</title>
     <style>
         :root {
@@ -12,7 +13,7 @@
             --text-color: #5c544d;
             --accent-color: #8f857d;
             --btn-hover: #7a7068;
-            --modal-bg: rgba(249, 248, 246, 0.95);
+            --modal-bg: rgba(249, 248, 246, 0.96);
         }
         
         [data-theme="dark"] {
@@ -20,7 +21,7 @@
             --text-color: #d1cbc5;
             --accent-color: #a89f96;
             --btn-hover: #b8b1a8;
-            --modal-bg: rgba(44, 42, 41, 0.95);
+            --modal-bg: rgba(44, 42, 41, 0.96);
         }
 
         body {
@@ -52,7 +53,7 @@
             cursor: pointer;
             color: var(--text-color);
             padding: 0;
-            transition: color 0.2s, opacity 0.2s;
+            transition: color 0.2s;
         }
 
         .icon-btn:hover {
@@ -160,28 +161,32 @@
 
         .modal-content {
             background-color: var(--modal-bg);
-            padding: 2rem;
+            padding: 1.8rem;
             border-radius: 8px;
             border: 1px solid var(--accent-color);
-            width: 280px;
+            width: 300px;
+            max-height: 85vh;
+            overflow-y: auto;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .modal-content h2 {
             margin-top: 0;
-            font-size: 1.2rem;
-            font-weight: normal;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 0.5rem;
         }
 
         .setting-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.9rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
-        .setting-group input {
+        .setting-group input[type="number"] {
             width: 60px;
             padding: 0.3rem;
             background-color: transparent;
@@ -189,14 +194,38 @@
             color: var(--text-color);
             border-radius: 4px;
             text-align: center;
-            font-size: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .setting-stack {
+            margin-bottom: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .setting-stack input[type="text"] {
+            padding: 0.4rem;
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        #pushStatus {
+            font-size: 0.75rem;
+            opacity: 0.75;
+            margin-top: 0.3rem;
         }
 
         .modal-actions {
             display: flex;
             justify-content: flex-end;
             gap: 0.5rem;
-            margin-top: 1.5rem;
+            margin-top: 1.2rem;
         }
     </style>
 </head>
@@ -225,7 +254,7 @@
     
     <div id="settingsModal">
         <div class="modal-content">
-            <h2>Settings</h2>
+            <h2>Timer Durations</h2>
             <div class="setting-group">
                 <label for="workInput">Work (min):</label>
                 <input type="number" id="workInput" min="1" max="120" value="25">
@@ -242,6 +271,19 @@
                 <label for="intervalInput">Long Break Interval:</label>
                 <input type="number" id="intervalInput" min="1" max="12" value="4">
             </div>
+
+            <h2>Web Push Config (iOS PWA)</h2>
+            <div class="setting-stack">
+                <label for="workerUrlInput">Backend Worker URL:</label>
+                <input type="text" id="workerUrlInput" placeholder="https://your-worker.workers.dev">
+            </div>
+            <div class="setting-stack">
+                <label for="vapidKeyInput">VAPID Public Key:</label>
+                <input type="text" id="vapidKeyInput" placeholder="BEl62i...">
+            </div>
+            <button class="action-btn" id="enablePushBtn" style="width: 100%; font-size: 0.85rem; padding: 0.5rem;">Enable Lock-Screen Push</button>
+            <div id="pushStatus">Not subscribed</div>
+
             <div class="modal-actions">
                 <button class="action-btn" id="cancelSettings">Cancel</button>
                 <button class="action-btn" id="saveSettings" style="background-color: var(--accent-color); color: var(--bg-color);">Save</button>
@@ -249,7 +291,6 @@
         </div>
     </div>
 
-    <!-- Alarm Chime -->
     <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
     <script>
@@ -258,7 +299,7 @@
         let longBreakDuration = 15 * 60;
         let longBreakInterval = 4;
 
-        let currentPhase = 'work'; // 'work', 'shortBreak', 'longBreak'
+        let currentPhase = 'work';
         let currentSession = 1;
         let duration = workDuration; 
         let remaining = duration;
@@ -266,6 +307,10 @@
         let timerInterval = null;
         let isRunning = false;
         let isMuted = localStorage.getItem('muted') === 'true';
+
+        let workerUrl = localStorage.getItem('workerUrl') || '';
+        let vapidPublicKey = localStorage.getItem('vapidPublicKey') || '';
+        let pushSubscription = null;
 
         const timerDisplay = document.getElementById('timer');
         const cycleTracker = document.getElementById('cycleTracker');
@@ -287,6 +332,10 @@
         const shortBreakInput = document.getElementById('shortBreakInput');
         const longBreakInput = document.getElementById('longBreakInput');
         const intervalInput = document.getElementById('intervalInput');
+        const workerUrlInput = document.getElementById('workerUrlInput');
+        const vapidKeyInput = document.getElementById('vapidKeyInput');
+        const enablePushBtn = document.getElementById('enablePushBtn');
+        const pushStatus = document.getElementById('pushStatus');
 
         const phaseLabels = {
             work: 'Work',
@@ -294,44 +343,88 @@
             longBreak: 'Long Break'
         };
 
-        // Silent WAV generator to keep iOS Safari running in background
-        function createSilentAudio() {
-            const sampleRate = 8000;
-            const numSamples = sampleRate;
-            const buffer = new ArrayBuffer(44 + numSamples * 2);
-            const view = new DataView(buffer);
-            const writeString = (v, offset, str) => {
-                for (let i = 0; i < str.length; i++) v.setUint8(offset + i, str.charCodeAt(i));
-            };
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + numSamples * 2, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true);
-            view.setUint16(22, 1, true);
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * 2, true);
-            view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true);
-            writeString(view, 36, 'data');
-            view.setUint32(40, numSamples * 2, true);
-            const blob = new Blob([buffer], { type: 'audio/wav' });
-            const audio = new Audio(URL.createObjectURL(blob));
-            audio.loop = true;
-            return audio;
+        // Initialize Service Worker & Existing Push Subscription
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(async (reg) => {
+                pushSubscription = await reg.pushManager.getSubscription();
+                if (pushSubscription) {
+                    pushStatus.textContent = "Push Active ✓";
+                }
+            }).catch(err => console.log('SW registration failed:', err));
         }
 
-        const silentAudio = createSilentAudio();
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
 
-        function updateMediaSession() {
-            if ('mediaSession' in navigator) {
-                const m = Math.floor(remaining / 60).toString().padStart(2, '0');
-                const s = (remaining % 60).toString().padStart(2, '0');
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: `${phaseLabels[currentPhase]} (${m}:${s})`,
-                    artist: `Session ${currentSession} of ${longBreakInterval}`
+        enablePushBtn.addEventListener('click', async () => {
+            const key = vapidKeyInput.value.trim();
+            if (!key) {
+                pushStatus.textContent = "Please enter a VAPID Public Key first.";
+                return;
+            }
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                pushStatus.textContent = "Add to Home Screen first to enable iOS Web Push.";
+                return;
+            }
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    pushStatus.textContent = "Notification permission denied.";
+                    return;
+                }
+                const reg = await navigator.serviceWorker.ready;
+                pushSubscription = await reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(key)
                 });
+                pushStatus.textContent = "Push Active ✓";
+            } catch (e) {
+                pushStatus.textContent = "Subscription error: " + e.message;
+            }
+        });
+
+        async function scheduleBackendPush(seconds) {
+            if (!workerUrl || !pushSubscription) return;
+            let msg = "Time for a short break!";
+            if (currentPhase === 'work' && currentSession >= longBreakInterval) {
+                msg = "Great job! Time for a long break.";
+            } else if (currentPhase !== 'work') {
+                msg = "Break is over! Back to work.";
+            }
+            try {
+                await fetch(`${workerUrl.replace(/\/$/, '')}/schedule`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subscription: pushSubscription,
+                        delaySeconds: seconds,
+                        title: `Pomodoro (${phaseLabels[currentPhase]})`,
+                        body: msg
+                    })
+                });
+            } catch (e) {
+                console.log("Failed to schedule push:", e);
+            }
+        }
+
+        async function cancelBackendPush() {
+            if (!workerUrl || !pushSubscription) return;
+            try {
+                await fetch(`${workerUrl.replace(/\/$/, '')}/cancel`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ endpoint: pushSubscription.endpoint })
+                });
+            } catch (e) {
+                console.log("Failed to cancel push:", e);
             }
         }
 
@@ -371,6 +464,8 @@
             shortBreakInput.value = shortBreakDuration / 60;
             longBreakInput.value = longBreakDuration / 60;
             intervalInput.value = longBreakInterval;
+            workerUrlInput.value = workerUrl;
+            vapidKeyInput.value = vapidPublicKey;
             settingsModal.style.display = 'flex';
         });
 
@@ -384,6 +479,11 @@
             longBreakDuration = Math.max(1, parseInt(longBreakInput.value) || 15) * 60;
             longBreakInterval = Math.max(1, parseInt(intervalInput.value) || 4);
             
+            workerUrl = workerUrlInput.value.trim();
+            vapidPublicKey = vapidKeyInput.value.trim();
+            localStorage.setItem('workerUrl', workerUrl);
+            localStorage.setItem('vapidPublicKey', vapidPublicKey);
+
             if (currentSession > longBreakInterval) {
                 currentSession = 1;
             }
@@ -418,15 +518,22 @@
             });
         });
 
-        function advanceToNextPhase(notify = false) {
-            pause();
-            if (notify) playAlarmAndNotify();
+        function advanceToNextPhase(playSound = false) {
+            isRunning = false;
+            clearInterval(timerInterval);
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+
+            if (playSound && !isMuted && document.visibilityState === 'visible') {
+                alarm.currentTime = 0;
+                alarm.play().catch(() => {});
+            }
 
             if (currentPhase === 'work') {
                 if (currentSession >= longBreakInterval) {
-                    setPhase('longBreak');
+                    setPhase('longBreak', false);
                 } else {
-                    setPhase('shortBreak');
+                    setPhase('shortBreak', false);
                 }
             } else {
                 if (currentPhase === 'longBreak') {
@@ -434,13 +541,7 @@
                 } else {
                     currentSession++;
                 }
-                setPhase('work');
-            }
-        }
-
-        function requestNotificationPermission() {
-            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-                Notification.requestPermission();
+                setPhase('work', false);
             }
         }
 
@@ -449,27 +550,6 @@
             const s = (seconds % 60).toString().padStart(2, '0');
             timerDisplay.textContent = `${m}:${s}`;
             document.title = `${m}:${s} - ${phaseLabels[currentPhase]}`;
-            updateMediaSession();
-        }
-
-        function playAlarmAndNotify() {
-            if (!isMuted) {
-                alarm.currentTime = 0;
-                alarm.play().catch(e => console.log("Audio play prevented:", e));
-            }
-            
-            if ("Notification" in window && Notification.permission === "granted") {
-                let msg = "Time for a short break!";
-                if (currentPhase === 'work' && currentSession >= longBreakInterval) {
-                    msg = "Great job! Time for a long break.";
-                } else if (currentPhase !== 'work') {
-                    msg = "Break is over! Back to work.";
-                }
-                new Notification("Pomodoro Timer", {
-                    body: msg,
-                    requireInteraction: true
-                });
-            }
         }
 
         function tick() {
@@ -488,10 +568,7 @@
 
         function start() {
             if (isRunning) return;
-            requestNotificationPermission();
             
-            silentAudio.play().catch(e => console.log("Silent audio blocked:", e));
-
             alarm.play().then(() => {
                 alarm.pause();
                 alarm.currentTime = 0;
@@ -503,13 +580,16 @@
             startBtn.disabled = true;
             pauseBtn.disabled = false;
             
+            scheduleBackendPush(remaining);
             timerInterval = setInterval(tick, 500); 
         }
 
         function pause() {
+            if (isRunning) {
+                cancelBackendPush();
+            }
             isRunning = false;
             clearInterval(timerInterval);
-            silentAudio.pause();
             startBtn.disabled = false;
             pauseBtn.disabled = true;
         }
@@ -523,7 +603,10 @@
         startBtn.addEventListener('click', start);
         pauseBtn.addEventListener('click', pause);
         resetBtn.addEventListener('click', reset);
-        nextBtn.addEventListener('click', () => advanceToNextPhase(false));
+        nextBtn.addEventListener('click', () => {
+            cancelBackendPush();
+            advanceToNextPhase(false);
+        });
 
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible' && isRunning) {
