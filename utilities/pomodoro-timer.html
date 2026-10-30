@@ -61,15 +61,42 @@
 
         .container {
             text-align: center;
-            padding: 2rem;
+            padding: 1.5rem;
+            max-width: 90%;
         }
 
-        #mode {
-            font-size: 1.2rem;
-            letter-spacing: 0.1em;
+        .phase-tabs {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-color);
+            opacity: 0.5;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
-            margin-bottom: 1rem;
-            opacity: 0.8;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            opacity: 1;
+            border-color: var(--accent-color);
+        }
+
+        #cycleTracker {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.65;
+            margin-bottom: 0.5rem;
         }
 
         #timer {
@@ -82,7 +109,8 @@
 
         .controls {
             display: flex;
-            gap: 1rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
             justify-content: center;
         }
 
@@ -90,8 +118,8 @@
             background-color: transparent;
             color: var(--text-color);
             border: 1px solid var(--accent-color);
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
+            padding: 0.8rem 1.2rem;
+            font-size: 0.95rem;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
@@ -135,7 +163,7 @@
             padding: 2rem;
             border-radius: 8px;
             border: 1px solid var(--accent-color);
-            width: 250px;
+            width: 280px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
@@ -150,6 +178,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 0.95rem;
         }
 
         .setting-group input {
@@ -179,12 +208,18 @@
     </div>
 
     <div class="container">
-        <div id="mode">Work</div>
+        <div class="phase-tabs">
+            <button class="tab-btn active" data-phase="work">Work</button>
+            <button class="tab-btn" data-phase="shortBreak">Short Break</button>
+            <button class="tab-btn" data-phase="longBreak">Long Break</button>
+        </div>
+        <div id="cycleTracker">Session 1 / 4</div>
         <div id="timer">25:00</div>
         <div class="controls">
             <button class="action-btn" id="startBtn">Start</button>
             <button class="action-btn" id="pauseBtn" disabled>Pause</button>
             <button class="action-btn" id="resetBtn">Reset</button>
+            <button class="action-btn" id="nextBtn" title="Skip to Next Phase">Next ⏭</button>
         </div>
     </div>
     
@@ -196,8 +231,16 @@
                 <input type="number" id="workInput" min="1" max="120" value="25">
             </div>
             <div class="setting-group">
-                <label for="breakInput">Break (min):</label>
-                <input type="number" id="breakInput" min="1" max="60" value="5">
+                <label for="shortBreakInput">Short Break (min):</label>
+                <input type="number" id="shortBreakInput" min="1" max="60" value="5">
+            </div>
+            <div class="setting-group">
+                <label for="longBreakInput">Long Break (min):</label>
+                <input type="number" id="longBreakInput" min="1" max="90" value="15">
+            </div>
+            <div class="setting-group">
+                <label for="intervalInput">Long Break Interval:</label>
+                <input type="number" id="intervalInput" min="1" max="12" value="4">
             </div>
             <div class="modal-actions">
                 <button class="action-btn" id="cancelSettings">Cancel</button>
@@ -211,20 +254,26 @@
 
     <script>
         let workDuration = 25 * 60;
-        let breakDuration = 5 * 60;
+        let shortBreakDuration = 5 * 60;
+        let longBreakDuration = 15 * 60;
+        let longBreakInterval = 4;
+
+        let currentPhase = 'work'; // 'work', 'shortBreak', 'longBreak'
+        let currentSession = 1;
         let duration = workDuration; 
         let remaining = duration;
         let targetEndTime = null;
         let timerInterval = null;
         let isRunning = false;
-        let isWorkMode = true;
         let isMuted = localStorage.getItem('muted') === 'true';
 
         const timerDisplay = document.getElementById('timer');
-        const modeDisplay = document.getElementById('mode');
+        const cycleTracker = document.getElementById('cycleTracker');
+        const tabBtns = document.querySelectorAll('.tab-btn');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const nextBtn = document.getElementById('nextBtn');
         const alarm = document.getElementById('alarmSound');
         
         const muteToggle = document.getElementById('muteToggle');
@@ -233,10 +282,19 @@
         const settingsModal = document.getElementById('settingsModal');
         const cancelSettings = document.getElementById('cancelSettings');
         const saveSettings = document.getElementById('saveSettings');
+        
         const workInput = document.getElementById('workInput');
-        const breakInput = document.getElementById('breakInput');
+        const shortBreakInput = document.getElementById('shortBreakInput');
+        const longBreakInput = document.getElementById('longBreakInput');
+        const intervalInput = document.getElementById('intervalInput');
 
-        // Generate a 1-second silent WAV file dynamically to keep iOS Safari awake in the background
+        const phaseLabels = {
+            work: 'Work',
+            shortBreak: 'Short Break',
+            longBreak: 'Long Break'
+        };
+
+        // Silent WAV generator to keep iOS Safari running in background
         function createSilentAudio() {
             const sampleRate = 8000;
             const numSamples = sampleRate;
@@ -266,19 +324,17 @@
 
         const silentAudio = createSilentAudio();
 
-        // Update Lock Screen Media Player info on iOS
         function updateMediaSession() {
             if ('mediaSession' in navigator) {
                 const m = Math.floor(remaining / 60).toString().padStart(2, '0');
                 const s = (remaining % 60).toString().padStart(2, '0');
                 navigator.mediaSession.metadata = new MediaMetadata({
-                    title: `${isWorkMode ? 'Work' : 'Break'} (${m}:${s})`,
-                    artist: 'Pomodoro Timer'
+                    title: `${phaseLabels[currentPhase]} (${m}:${s})`,
+                    artist: `Session ${currentSession} of ${longBreakInterval}`
                 });
             }
         }
 
-        // Mute state initialization
         function updateMuteUI() {
             muteToggle.textContent = isMuted ? '🔇' : '🔊';
             alarm.muted = isMuted;
@@ -291,7 +347,6 @@
             updateMuteUI();
         });
 
-        // Theme initialization
         const savedTheme = localStorage.getItem('theme') || 'light';
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -311,10 +366,11 @@
             }
         });
 
-        // Settings Modal
         settingsToggle.addEventListener('click', () => {
             workInput.value = workDuration / 60;
-            breakInput.value = breakDuration / 60;
+            shortBreakInput.value = shortBreakDuration / 60;
+            longBreakInput.value = longBreakDuration / 60;
+            intervalInput.value = longBreakInterval;
             settingsModal.style.display = 'flex';
         });
 
@@ -324,15 +380,63 @@
 
         saveSettings.addEventListener('click', () => {
             workDuration = Math.max(1, parseInt(workInput.value) || 25) * 60;
-            breakDuration = Math.max(1, parseInt(breakInput.value) || 5) * 60;
+            shortBreakDuration = Math.max(1, parseInt(shortBreakInput.value) || 5) * 60;
+            longBreakDuration = Math.max(1, parseInt(longBreakInput.value) || 15) * 60;
+            longBreakInterval = Math.max(1, parseInt(intervalInput.value) || 4);
             
-            duration = isWorkMode ? workDuration : breakDuration;
-            if (!isRunning) {
-                remaining = duration;
-                updateDisplay(remaining);
+            if (currentSession > longBreakInterval) {
+                currentSession = 1;
             }
+            
+            setPhase(currentPhase, false);
             settingsModal.style.display = 'none';
         });
+
+        function getPhaseDuration(phase) {
+            if (phase === 'work') return workDuration;
+            if (phase === 'shortBreak') return shortBreakDuration;
+            return longBreakDuration;
+        }
+
+        function setPhase(phase, resetTimerState = true) {
+            if (resetTimerState) pause();
+            currentPhase = phase;
+            duration = getPhaseDuration(phase);
+            if (!isRunning || resetTimerState) {
+                remaining = duration;
+            }
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.phase === phase);
+            });
+            cycleTracker.textContent = `Session ${currentSession} / ${longBreakInterval}`;
+            updateDisplay(remaining);
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setPhase(btn.dataset.phase, true);
+            });
+        });
+
+        function advanceToNextPhase(notify = false) {
+            pause();
+            if (notify) playAlarmAndNotify();
+
+            if (currentPhase === 'work') {
+                if (currentSession >= longBreakInterval) {
+                    setPhase('longBreak');
+                } else {
+                    setPhase('shortBreak');
+                }
+            } else {
+                if (currentPhase === 'longBreak') {
+                    currentSession = 1;
+                } else {
+                    currentSession++;
+                }
+                setPhase('work');
+            }
+        }
 
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
@@ -344,7 +448,7 @@
             const m = Math.floor(seconds / 60).toString().padStart(2, '0');
             const s = (seconds % 60).toString().padStart(2, '0');
             timerDisplay.textContent = `${m}:${s}`;
-            document.title = `${m}:${s} - Pomodoro`;
+            document.title = `${m}:${s} - ${phaseLabels[currentPhase]}`;
             updateMediaSession();
         }
 
@@ -355,21 +459,17 @@
             }
             
             if ("Notification" in window && Notification.permission === "granted") {
+                let msg = "Time for a short break!";
+                if (currentPhase === 'work' && currentSession >= longBreakInterval) {
+                    msg = "Great job! Time for a long break.";
+                } else if (currentPhase !== 'work') {
+                    msg = "Break is over! Back to work.";
+                }
                 new Notification("Pomodoro Timer", {
-                    body: isWorkMode ? "Work session complete! Time for a break." : "Break is over! Back to work.",
+                    body: msg,
                     requireInteraction: true
                 });
             }
-        }
-
-        function completeTimer() {
-            pause();
-            playAlarmAndNotify();
-            isWorkMode = !isWorkMode;
-            duration = isWorkMode ? workDuration : breakDuration;
-            remaining = duration;
-            modeDisplay.textContent = isWorkMode ? "Work" : "Break";
-            updateDisplay(remaining);
         }
 
         function tick() {
@@ -380,7 +480,7 @@
             if (remaining <= 0) {
                 remaining = 0;
                 updateDisplay(remaining);
-                completeTimer();
+                advanceToNextPhase(true);
             } else {
                 updateDisplay(remaining);
             }
@@ -390,10 +490,8 @@
             if (isRunning) return;
             requestNotificationPermission();
             
-            // Start silent audio loop to prevent iOS from suspending the web app when screen is locked
             silentAudio.play().catch(e => console.log("Silent audio blocked:", e));
 
-            // Prime alarm audio on user tap so iOS permits playing it later when timer ends
             alarm.play().then(() => {
                 alarm.pause();
                 alarm.currentTime = 0;
@@ -425,6 +523,7 @@
         startBtn.addEventListener('click', start);
         pauseBtn.addEventListener('click', pause);
         resetBtn.addEventListener('click', reset);
+        nextBtn.addEventListener('click', () => advanceToNextPhase(false));
 
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible' && isRunning) {
