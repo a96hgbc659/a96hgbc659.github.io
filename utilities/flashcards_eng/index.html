@@ -1293,7 +1293,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
   }
 
-  /* ---------------- Fetch Engine (支援 Google Sheets 自動轉換) ---------------- */
+ /* ---------------- Fetch Engine (支援 Google Sheets 自動轉換) ---------------- */
   async function fetchVocabularyFile(rawUrl, isUserTriggered = true) {
     const statusLabel = document.getElementById('githubFetchStatus');
     if (statusLabel) statusLabel.innerText = "連線讀取中...";
@@ -1301,13 +1301,14 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     try {
       let processUrl = rawUrl;
       
-      // 自動偵測並轉換 Google 試算表網址為 CSV 輸出格式
+      // 自動偵測並轉換 Google 試算表網址為支援 CORS 的 CSV 輸出格式 (gviz API)
       const sheetMatch = rawUrl.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
       if (sheetMatch) {
         const sheetId = sheetMatch[1];
         const gidMatch = rawUrl.match(/[?&]gid=(\d+)/);
         const gid = gidMatch ? gidMatch[1] : '0';
-        processUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
+        // 使用 Google Visualization API 端點，穩定回傳純 CSV
+        processUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
       }
 
       // 避免快取
@@ -1319,10 +1320,17 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       }
 
       const csvText = await response.text();
+      
+      // 【新增防呆檢查】如果抓回來的是 HTML 網頁，直接報錯阻斷
+      const textTrimmed = csvText.trim();
+      if (textTrimmed.startsWith('<!DOCTYPE') || textTrimmed.startsWith('<html') || textTrimmed.includes('og:type content=Google Docs')) {
+         throw new Error("抓取到的內容為網頁 (HTML) 而非單字。請確認 Google 試算表共用權限已設為「知道連結的人均可檢視」。");
+      }
+
       const parsed = parseCSVText(csvText);
 
       if (parsed.length === 0) {
-        throw new Error("CSV 內容為空或無法辨識有效單字");
+        throw new Error("CSV 內容為空或無法辨識有效單字格式");
       }
 
       const modeRadio = document.querySelector('input[name="importMode"]:checked');
@@ -1338,7 +1346,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       }
 
       saveVocabList();
-      localStorage.setItem(STORAGE_KEY_GITHUB_URL, rawUrl); // 儲存原始網址以利顯示
+      localStorage.setItem(STORAGE_KEY_GITHUB_URL, rawUrl); // 儲存原始網址
       updateFilterList();
       currentIndex = 0;
       renderCard();
@@ -1356,7 +1364,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       if (statusLabel) statusLabel.innerText = "讀取失敗";
       
       if (isUserTriggered) {
-        alert(`讀取失敗：${err.message}\n\n可能原因：\n1. 網址錯誤或檔案不存在\n2. 若使用 Google 試算表，請確認共用權限已設定為「知道連結的人均可檢視」\n3. 本機直接以 file:// 開啟被瀏覽器攔截 CORS 權限`);
+        alert(`讀取失敗：${err.message}`);
       } else {
         renderCard();
         updateStats();
@@ -1364,7 +1372,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       return false;
     }
   }
-
+  
   function syncFromGitHub() {
     const url = document.getElementById('githubUrlInput').value.trim() || './vocabulary.csv';
     fetchVocabularyFile(url, true);
