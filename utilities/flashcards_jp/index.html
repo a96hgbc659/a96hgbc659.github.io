@@ -93,4 +93,865 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
-      min-height:
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 8px;
+    }
+
+    .title-group h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .back-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+      display: inline-block;
+    }
+
+    .back-link:hover {
+      color: var(--accent-color);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      background-color: var(--tag-bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: inherit;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .status-badge {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--accent-border);
+      white-space: nowrap;
+    }
+
+    /* Filters Section */
+    .filter-section {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 45px;
+    }
+
+    .toggle-group {
+      display: flex;
+      background: var(--tab-bg);
+      padding: 3px;
+      border-radius: 6px;
+      gap: 2px;
+    }
+
+    .toggle-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .toggle-btn.active {
+      background: var(--card-bg);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      font-weight: 600;
+    }
+    
+    .toggle-btn.accent-active.active {
+      color: var(--accent);
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      width: 100%;
+      background: var(--border-color);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Flashcard 3D Stage */
+    .flashcard-stage {
+      perspective: 1200px;
+      width: 100%;
+      height: 400px;
+      cursor: pointer;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+    }
+
+    .flashcard.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-face-back {
+      transform: rotateY(180deg);
+      background: var(--card-back-bg);
+    }
+
+    /* Card Content Styling */
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tag-chip {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+    }
+
+    .star-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.45rem;
+      color: var(--border-color);
+      transition: transform 0.2s ease, color 0.2s ease;
+      padding: 4px 8px;
+    }
+
+    .star-btn:hover { transform: scale(1.2); }
+    .star-btn.active { color: #f59e0b; }
+
+    .card-center {
+      text-align: center;
+      margin: auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .jp-character {
+      font-size: 6rem;
+      font-weight: 500;
+      color: var(--text-main);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .romaji-text {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .alt-character {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      background: var(--chip-bg);
+      padding: 6px 16px;
+      border-radius: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .audio-btn {
+      background: var(--chip-bg);
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      margin-top: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .audio-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .card-bottom-hint {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      user-select: none;
+    }
+
+    /* Actions & Controls */
+    .back-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rate-btn {
+      flex: 1;
+      padding: 12px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .rate-btn-again {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border: 1px solid var(--amber-border);
+    }
+    .rate-btn-again:hover { background: rgba(176, 117, 48, 0.2); }
+
+    .rate-btn-good {
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+    .rate-btn-good:hover { background: rgba(74, 112, 80, 0.2); }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      flex: 1;
+      padding: 14px 0;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-nav:hover { background: var(--btn-hover); }
+
+    .btn-flip {
+      flex: 1.4;
+      background: var(--accent);
+      color: #ffffff;
+      border: 1px solid var(--accent);
+    }
+    .btn-flip:hover { background: var(--accent-hover); }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 12px 22px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2000;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      gap: 10px;
+      color: var(--text-muted);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <div class="title-group">
+      <a href="../../index.html" class="back-link">← Back</a>
+      <h1>日語五十音</h1>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggleBtn" type="button" aria-label="Toggle color theme">DARK</button>
+      <div class="status-badge" id="cardCounter">0 / 0</div>
+    </div>
+  </header>
+
+  <!-- Filters Area -->
+  <div class="filter-section">
+    <!-- 字體篩選 -->
+    <div class="filter-row">
+      <span class="filter-label">字體</span>
+      <div class="toggle-group">
+        <button class="toggle-btn active" data-group="char" data-val="hira" onclick="toggleOption('char', 'hira')">平假名</button>
+        <button class="toggle-btn" data-group="char" data-val="kata" onclick="toggleOption('char', 'kata')">片假名</button>
+      </div>
+      <button class="toggle-btn" style="border:1px solid var(--border-color); margin-left:auto;" onclick="toggleShuffle()" id="shuffleBtn">🔀 隨機排序</button>
+    </div>
+    
+    <!-- 音韻篩選 -->
+    <div class="filter-row">
+      <span class="filter-label">音韻</span>
+      <div class="toggle-group">
+        <button class="toggle-btn active" data-group="sound" data-val="seion" onclick="toggleOption('sound', 'seion')">清音</button>
+        <button class="toggle-btn" data-group="sound" data-val="dakuon" onclick="toggleOption('sound', 'dakuon')">濁音/半濁音</button>
+        <button class="toggle-btn" data-group="sound" data-val="yoon" onclick="toggleOption('sound', 'yoon')">拗音</button>
+      </div>
+    </div>
+
+    <!-- 學習狀態篩選 -->
+    <div class="filter-row">
+      <span class="filter-label">狀態</span>
+      <div class="toggle-group">
+        <button class="toggle-btn active accent-active" data-group="status" data-val="all" onclick="toggleSingleOption('status', 'all')">全部</button>
+        <button class="toggle-btn accent-active" data-group="status" data-val="unlearned" onclick="toggleSingleOption('status', 'unlearned')">未學習</button>
+        <button class="toggle-btn accent-active" data-group="status" data-val="review" onclick="toggleSingleOption('status', 'review')">待複習</button>
+        <button class="toggle-btn accent-active" data-group="status" data-val="mastered" onclick="toggleSingleOption('status', 'mastered')">已掌握</button>
+      </div>
+      <button class="toggle-btn" style="border:1px solid var(--border-color); margin-left:auto; color:var(--accent)" onclick="resetProgress()">↺ 重置進度</button>
+    </div>
+
+    <!-- 進度條 -->
+    <div>
+      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:2px;">
+        <span id="currentStatusText">進度 0%</span>
+        <span id="deckStatText">已掌握 0 · 待複習 0</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
+    </div>
+  </div>
+
+  <!-- 3D Flashcard Stage -->
+  <div class="flashcard-stage" onclick="handleCardClick(event)">
+    <div class="flashcard" id="flashcard">
+      
+      <!-- Front Face -->
+      <div class="card-face" id="cardFrontFace">
+        <div class="card-top">
+          <span class="tag-chip" id="cardTag">平假名 - 清音</span>
+          <button class="star-btn" id="starBtn" type="button" title="加入或移除待複習" onclick="toggleStar(event)">★</button>
+        </div>
+        
+        <div class="card-center" id="frontContent">
+          <h2 class="jp-character" id="frontChar">あ</h2>
+          <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentWord(event)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          </button>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <div style="font-size:3rem;">🍃</div>
+          <h3 style="color:var(--text-main); margin-top:10px;">本分類無卡片</h3>
+          <p>請嘗試切換上方的篩選條件</p>
+        </div>
+
+        <div class="card-bottom-hint" id="frontHint">點擊卡片檢視羅馬拼音</div>
+      </div>
+
+      <!-- Back Face -->
+      <div class="card-face card-face-back" id="cardBackFace">
+        <div class="card-top" style="margin-bottom: auto;">
+          <span class="tag-chip" style="opacity: 0;">Spacer</span>
+        </div>
+
+        <div class="card-center">
+          <h2 class="romaji-text" id="backRomaji">a</h2>
+          <div class="alt-character">
+            <span style="font-size:0.85rem;" id="backAltLabel">對應片假名</span>
+            <strong style="font-size:1.5rem; color:var(--text-main);" id="backAltChar">ア</strong>
+          </div>
+        </div>
+
+        <div class="back-actions">
+          <button class="rate-btn rate-btn-again" type="button" onclick="markCardStatus(event, 'review')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span>還不熟</span>
+          </button>
+          <button class="rate-btn rate-btn-good" type="button" onclick="markCardStatus(event, 'mastered')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span>已熟記</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="controls">
+    <button class="btn-nav" type="button" onclick="prevCard()">上一張</button>
+    <button class="btn-nav btn-flip" type="button" onclick="flipCard()">翻轉卡片</button>
+    <button class="btn-nav" type="button" onclick="nextCard()">下一張</button>
+  </div>
+</div>
+
+<div class="toast" id="toastMsg"></div>
+
+<script>
+  // ==========================================
+  // 1. Hardcoded 50 Sounds Data (全靜態寫死)
+  // ==========================================
+  const rawSeion = "a,あ,ア|i,い,イ|u,う,ウ|e,え,エ|o,お,オ|ka,か,カ|ki,き,キ|ku,く,ク|ke,け,ケ|ko,こ,コ|sa,さ,サ|shi,し,シ|su,す,ス|se,せ,セ|so,そ,ソ|ta,た,タ|chi,ち,チ|tsu,つ,ツ|te,て,テ|to,と,ト|na,な,ナ|ni,に,ニ|nu,ぬ,ヌ|ne,ね,ネ|no,の,ノ|ha,は,ハ|hi,ひ,ヒ|fu,ふ,フ|he,へ,ヘ|ho,ほ,ホ|ma,ま,マ|mi,み,ミ|mu,む,ム|me,め,メ|mo,も,モ|ya,や,ヤ|yu,ゆ,ユ|yo,よ,ヨ|ra,ら,ラ|ri,り,リ|ru,る,ル|re,れ,レ|ro,ろ,ロ|wa,わ,ワ|wo,を,ヲ|n,ん,ン";
+  const rawDakuon = "ga,が,ガ|gi,ぎ,ギ|gu,ぐ,グ|ge,げ,ゲ|go,ご,ゴ|za,ざ,ザ|ji,じ,ジ|zu,ず,ズ|ze,ぜ,ゼ|zo,ぞ,ゾ|da,だ,ダ|ji,ぢ,ヂ|zu,づ,ヅ|de,で,デ|do,ど,ド|ba,ば,バ|bi,び,ビ|bu,ぶ,ブ|be,べ,ベ|bo,ぼ,ボ|pa,ぱ,パ|pi,ぴ,ピ|pu,ぷ,プ|pe,ぺ,ペ|po,ぽ,ポ";
+  const rawYoon = "kya,きゃ,キャ|kyu,きゅ,キュ|kyo,きょ,キョ|sha,しゃ,シャ|shu,しゅ,シュ|sho,しょ,ショ|cha,ちゃ,チャ|chu,ちゅ,チュ|cho,ちょ,チョ|nya,にゃ,ニャ|nyu,にゅ,ニュ|nyo,にょ,ニョ|hya,ひゃ,ヒャ|hyu,ひゅ,ヒュ|hyo,ひょ,ヒョ|mya,みゃ,ミャ|myu,みゅ,ミュ|myo,みょ,ミョ|rya,りゃ,リャ|ryu,りゅ,リュ|ryo,りょ,リョ|gya,ぎゃ,ギャ|gyu,ぎゅ,ギュ|gyo,ぎょ,ギョ|ja,じゃ,ジャ|ju,じゅ,ジュ|jo,じょ,ジョ|bya,びゃ,ビャ|byu,びゅ,ビュ|byo,びょ,ビョ|pya,ぴゃ,ピャ|pyu,ぴゅ,ピュ|pyo,ぴょ,ピョ";
+
+  function parseGroup(rawStr, typeCode) {
+    return rawStr.split('|').map(item => {
+      const [r, h, k] = item.split(',');
+      return { romaji: r, hira: h, kata: k, type: typeCode };
+    });
+  }
+
+  const db = [
+    ...parseGroup(rawSeion, 'seion'),
+    ...parseGroup(rawDakuon, 'dakuon'),
+    ...parseGroup(rawYoon, 'yoon')
+  ];
+
+  // ==========================================
+  // 2. State Management & Storage
+  // ==========================================
+  const STORE_MASTERED = 'jp_cards_mastered';
+  const STORE_REVIEW = 'jp_cards_review';
+  const STORE_THEME = 'theme';
+
+  let masteredSet = new Set(JSON.parse(localStorage.getItem(STORE_MASTERED) || '[]'));
+  let reviewSet = new Set(JSON.parse(localStorage.getItem(STORE_REVIEW) || '[]'));
+  
+  // User Filters
+  let activeChars = new Set(['hira']); // 'hira', 'kata'
+  let activeSounds = new Set(['seion']); // 'seion', 'dakuon', 'yoon'
+  let activeStatus = 'all'; // 'all', 'unlearned', 'review', 'mastered'
+  let isShuffled = false;
+  
+  // Current Deck
+  let currentDeck = [];
+  let currentIndex = 0;
+  let isFlipped = false;
+  let toastTimer = null;
+
+  // ==========================================
+  // 3. Initialization
+  // ==========================================
+  function initApp() {
+    // Theme sync
+    const btn = document.getElementById('themeToggleBtn');
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    btn.textContent = currentTheme === 'dark' ? 'LIGHT' : 'DARK';
+    btn.addEventListener('click', toggleTheme);
+
+    buildDeck();
+  }
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme') || 'light';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', nextTheme);
+    localStorage.setItem(STORE_THEME, nextTheme);
+    document.getElementById('themeToggleBtn').textContent = nextTheme === 'dark' ? 'LIGHT' : 'DARK';
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toastMsg');
+    toast.innerText = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // ==========================================
+  // 4. Filtering & Deck Building
+  // ==========================================
+  function toggleOption(group, val) {
+    const set = group === 'char' ? activeChars : activeSounds;
+    if (set.has(val)) {
+      if (set.size > 1) set.delete(val); // Prevent deselecting all
+    } else {
+      set.add(val);
+    }
+    
+    // Update UI
+    document.querySelectorAll(`.toggle-btn[data-group="${group}"]`).forEach(btn => {
+      btn.classList.toggle('active', set.has(btn.dataset.val));
+    });
+
+    buildDeck();
+  }
+
+  function toggleSingleOption(group, val) {
+    activeStatus = val;
+    document.querySelectorAll(`.toggle-btn[data-group="${group}"]`).forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.val === val);
+    });
+    buildDeck();
+  }
+
+  function toggleShuffle() {
+    isShuffled = !isShuffled;
+    const btn = document.getElementById('shuffleBtn');
+    if (isShuffled) {
+      btn.classList.add('active');
+      btn.style.color = "var(--accent)";
+      btn.style.borderColor = "var(--accent)";
+      showToast('已開啟隨機排序');
+    } else {
+      btn.classList.remove('active');
+      btn.style.color = "var(--text-muted)";
+      btn.style.borderColor = "var(--border-color)";
+      showToast('已還原預設排序');
+    }
+    buildDeck();
+  }
+
+  function buildDeck() {
+    let tempDeck = [];
+    const soundNames = { seion: '清音', dakuon: '濁音', yoon: '拗音' };
+
+    // 1. Generate combinations based on Char & Sound selections
+    db.forEach(item => {
+      if (activeSounds.has(item.type)) {
+        if (activeChars.has('hira')) {
+          tempDeck.push({
+            id: `hira_${item.romaji}`,
+            front: item.hira,
+            backRomaji: item.romaji,
+            backAltChar: item.kata,
+            tag: `平假名 - ${soundNames[item.type]}`,
+            altLabel: '對應片假名'
+          });
+        }
+        if (activeChars.has('kata')) {
+          tempDeck.push({
+            id: `kata_${item.romaji}`,
+            front: item.kata,
+            backRomaji: item.romaji,
+            backAltChar: item.hira,
+            tag: `片假名 - ${soundNames[item.type]}`,
+            altLabel: '對應平假名'
+          });
+        }
+      }
+    });
+
+    // 2. Filter by Learning Status
+    currentDeck = tempDeck.filter(card => {
+      if (activeStatus === 'all') return true;
+      const isM = masteredSet.has(card.id);
+      const isR = reviewSet.has(card.id);
+      if (activeStatus === 'mastered') return isM;
+      if (activeStatus === 'review') return isR;
+      if (activeStatus === 'unlearned') return !isM && !isR;
+      return true;
+    });
+
+    // 3. Shuffle if needed
+    if (isShuffled) {
+      for (let i = currentDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
+      }
+    }
+
+    currentIndex = 0;
+    renderCard();
+    updateStats();
+  }
+
+  function updateStats() {
+    const total = currentDeck.length;
+    let mCount = 0;
+    let rCount = 0;
+    
+    // Count stats for currently selected scope (ignoring status filter to show true counts)
+    db.forEach(item => {
+      if (activeSounds.has(item.type)) {
+        if (activeChars.has('hira')) {
+          if (masteredSet.has(`hira_${item.romaji}`)) mCount++;
+          if (reviewSet.has(`hira_${item.romaji}`)) rCount++;
+        }
+        if (activeChars.has('kata')) {
+          if (masteredSet.has(`kata_${item.romaji}`)) mCount++;
+          if (reviewSet.has(`kata_${item.romaji}`)) rCount++;
+        }
+      }
+    });
+
+    document.getElementById('deckStatText').innerText = `已掌握 ${mCount} · 待複習 ${rCount}`;
+    
+    if (total === 0) {
+      document.getElementById('cardCounter').innerText = "0 / 0";
+      document.getElementById('progressBar').style.width = "0%";
+      document.getElementById('currentStatusText').innerText = "進度 0%";
+    } else {
+      const num = currentIndex + 1;
+      document.getElementById('cardCounter').innerText = `${num} / ${total}`;
+      const pct = Math.round((num / total) * 100);
+      document.getElementById('progressBar').style.width = `${pct}%`;
+      document.getElementById('currentStatusText').innerText = `目前進度 ${pct}% (第 ${num} 張)`;
+    }
+  }
+
+  // ==========================================
+  // 5. Card Rendering & Interaction
+  // ==========================================
+  function renderCard() {
+    isFlipped = false;
+    document.getElementById('flashcard').classList.remove('is-flipped');
+
+    const emptyState = document.getElementById('emptyState');
+    const frontContent = document.getElementById('frontContent');
+    const frontHint = document.getElementById('frontHint');
+    const tagChip = document.getElementById('cardTag');
+    const starBtn = document.getElementById('starBtn');
+
+    if (currentDeck.length === 0) {
+      emptyState.style.display = "flex";
+      frontContent.style.display = "none";
+      frontHint.style.display = "none";
+      tagChip.style.opacity = "0";
+      starBtn.style.opacity = "0";
+      return;
+    }
+
+    emptyState.style.display = "none";
+    frontContent.style.display = "flex";
+    frontHint.style.display = "block";
+    tagChip.style.opacity = "1";
+    starBtn.style.opacity = "1";
+
+    const card = currentDeck[currentIndex];
+    
+    // Front
+    document.getElementById('frontChar').innerText = card.front;
+    document.getElementById('cardTag').innerText = card.tag;
+    starBtn.classList.toggle('active', reviewSet.has(card.id));
+
+    // Back
+    document.getElementById('backRomaji').innerText = card.backRomaji;
+    document.getElementById('backAltLabel').innerText = card.altLabel;
+    document.getElementById('backAltChar').innerText = card.backAltChar;
+  }
+
+  function handleCardClick(e) {
+    if (e && e.target && e.target.closest('button')) return;
+    flipCard();
+  }
+
+  function flipCard() {
+    if (currentDeck.length === 0) return;
+    isFlipped = !isFlipped;
+    document.getElementById('flashcard').classList.toggle('is-flipped', isFlipped);
+  }
+
+  function nextCard() {
+    if (currentDeck.length === 0) return;
+    currentIndex = (currentIndex + 1) % currentDeck.length;
+    renderCard();
+    updateStats();
+  }
+
+  function prevCard() {
+    if (currentDeck.length === 0) return;
+    currentIndex = (currentIndex - 1 + currentDeck.length) % currentDeck.length;
+    renderCard();
+    updateStats();
+  }
+
+  function toggleStar(e) {
+    if (e) e.stopPropagation();
+    if (currentDeck.length === 0) return;
+    
+    const cardId = currentDeck[currentIndex].id;
+    if (reviewSet.has(cardId)) {
+      reviewSet.delete(cardId);
+      showToast('已從待複習移除');
+    } else {
+      reviewSet.add(cardId);
+      masteredSet.delete(cardId);
+      showToast('★ 已標記為待複習');
+    }
+    
+    saveState();
+    if (activeStatus !== 'all') buildDeck();
+    else { renderCard(); updateStats(); }
+  }
+
+  function markCardStatus(e, status) {
+    if (e) e.stopPropagation();
+    if (currentDeck.length === 0) return;
+    
+    const cardId = currentDeck[currentIndex].id;
+    if (status === 'mastered') {
+      masteredSet.add(cardId);
+      reviewSet.delete(cardId);
+      showToast('✓ 標記為已熟記');
+    } else {
+      reviewSet.add(cardId);
+      masteredSet.delete(cardId);
+      showToast('★ 標記為還不熟');
+    }
+
+    saveState();
+    if (activeStatus !== 'all') {
+      buildDeck();
+    } else {
+      nextCard();
+    }
+  }
+
+  function resetProgress() {
+    if (confirm('確定要清除目前的學習狀態嗎？（這將會取消所有已掌握與待複習標記）')) {
+      masteredSet.clear();
+      reviewSet.clear();
+      saveState();
+      buildDeck();
+      showToast('學習紀錄已重置');
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(STORE_MASTERED, JSON.stringify([...masteredSet]));
+    localStorage.setItem(STORE_REVIEW, JSON.stringify([...reviewSet]));
+  }
+
+  function speakCurrentWord(e) {
+    if (e) e.stopPropagation();
+    if (currentDeck.length === 0 || !('speechSynthesis' in window)) return;
+    
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(currentDeck[currentIndex].front);
+    utterance.lang = 'ja-JP';
+    utterance.rate = 0.85;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Run
+  initApp();
+</script>
+</body>
+</html>
