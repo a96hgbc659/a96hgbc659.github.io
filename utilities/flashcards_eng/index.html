@@ -1,69 +1,89 @@
 <!DOCTYPE html>
-<html lang="zh-TW" data-theme="light">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcards</title>
+  <title>Flashcards | ShihCheng Huang</title>
+  <script>
+    // 預先載入全站共用主題，避免畫面重新整理時產生閃爍 (FOUC)
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   <style>
-    :root {
-      /* Warm Muji Light Theme */
-      --bg-color: #f7f5f0;
-      --card-bg: #ffffff;
-      --card-back-bg: #fffdfa;
-      --text-main: #2d2926;
-      --text-muted: #79716b;
-      --text-sub: #a8a29e;
-      --border-color: #e7e2d9;
-      --border-dashed: #dcd5c9;
-      --tab-bg: #ece7de;
-      --chip-bg: #f3efe9;
-      --accent: #b85d38;
-      --accent-hover: #9e4a29;
-      --accent-soft: #fbf3ee;
-      --accent-border: rgba(184, 93, 56, 0.25);
-      --green: #4f7942;
-      --green-soft: #f0f6ee;
-      --green-border: rgba(79, 121, 66, 0.3);
-      --amber: #c87d2a;
-      --amber-soft: #fdf6ec;
-      --amber-border: rgba(200, 125, 42, 0.3);
-      --btn-hover: #f0ebe2;
-      --example-bg: #fbf9f5;
-      --shadow-sm: 0 2px 8px rgba(45, 41, 38, 0.04);
-      --shadow-md: 0 10px 25px -5px rgba(45, 41, 38, 0.07), 0 8px 10px -6px rgba(45, 41, 38, 0.04);
-      --shadow-lg: 0 20px 30px -10px rgba(45, 41, 38, 0.12);
-      --modal-overlay: rgba(30, 26, 23, 0.5);
-      --radius: 14px;
+    :root, [data-theme="light"] {
+      /* MUJI Light Mode - 再生紙米白、深炭褐與經典臙脂紅 */
+      --bg-color: #F7F6F2;
+      --bg-elevated: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --card-back-bg: #FDFDFC;
+      --text-main: #33312E;
+      --text-muted: #76716A;
+      --text-sub: #9E9890;
+      --border-color: #DCD7CE;
+      --border-dashed: #C3BDB3;
+      --tag-bg: #EFECE6;
+      --chip-bg: #EFECE6;
+      --tab-bg: #EFECE6;
+      --accent-color: #7F0019;
+      --accent: #7F0019;
+      --accent-hover: #5E0012;
+      --accent-soft: #F5E6E8;
+      --accent-border: rgba(127, 0, 25, 0.25);
+      
+      /* MUJI Style Feedback Colors */
+      --green: #4A7050;
+      --green-soft: #EDF1EE;
+      --green-border: rgba(74, 112, 80, 0.3);
+      --amber: #B07530;
+      --amber-soft: #F8F3ED;
+      --amber-border: rgba(176, 117, 48, 0.3);
+      
+      --btn-hover: #F0EDE5;
+      --example-bg: #F7F6F2;
+      --modal-overlay: rgba(51, 49, 46, 0.6);
+      --shadow-sm: 0 2px 8px rgba(51, 49, 46, 0.04);
+      --shadow-md: 0 4px 12px rgba(51, 49, 46, 0.08);
+      --shadow-lg: 0 10px 25px rgba(51, 49, 46, 0.12);
+      --radius: 8px; /* MUJI 更內斂的微圓角 */
     }
 
     [data-theme="dark"] {
-      /* Elegant Warm Dark Theme */
-      --bg-color: #1a1816;
-      --card-bg: #262320;
-      --card-back-bg: #2b2723;
-      --text-main: #f3eee8;
-      --text-muted: #aba39a;
-      --text-sub: #78716a;
-      --border-color: #3d3833;
-      --border-dashed: #4a443e;
-      --tab-bg: #2c2824;
-      --chip-bg: #35302b;
-      --accent: #d4764e;
-      --accent-hover: #e08a63;
-      --accent-soft: rgba(212, 118, 78, 0.18);
-      --accent-border: rgba(212, 118, 78, 0.35);
-      --green: #689f38;
-      --green-soft: rgba(104, 159, 56, 0.18);
-      --green-border: rgba(104, 159, 56, 0.35);
-      --amber: #d97706;
-      --amber-soft: rgba(217, 119, 6, 0.18);
-      --amber-border: rgba(217, 119, 6, 0.35);
-      --btn-hover: #332e29;
-      --example-bg: #221f1c;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
-      --shadow-lg: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+      /* MUJI Dark Mode - 深焙炭黑、亞麻米白與柔和臙脂紅 */
+      --bg-color: #1C1B1A;
+      --bg-elevated: #262523;
+      --card-bg: #262523;
+      --card-back-bg: #2A2927;
+      --text-main: #E6E2DC;
+      --text-muted: #9E9890;
+      --text-sub: #76716A;
+      --border-color: #3D3A36;
+      --border-dashed: #4A4642;
+      --tag-bg: #302E2B;
+      --chip-bg: #302E2B;
+      --tab-bg: #302E2B;
+      --accent-color: #C84B5F;
+      --accent: #C84B5F;
+      --accent-hover: #E06679;
+      --accent-soft: rgba(200, 75, 95, 0.15);
+      --accent-border: rgba(200, 75, 95, 0.35);
+      
+      --green: #6DA075;
+      --green-soft: rgba(109, 160, 117, 0.15);
+      --green-border: rgba(109, 160, 117, 0.35);
+      --amber: #C88D45;
+      --amber-soft: rgba(200, 141, 69, 0.15);
+      --amber-border: rgba(200, 141, 69, 0.35);
+      
+      --btn-hover: #33312E;
+      --example-bg: #1C1B1A;
       --modal-overlay: rgba(0, 0, 0, 0.75);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
 
     * {
@@ -71,11 +91,11 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
       min-height: 100vh;
@@ -83,6 +103,7 @@
       flex-direction: column;
       align-items: center;
       padding: 24px 16px 40px;
+      -webkit-font-smoothing: antialiased;
     }
 
     .app-container {
@@ -98,45 +119,53 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 8px;
     }
 
     .title-group h1 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       color: var(--text-main);
+      margin-bottom: 4px;
     }
 
-    .title-group p {
-      font-size: 0.82rem;
+    .back-link {
       color: var(--text-muted);
-      margin-top: 2px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+      display: inline-block;
+    }
+
+    .back-link:hover {
+      color: var(--accent-color);
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .theme-toggle-btn {
-      background: var(--card-bg);
+    .theme-toggle {
+      background-color: var(--tag-bg);
+      color: var(--text-muted);
       border: 1px solid var(--border-color);
-      color: var(--text-main);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: inherit;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
     }
 
-    .theme-toggle-btn:hover {
-      background: var(--btn-hover);
-      transform: scale(1.05);
+    .theme-toggle:hover {
+      color: var(--accent-color);
+      border-color: var(--accent-color);
     }
 
     .status-badge {
@@ -144,8 +173,8 @@
       font-weight: 600;
       color: var(--accent);
       background: var(--accent-soft);
-      padding: 6px 14px;
-      border-radius: 20px;
+      padding: 6px 12px;
+      border-radius: 4px;
       border: 1px solid var(--accent-border);
       white-space: nowrap;
     }
@@ -191,7 +220,7 @@
       display: flex;
       background: var(--tab-bg);
       padding: 3px;
-      border-radius: 8px;
+      border-radius: var(--radius);
       gap: 2px;
     }
 
@@ -200,7 +229,7 @@
       background: transparent;
       padding: 6px 11px;
       border-radius: 6px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 500;
       color: var(--text-muted);
       cursor: pointer;
@@ -223,7 +252,7 @@
       border: 1px solid var(--border-color);
       background: var(--card-bg);
       padding: 6px 12px;
-      border-radius: 8px;
+      border-radius: var(--radius);
       font-size: 0.8rem;
       color: var(--text-main);
       cursor: pointer;
@@ -289,7 +318,6 @@
       background: var(--card-back-bg);
     }
 
-    /* Ensure clean pointer events between 3D faces */
     .flashcard:not(.is-flipped) .card-face-front {
       pointer-events: auto;
       z-index: 2;
@@ -332,7 +360,7 @@
 
     .empty-title {
       font-size: 1.3rem;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--text-main);
     }
 
@@ -340,7 +368,7 @@
       font-size: 0.88rem;
       color: var(--text-muted);
       max-width: 400px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .empty-btn-group {
@@ -355,19 +383,17 @@
       color: #ffffff;
       border: none;
       padding: 10px 20px;
-      border-radius: 8px;
+      border-radius: var(--radius);
       font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: var(--shadow-sm);
     }
 
     .empty-cta-btn:hover {
       background: var(--accent-hover);
-      transform: translateY(-1px);
     }
 
     .empty-secondary-btn {
@@ -375,7 +401,7 @@
       color: var(--text-main);
       border: 1px solid var(--border-color);
       padding: 10px 18px;
-      border-radius: 8px;
+      border-radius: var(--radius);
       font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
@@ -400,8 +426,9 @@
       color: var(--text-muted);
       background: var(--chip-bg);
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-weight: 500;
+      border: 1px solid var(--border-color);
     }
 
     .star-btn {
@@ -467,7 +494,6 @@
     .audio-btn:hover {
       background: var(--accent);
       color: #ffffff;
-      transform: scale(1.08);
     }
 
     .pos-badge {
@@ -513,23 +539,23 @@
 
     .back-meaning {
       font-size: 1.35rem;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--accent);
       margin: 14px 0 16px;
-      line-height: 1.3;
+      line-height: 1.4;
     }
 
     .example-container {
       background: var(--example-bg);
       border-left: 3px solid var(--accent);
       padding: 12px 14px;
-      border-radius: 0 8px 8px 0;
+      border-radius: 0 4px 4px 0;
       margin-bottom: 14px;
     }
 
     .example-en {
       font-size: 0.95rem;
-      line-height: 1.5;
+      line-height: 1.6;
       color: var(--text-main);
       margin-bottom: 6px;
     }
@@ -537,13 +563,13 @@
     .example-zh {
       font-size: 0.88rem;
       color: var(--text-muted);
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
     .related-container {
       background: var(--chip-bg);
       padding: 10px 14px;
-      border-radius: 8px;
+      border-radius: 4px;
       font-size: 0.84rem;
       margin-bottom: 14px;
     }
@@ -556,7 +582,7 @@
 
     .related-body {
       color: var(--text-main);
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     .back-actions {
@@ -569,7 +595,7 @@
     .rate-btn {
       flex: 1;
       padding: 12px 0;
-      border-radius: 8px;
+      border-radius: var(--radius);
       border: none;
       font-size: 0.9rem;
       font-weight: 600;
@@ -587,7 +613,7 @@
     }
 
     .rate-btn-again:hover {
-      background: rgba(217, 119, 6, 0.28);
+      background: rgba(176, 117, 48, 0.2);
     }
 
     .rate-btn-good {
@@ -597,7 +623,7 @@
     }
 
     .rate-btn-good:hover {
-      background: rgba(104, 159, 56, 0.28);
+      background: rgba(74, 112, 80, 0.2);
     }
 
     /* Controls Bar */
@@ -717,7 +743,7 @@
     .github-sync-card {
       border: 1px solid var(--accent-border);
       background: var(--accent-soft);
-      border-radius: 10px;
+      border-radius: var(--radius);
       padding: 14px 16px;
       display: flex;
       flex-direction: column;
@@ -746,7 +772,7 @@
     .github-url-input {
       flex: 1;
       padding: 7px 10px;
-      border-radius: 6px;
+      border-radius: 4px;
       border: 1px solid var(--border-color);
       background: var(--card-bg);
       color: var(--text-main);
@@ -764,7 +790,7 @@
       color: #ffffff;
       border: none;
       padding: 7px 14px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
@@ -777,7 +803,7 @@
 
     .import-dropzone {
       border: 2px dashed var(--border-dashed);
-      border-radius: 10px;
+      border-radius: var(--radius);
       padding: 20px 16px;
       text-align: center;
       background: var(--chip-bg);
@@ -817,7 +843,7 @@
       width: 100%;
       height: 100px;
       padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: 4px;
       border: 1px solid var(--border-color);
       background: var(--bg-color);
       color: var(--text-main);
@@ -861,7 +887,7 @@
       background: transparent;
       border: 1px solid var(--border-color);
       padding: 8px 14px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.82rem;
       color: var(--text-muted);
       cursor: pointer;
@@ -876,7 +902,7 @@
       background: transparent;
       border: 1px solid rgba(220, 53, 69, 0.3);
       padding: 8px 12px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.82rem;
       color: #dc3545;
       cursor: pointer;
@@ -891,7 +917,7 @@
       color: #ffffff;
       border: none;
       padding: 8px 18px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
@@ -961,11 +987,12 @@
   <!-- Header -->
   <header>
     <div class="title-group">
+      <a href="../../index.html" class="back-link">← Back</a>
       <h1>Flashcards</h1>
-      <p>Flashcards</p>
     </div>
     <div class="header-actions">
-      <button class="theme-toggle-btn" id="themeToggleBtn" type="button" onclick="toggleTheme()" title="切換明暗主題">
+      <button class="theme-toggle" id="themeToggleBtn" type="button" aria-label="Toggle color theme">
+          DARK
       </button>
       <div class="status-badge" id="cardCounter">0 / 0</div>
     </div>
@@ -1181,16 +1208,15 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
 <div class="toast" id="toastMsg"></div>
 
 <script>
-  // Storage Keys
+  // Storage Keys (已與全站統一使用 'theme' 作為佈景主題 Key)
   const STORAGE_KEY_VOCAB = 'toeic_pure_vocab_list';
   const STORAGE_KEY_MASTERED = 'toeic_cards_mastered';
   const STORAGE_KEY_REVIEW = 'toeic_cards_review';
-  const STORAGE_KEY_THEME = 'toeic_cards_theme';
+  const STORAGE_KEY_THEME = 'theme'; 
   const STORAGE_KEY_GITHUB_URL = 'toeic_github_url';
 
   // State
   let allVocab = JSON.parse(localStorage.getItem(STORAGE_KEY_VOCAB) || '[]');
-  // Normalize all existing saved keys to lowercase trimmed strings
   let masteredSet = new Set(
     JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERED) || '[]').map(w => String(w).trim().toLowerCase())
   );
@@ -1245,7 +1271,13 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   async function initApp() {
-    initTheme();
+    // 主題初始化改為直接同步按鈕狀態，因為已在頭部優先執行過
+    const btn = document.getElementById('themeToggleBtn');
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    btn.textContent = currentTheme === 'dark' ? 'LIGHT' : 'DARK';
+    
+    // 綁定點擊事件以切換主題
+    btn.addEventListener('click', toggleTheme);
 
     const savedUrl = localStorage.getItem(STORAGE_KEY_GITHUB_URL);
     if (savedUrl) {
@@ -1336,31 +1368,16 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   /* ---------------- Theme Engine ---------------- */
-  function initTheme() {
-    const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
-    if (savedTheme) {
-      applyTheme(savedTheme);
-    } else {
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      applyTheme(prefersDark ? 'dark' : 'light');
-    }
-  }
-
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem(STORAGE_KEY_THEME, theme);
-    const btn = document.getElementById('themeToggleBtn');
-    if (theme === 'dark') {
-      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-    } else {
-      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
-    }
-  }
-
   function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
-    showToast(current === 'dark' ? '已切換為明亮主題' : '已切換為夜間暗色主題');
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme') || 'light';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    root.setAttribute('data-theme', nextTheme);
+    localStorage.setItem(STORAGE_KEY_THEME, nextTheme);
+    
+    const btn = document.getElementById('themeToggleBtn');
+    btn.textContent = nextTheme === 'dark' ? 'LIGHT' : 'DARK';
   }
 
   /* ---------------- Vocabulary State ---------------- */
