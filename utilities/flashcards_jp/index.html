@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日語五十音 Flashcards | ShihCheng Huang</title>
+  <script>
+    // 預先載入全站共用主題，避免畫面重新整理時產生閃爍 (FOUC)
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    :root, [data-theme="light"] {
+      /* MUJI Light Mode */
+      --bg-color: #F7F6F2;
+      --bg-elevated: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --card-back-bg: #FDFDFC;
+      --text-main: #33312E;
+      --text-muted: #76716A;
+      --text-sub: #9E9890;
+      --border-color: #DCD7CE;
+      --border-dashed: #C3BDB3;
+      --tag-bg: #EFECE6;
+      --chip-bg: #EFECE6;
+      --tab-bg: #EFECE6;
+      --accent-color: #7F0019;
+      --accent: #7F0019;
+      --accent-hover: #5E0012;
+      --accent-soft: #F5E6E8;
+      --accent-border: rgba(127, 0, 25, 0.25);
+      
+      --green: #4A7050;
+      --green-soft: #EDF1EE;
+      --green-border: rgba(74, 112, 80, 0.3);
+      --amber: #B07530;
+      --amber-soft: #F8F3ED;
+      --amber-border: rgba(176, 117, 48, 0.3);
+      
+      --btn-hover: #F0EDE5;
+      --shadow-sm: 0 2px 8px rgba(51, 49, 46, 0.04);
+      --shadow-md: 0 4px 12px rgba(51, 49, 46, 0.08);
+      --shadow-lg: 0 10px 25px rgba(51, 49, 46, 0.12);
+      --radius: 8px;
+    }
+
+    [data-theme="dark"] {
+      /* MUJI Dark Mode */
+      --bg-color: #1C1B1A;
+      --bg-elevated: #262523;
+      --card-bg: #262523;
+      --card-back-bg: #2A2927;
+      --text-main: #E6E2DC;
+      --text-muted: #9E9890;
+      --text-sub: #76716A;
+      --border-color: #3D3A36;
+      --border-dashed: #4A4642;
+      --tag-bg: #302E2B;
+      --chip-bg: #302E2B;
+      --tab-bg: #302E2B;
+      --accent-color: #C84B5F;
+      --accent: #C84B5F;
+      --accent-hover: #E06679;
+      --accent-soft: rgba(200, 75, 95, 0.15);
+      --accent-border: rgba(200, 75, 95, 0.35);
+      
+      --green: #6DA075;
+      --green-soft: rgba(109, 160, 117, 0.15);
+      --green-border: rgba(109, 160, 117, 0.35);
+      --amber: #C88D45;
+      --amber-soft: rgba(200, 141, 69, 0.15);
+      --amber-border: rgba(200, 141, 69, 0.35);
+      
+      --btn-hover: #33312E;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height:
