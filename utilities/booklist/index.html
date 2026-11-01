@@ -4,72 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booklist | ShihCheng Huang</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <style>
-        :root {
-            /* Muji Light Theme */
-            --muji-bg: #faf9f5;
-            --muji-surface: #ffffff;
-            --muji-text: #333230;
-            --muji-text-light: #807e7a;
-            --muji-border: #e6e4df;
+        :root,
+        [data-theme="light"] {
+            /* MUJI Light Mode - 再生紙米白、深炭褐與經典臙脂紅 */
+            --bg-color: #F7F6F2;
+            --bg-elevated: #FFFFFF;
+            --text-main: #33312E;
+            --text-muted: #76716A;
+            --accent-color: #7F0019;
+            --border-color: #DCD7CE;
+            --tag-bg: #EFECE6;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                /* Muji Dark Theme */
-                --muji-bg: #21201f;
-                --muji-surface: #2a2928;
-                --muji-text: #dedcd7;
-                --muji-text-light: #969490;
-                --muji-border: #3d3c3a;
-            }
+        [data-theme="dark"] {
+            /* MUJI Dark Mode - 深焙炭黑、亞麻米白與柔和臙脂紅 */
+            --bg-color: #1C1B1A;
+            --bg-elevated: #262523;
+            --text-main: #E6E2DC;
+            --text-muted: #9E9890;
+            --accent-color: #C84B5F;
+            --border-color: #3D3A36;
+            --tag-bg: #302E2B;
         }
 
         body {
-            font-family: "Helvetica Neue", Helvetica, Arial, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
-            background-color: var(--muji-bg);
-            color: var(--muji-text);
-            line-height: 1.8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
-            letter-spacing: 0.03em;
+            transition: background-color 0.25s ease, color 0.25s ease;
             -webkit-font-smoothing: antialiased;
         }
 
         .container {
             max-width: 800px;
-            width: 85%;
-            margin: 5rem 0;
+            width: 90%;
+            margin: 4rem 0;
         }
 
         header {
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
         }
 
         h1 {
             font-size: 2.2rem;
-            font-weight: 400;
+            font-weight: 600;
             margin: 0;
-            letter-spacing: 0.05em;
+            letter-spacing: -0.02em;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
 
         .back-link {
-            color: var(--muji-text-light);
+            color: var(--text-muted);
             text-decoration: none;
             font-size: 0.95rem;
-            font-weight: 300;
             transition: color 0.2s ease;
-            font-family: monospace;
-            letter-spacing: 0;
         }
 
         .back-link:hover {
-            color: var(--muji-text);
+            color: var(--accent-color);
+        }
+
+        .theme-toggle {
+            background-color: var(--tag-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: inherit;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
         }
 
         section {
@@ -77,12 +112,10 @@
         }
 
         h2 {
-            font-size: 1.1rem;
-            font-weight: 400;
-            color: var(--muji-text);
+            font-size: 1.3rem;
+            color: var(--accent-color);
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--muji-border);
-            padding-bottom: 0.5rem;
+            text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
@@ -93,34 +126,43 @@
         }
 
         .book-card {
-            background-color: var(--muji-surface);
-            border: 1px solid var(--muji-border);
-            border-radius: 2px;
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .book-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .book-title {
-            font-size: 1.1rem;
-            font-weight: 500;
+            font-size: 1.15rem;
+            font-weight: 600;
             margin: 0 0 0.3rem 0;
             line-height: 1.4;
+            color: var(--text-main);
         }
 
         .book-author {
             font-size: 0.9rem;
-            color: var(--muji-text-light);
+            color: var(--text-muted);
             margin: 0 0 1.2rem 0;
-            font-weight: 300;
         }
 
         .book-notes {
-            font-size: 0.9rem;
-            color: var(--muji-text);
+            font-size: 0.95rem;
+            color: var(--text-main);
             margin: 0 0 1.5rem 0;
             flex-grow: 1;
-            font-weight: 300;
         }
 
         .tags {
@@ -131,12 +173,12 @@
         }
 
         .tag {
-            border: 1px solid var(--muji-border);
-            color: var(--muji-text-light);
+            background-color: var(--tag-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
             padding: 0.2rem 0.6rem;
-            border-radius: 2px;
+            border-radius: 4px;
             font-size: 0.75rem;
-            font-weight: 300;
         }
     </style>
 </head>
@@ -144,7 +186,12 @@
     <div class="container">
         <header>
             <h1>Booklist</h1>
-            <a href="../../index.html" class="back-link"><- Back</a>
+            <div class="header-actions">
+                <a href="../../index.html" class="back-link">← Back</a>
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color theme">
+                    DARK
+                </button>
+            </div>
         </header>
 
         <main>
@@ -154,8 +201,6 @@
             <section>
                 <h2>Currently Reading</h2>
                 <div class="book-grid">
-                    
-                    <!-- Blank Book Card -->
                     <div class="book-card">
                         <h3 class="book-title">Book Title Here</h3>
                         <p class="book-author">Author Name</p>
@@ -165,7 +210,6 @@
                             <span class="tag">Started: YYYY-MM</span>
                         </div>
                     </div>
-
                 </div>
             </section>
 
@@ -175,8 +219,6 @@
             <section>
                 <h2>Want to Read</h2>
                 <div class="book-grid">
-                    
-                    <!-- Blank Book Card -->
                     <div class="book-card">
                         <h3 class="book-title">Book Title Here</h3>
                         <p class="book-author">Author Name</p>
@@ -185,7 +227,6 @@
                             <span class="tag">Genre</span>
                         </div>
                     </div>
-
                 </div>
             </section>
 
@@ -195,9 +236,40 @@
             <section>
                 <h2>Read</h2>
                 <div class="book-grid">
-                    
-                    <!-- Blank Book Card -->
                     <div class="book-card">
                         <h3 class="book-title">Book Title Here</h3>
                         <p class="book-author">Author Name</p>
-                        <p class="book-notes">My review
+                        <p class="book-notes">My review, key takeaways, and thoughts on the book.</p>
+                        <div class="tags">
+                            <span class="tag">Genre</span>
+                            <span class="tag">Finished: YYYY-MM</span>
+                            <span class="tag">Rating: ★★★★★</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        (function() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const root = document.documentElement;
+
+            function updateButtonLabel(theme) {
+                toggleBtn.textContent = theme === 'dark' ? 'LIGHT' : 'DARK';
+            }
+
+            updateButtonLabel(root.getAttribute('data-theme'));
+
+            toggleBtn.addEventListener('click', () => {
+                const currentTheme = root.getAttribute('data-theme');
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                root.setAttribute('data-theme', nextTheme);
+                localStorage.setItem('theme', nextTheme);
+                updateButtonLabel(nextTheme);
+            });
+        })();
+    </script>
+</body>
+</html>
