@@ -6,67 +6,77 @@
     <title>ShihCheng Huang | CAD Engineer</title>
     <style>
         :root {
-            --bg-color: #ffffff;
-            --text-main: #333333;
-            --text-muted: #666666;
-            --accent-color: #0056b3;
-            --border-color: #eaeaea;
+            /* Muji Light Theme */
+            --muji-bg: #faf9f5;
+            --muji-surface: #ffffff;
+            --muji-text: #333230;
+            --muji-text-light: #807e7a;
+            --muji-border: #e6e4df;
+            --muji-hover: #f2f0eb;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #1e1e1e;
-                --text-main: #dfdfdf;
-                --text-muted: #a0a0a0;
-                --accent-color: #4da3ff;
-                --border-color: #333333;
+                /* Muji Dark Theme - 保持低對比的柔和深色 */
+                --muji-bg: #21201f;
+                --muji-surface: #2a2928;
+                --muji-text: #dedcd7;
+                --muji-text-light: #969490;
+                --muji-border: #3d3c3a;
+                --muji-hover: #333230;
             }
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
+            font-family: "Helvetica Neue", Helvetica, Arial, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--muji-bg);
+            color: var(--muji-text);
+            line-height: 1.8;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
+            letter-spacing: 0.03em;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 760px;
-            width: 90%;
-            margin: 4rem 0;
+            max-width: 680px;
+            width: 85%;
+            margin: 5rem 0;
         }
 
         header {
-            margin-bottom: 3rem;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 1.5rem;
+            margin-bottom: 4rem;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin: 0 0 0.5rem 0;
-            letter-spacing: -0.02em;
+            font-size: 2.2rem;
+            font-weight: 400;
+            margin: 0 0 0.3rem 0;
+            letter-spacing: 0.05em;
         }
 
         .subtitle {
-            font-size: 1.25rem;
-            color: var(--text-muted);
+            font-size: 0.95rem;
+            color: var(--muji-text-light);
             margin: 0;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
         section {
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         h2 {
-            font-size: 1.3rem;
-            color: var(--accent-color);
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--muji-text);
             margin-bottom: 1.5rem;
-            text-transform: uppercase;
+            border-bottom: 1px solid var(--muji-border);
+            padding-bottom: 0.5rem;
             letter-spacing: 0.05em;
         }
 
@@ -74,83 +84,101 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .job-title {
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-size: 1.1rem;
+            font-weight: 500;
             margin: 0;
         }
 
         .job-date {
-            font-size: 0.95rem;
-            color: var(--text-muted);
+            font-size: 0.9rem;
+            color: var(--muji-text-light);
+            font-weight: 300;
         }
 
         .job-description {
             margin: 0;
             padding-left: 1.2rem;
+            color: var(--muji-text);
+            font-weight: 300;
         }
 
         .job-description li {
             margin-bottom: 0.8rem;
-            color: var(--text-main);
         }
 
         .tags {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             display: flex;
-            gap: 0.5rem;
+            gap: 0.6rem;
             flex-wrap: wrap;
         }
 
         .tag {
-            background-color: var(--border-color);
-            color: var(--text-muted);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
+            border: 1px solid var(--muji-border);
+            color: var(--muji-text-light);
+            padding: 0.2rem 0.8rem;
             font-size: 0.8rem;
-        }
-
-        footer {
-            margin-top: 5rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
+            font-weight: 300;
+            border-radius: 2px;
         }
 
         .utilities {
-            font-size: 0.9rem;
-        }
-
-        .utilities h3 {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin: 0 0 0.8rem 0;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .utility-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
             display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 0.8rem;
         }
 
-        .utility-list a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.2s;
-            display: inline-flex;
+        .utility-card {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.3rem;
+            padding: 1.2rem 1.5rem;
+            background-color: var(--muji-surface);
+            border: 1px solid var(--muji-border);
+            border-radius: 2px;
+            text-decoration: none;
+            color: var(--muji-text);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
 
-        .utility-list a:hover {
-            color: var(--accent-color);
+        .utility-card:hover {
+            background-color: var(--muji-hover);
+            border-color: #c2c0bc;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .utility-card:hover {
+                border-color: #5c5a57;
+            }
+        }
+
+        .utility-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .utility-name {
+            font-size: 1rem;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .utility-desc {
+            font-size: 0.85rem;
+            color: var(--muji-text-light);
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .utility-arrow {
+            color: var(--muji-text-light);
+            font-weight: 300;
+            font-family: monospace;
         }
     </style>
 </head>
@@ -171,29 +199,59 @@
                         <span class="job-date">2023 — Present</span>
                     </div>
                     <ul class="job-description">
-                        <li>Maintain, optimize and develop Physical Design flows.</li>
-                        <li><b>Innovus flow maintain</b></li>
-                        <li><b>Cerebrus flow development</b></li>
-                        <li><b>JedAI flow development</b></li>
-                        <li><b>InnoStack flow development</b></li>
-                        <li><b>Project support</b></li>
-                        <li><b>In-house AI utilities development</b>: Machine Learning, Reinforce Learning, and Agentic AI Flow Integration</li>
+                        <li>Maintain and optimize Electronic Design Automation (EDA) flows, assisting the Physical Design team in improving chip development and routing efficiency.</li>
+                        <li><b>Cadence Innovus Application & Automation:</b> Develop and maintain Tcl/Python scripts to automate the Place and Route (PnR) flow, reducing human errors and accelerating design convergence.</li>
+                        <li><b>Cerebrus AI Integration:</b> Leverage the machine learning-driven EDA tool, Cerebrus, for PPA (Power, Performance, Area) space exploration and model training to optimize overall chip design performance.</li>
+                        <li><b>JedAI Data Analysis:</b> Utilize the Joint Enterprise Data and AI (JedAI) platform for design data collection and analysis, establishing visual metrics to facilitate cross-functional design decisions.</li>
+                        <li>Troubleshoot software integration issues encountered during the design process and collaborate with cross-functional teams to build a more stable and scalable design environment.</li>
                     </ul>
                     <div class="tags">
                         <span class="tag">EDA Tools</span>
                         <span class="tag">Innovus</span>
                         <span class="tag">Cerebrus</span>
                         <span class="tag">JedAI</span>
-                        <span class="tag">Tcl / Python / C++ / Rust / HTML</span>
-                        <span class="tag">PyTorch / TensorFlow</span>
-                        <span class="tag">Retrieval-Augmentation Generation (RAG)</span>
-                        <span class="tag">LangCahin / LangGraph</span>
+                        <span class="tag">Tcl / Python</span>
                     </div>
                 </div>
             </section>
+
+            <section class="links">
+                <h2>Utilities & Links</h2>
+                <div class="utilities">
+                    <a href="./utilities/pomodoro-timer/index.html" class="utility-card">
+                        <div class="utility-info">
+                            <span class="utility-name">Pomodoro Timer</span>
+                            <span class="utility-desc">Focus timer with background push notifications</span>
+                        </div>
+                        <span class="utility-arrow">-></span>
+                    </a>
+
+                    <a href="./utilities/flashcards_eng/index.html" class="utility-card">
+                        <div class="utility-info">
+                            <span class="utility-name">English Flashcards</span>
+                            <span class="utility-desc">Spaced repetition memory tool</span>
+                        </div>
+                        <span class="utility-arrow">-></span>
+                    </a>
+                    
+                    <a href="./utilities/booklist/index.html" class="utility-card">
+                        <div class="utility-info">
+                            <span class="utility-name">Booklist</span>
+                            <span class="utility-desc">Reading tracking and notes</span>
+                        </div>
+                        <span class="utility-arrow">-></span>
+                    </a>
+
+                    <a href="./trips/employee_travel_2026/index.html" class="utility-card">
+                        <div class="utility-info">
+                            <span class="utility-name">2026 Employee Travel</span>
+                            <span class="utility-desc">Company trip itinerary and info</span>
+                        </div>
+                        <span class="utility-arrow">-></span>
+                    </a>
+                </div>
+            </section>
         </main>
-        <footer>
-        </footer>
     </div>
 </body>
 </html>
