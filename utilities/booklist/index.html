@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booklist | ShihCheng Huang</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --accent-color: #0056b3;
+            --border-color: #eaeaea;
+            --card-bg: #fafafa;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1e1e1e;
+                --text-main: #dfdfdf;
+                --text-muted: #a0a0a0;
+                --accent-color: #4da3ff;
+                --border-color: #333333;
+                --card-bg: #252525;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 4rem 0;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .book-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin: 0 0 0.2rem 0;
+            line-height: 1.3;
+        }
+
+        .book-author {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0 0 1rem 0;
+        }
+
+        .book-notes {
+            font-size: 0.9rem;
+            margin: 0 0 1rem 0;
+            flex-grow: 1;
+        }
+
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .tag {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Booklist</h1>
+            <a href="../../index.html" class="back-link">← Back to Profile</a>
+        </header>
+
+        <main>
+            <!-- ==========================================
+                 CURRENTLY READING
+                 ========================================== -->
+            <section>
+                <h2>📖 Currently Reading</h2>
+                <div class="book-grid">
+                    
+                    <!-- Blank Book Card -->
+                    <div class="book-card">
+                        <h3 class="book-title">Book Title Here</h3>
+                        <p class="book-author">Author Name</p>
+                        <p class="book-notes">Brief notes, thoughts, or current progress goes here.</p>
+                        <div class="tags">
+                            <span class="tag">Genre / Category</span>
+                            <span class="tag">Started: YYYY-MM</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 WANT TO READ
+                 ========================================== -->
+            <section>
+                <h2>🔖 Want to Read</h2>
+                <div class="book-grid">
+                    
+                    <!-- Blank Book Card -->
+                    <div class="book-card">
+                        <h3 class="book-title">Book Title Here</h3>
+                        <p class="book-author">Author Name</p>
+                        <p class="book-notes">Why I want to read this book.</p>
+                        <div class="tags">
+                            <span class="tag">Genre / Category</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 READ (FINISHED)
+                 ========================================== -->
+            <section>
+                <h2>✅ Read</h2>
+                <div class="book-grid">
+                    
+                    <!-- Blank Book Card -->
+                    <div class="book-card">
+                        <h3 class="book-title">Book Title Here</h3>
+                        <p class="book-author">Author Name</p>
+                        <p class="book-notes">My review, key takeaways, or rating (e.g., ★★★★☆).</p>
+                        <div class="tags">
+                            <span class="tag">Genre / Category</span>
+                            <span class="tag">Finished: YYYY-MM</span>
+                        </div>
+                    </div>
+
+                    <!-- You can copy and paste the .book-card div to add more books -->
+
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
