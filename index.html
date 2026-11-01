@@ -4,23 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShihCheng Huang | CAD Engineer</title>
+    <script>
+        // 預先載入主題，避免畫面重新整理時產生閃爍 (FOUC)
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-main: #333333;
-            --text-muted: #666666;
-            --accent-color: #0056b3;
-            --border-color: #eaeaea;
+        :root,
+        [data-theme="light"] {
+            /* MUJI Light Mode - 再生紙米白、深炭褐與經典臙脂紅 */
+            --bg-color: #F7F6F2;
+            --text-main: #33312E;
+            --text-muted: #76716A;
+            --accent-color: #7F0019;
+            --border-color: #DCD7CE;
+            --tag-bg: #EFECE6;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #1e1e1e;
-                --text-main: #dfdfdf;
-                --text-muted: #a0a0a0;
-                --accent-color: #4da3ff;
-                --border-color: #333333;
-            }
+        [data-theme="dark"] {
+            /* MUJI Dark Mode - 深焙炭黑、亞麻米白與柔和臙脂紅 */
+            --bg-color: #1C1B1A;
+            --text-main: #E6E2DC;
+            --text-muted: #9E9890;
+            --accent-color: #C84B5F;
+            --border-color: #3D3A36;
+            --tag-bg: #262523;
         }
 
         body {
@@ -32,6 +44,7 @@
             padding: 0;
             display: flex;
             justify-content: center;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
         .container {
@@ -44,6 +57,10 @@
             margin-bottom: 3rem;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
         }
 
         h1 {
@@ -56,6 +73,27 @@
             font-size: 1.25rem;
             color: var(--text-muted);
             margin: 0;
+        }
+
+        .theme-toggle {
+            background-color: var(--tag-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: inherit;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-top: 0.4rem;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
         }
 
         section {
@@ -74,6 +112,8 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             margin-bottom: 0.5rem;
         }
 
@@ -106,7 +146,8 @@
         }
 
         .tag {
-            background-color: var(--border-color);
+            background-color: var(--tag-bg);
+            border: 1px solid var(--border-color);
             color: var(--text-muted);
             padding: 0.2rem 0.6rem;
             border-radius: 4px;
@@ -157,8 +198,13 @@
 <body>
     <div class="container">
         <header>
-            <h1>ShihCheng Huang</h1>
-            <p class="subtitle">CAD Engineer</p>
+            <div>
+                <h1>ShihCheng Huang</h1>
+                <p class="subtitle">CAD Engineer</p>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color theme">
+                DARK
+            </button>
         </header>
 
         <main>
@@ -172,12 +218,12 @@
                     </div>
                     <ul class="job-description">
                         <li>Maintain, optimize and develop Physical Design flows.</li>
-                        <li><b>Innovus flow maintain</b></li>
+                        <li><b>Innovus flow maintenance</b></li>
                         <li><b>Cerebrus flow development</b></li>
                         <li><b>JedAI flow development</b></li>
                         <li><b>InnoStack flow development</b></li>
                         <li><b>Project support</b></li>
-                        <li><b>In-house AI utilities development</b>: Machine Learning, Reinforce Learning, and Agentic AI Flow Integration</li>
+                        <li><b>In-house AI utilities development</b>: Machine Learning, Reinforcement Learning, and Agentic AI Flow Integration</li>
                     </ul>
                     <div class="tags">
                         <span class="tag">EDA Tools</span>
@@ -186,8 +232,8 @@
                         <span class="tag">JedAI</span>
                         <span class="tag">Tcl / Python / C++ / Rust / HTML</span>
                         <span class="tag">PyTorch / TensorFlow</span>
-                        <span class="tag">Retrieval-Augmentation Generation (RAG)</span>
-                        <span class="tag">LangCahin / LangGraph</span>
+                        <span class="tag">Retrieval-Augmented Generation (RAG)</span>
+                        <span class="tag">LangChain / LangGraph</span>
                     </div>
                 </div>
             </section>
@@ -195,5 +241,26 @@
         <footer>
         </footer>
     </div>
+
+    <script>
+        (function() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const root = document.documentElement;
+
+            function updateButtonLabel(theme) {
+                toggleBtn.textContent = theme === 'dark' ? 'LIGHT' : 'DARK';
+            }
+
+            updateButtonLabel(root.getAttribute('data-theme'));
+
+            toggleBtn.addEventListener('click', () => {
+                const currentTheme = root.getAttribute('data-theme');
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                root.setAttribute('data-theme', nextTheme);
+                localStorage.setItem('theme', nextTheme);
+                updateButtonLabel(nextTheme);
+            });
+        })();
+    </script>
 </body>
 </html>
