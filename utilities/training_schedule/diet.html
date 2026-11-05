@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動態碳循環飲食計算器</title>
+    <style>
+        :root {
+            /* MUJI 風格色系 */
+            --primary: #822525;      /* 無印經典暗紅 */
+            --bg: #F5F3EB;           /* 溫暖和紙白 */
+            --card-bg: #FFFFFF;      /* 純白底色 */
+            --text-main: #4A4238;    /* 深暖灰褐色（取代純黑） */
+            --text-muted: #888075;   /* 柔和次要文字 */
+            --border: #E6E2D8;       /* 淺米色邊框 */
+            
+            /* 莫蘭迪柔和色（高低碳標示） */
+            --high: #C06C6C;         /* 柔和磚紅 */
+            --med: #CBA573;          /* 溫潤木色 */
+            --low: #8C9D86;          /* 鼠尾草綠 */
+            --table-header: #F0EDE5; /* 淺米色表頭 */
+        }
+        
+        body {
+            /* 偏向日系簡約的字體設定 */
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans TC", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 2.5rem 1rem;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        
+        .container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px; /* MUJI 偏好微圓角或直角 */
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+        }
+        
+        h2 { 
+            margin-top: 0; 
+            text-align: center; 
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        input {
+            padding: 0.6rem;
+            font-size: 1rem;
+            width: 90px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            text-align: center;
+            color: var(--text-main);
+            background-color: #FAFAFA;
+            outline: none;
+            transition: border 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--text-muted);
+        }
+        
+        button {
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            letter-spacing: 1px;
+        }
+        
+        button:hover { 
+            opacity: 0.85; 
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        th, td {
+            padding: 1.2rem 0.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th { 
+            font-weight: 500; 
+            color: var(--text-main); 
+            background-color: var(--table-header);
+        }
+        
+        /* 側邊顏色指示條 */
+        .row-high { border-left: 5px solid var(--high); }
+        .row-med { border-left: 5px solid var(--med); }
+        .row-low { border-left: 5px solid var(--low); }
+        
+        .scenario-text {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        
+        .note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 2rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>碳循環飲食計畫</h2>
+        <div class="input-group">
+            <label for="weightInput">體重 (kg)</label>
+            <input type="number" id="weightInput" value="76" step="0.5" min="40" max="150">
+            <button onclick="calculateMacros()">計算</button>
+        </div>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>模式</th>
+                    <th>總熱量</th>
+                    <th>蛋白質</th>
+                    <th>碳水</th>
+                    <th>脂肪</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 內容由 JavaScript 動態生成 -->
+            </tbody>
+        </table>
+
+        <div class="note">
+            蛋白質基準為體重 × 2.1g。<br>
+            隨體重數值更動，脂肪與碳水比例將自動微調以達最佳體態控管效率。
+        </div>
+    </div>
+
+    <script>
+        function calculateMacros() {
+            const weight = parseFloat(document.getElementById('weightInput').value);
+            if (isNaN(weight) || weight <= 0) return;
+
+            const pro = Math.round(weight * 2.1);
+            const proCal = pro * 4;
+
+            const highCal = Math.round(weight * 32.2);
+            const highFat = Math.round(weight * 0.6);
+            const highCarb = Math.round((highCal - proCal - (highFat * 9)) / 4);
+
+            const medCal = Math.round(weight * 26.3);
+            const medFat = Math.round(weight * 0.8);
+            const medCarb = Math.round((medCal - proCal - (medFat * 9)) / 4);
+
+            const lowCal = Math.round(weight * 21.7);
+            const lowCarb = 50; 
+            const lowFat = Math.round((lowCal - proCal - (lowCarb * 4)) / 9);
+
+            const tbody = document.querySelector('#resultTable tbody');
+            tbody.innerHTML = `
+                <tr class="row-high">
+                    <td><strong>高碳日</strong><span class="scenario-text">腿/背部大肌群訓練</span></td>
+                    <td>${highCal} kcal</td>
+                    <td>${pro} g</td>
+                    <td>${highCarb} g</td>
+                    <td>${highFat} g</td>
+                </tr>
+                <tr class="row-med">
+                    <td><strong>中碳日</strong><span class="scenario-text">肩/手部小肌群訓練</span></td>
+                    <td>${medCal} kcal</td>
+                    <td>${pro} g</td>
+                    <td>${medCarb} g</td>
+                    <td>${medFat} g</td>
+                </tr>
+                <tr class="row-low">
+                    <td><strong>低碳日</strong><span class="scenario-text">休息日或有氧訓練</span></td>
+                    <td>${lowCal} kcal</td>
+                    <td>${pro} g</td>
+                    <td>${lowCarb} g</td>
+                    <td>${lowFat} g</td>
+                </tr>
+            `;
+        }
+
+        window.onload = calculateMacros;
+    </script>
+</body>
+</html>
