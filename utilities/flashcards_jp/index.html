@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   <title>日語學習 Flashcards | ShihCheng Huang</title>
   <script>
     // 預先載入全站共用主題，避免畫面重新整理時產生閃爍 (FOUC)
@@ -527,7 +528,7 @@
     .phonetic-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -589,7 +590,7 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
     .back-word {
@@ -1210,9 +1211,14 @@
           <!-- 50音 Front Center -->
           <div class="card-center" id="kanaFrontCenter">
             <h2 class="jp-character" id="kanaFrontChar">あ</h2>
-            <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentItem(event)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-            </button>
+            <div class="phonetic-row">
+              <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentItem(event)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+              <button class="audio-btn" type="button" title="複製假名" onclick="copyCurrentWord(event)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
           </div>
 
           <!-- 單字卡 Front Center -->
@@ -1222,6 +1228,9 @@
               <span class="phonetic-text" id="vocabFrontPhonetic"></span>
               <button class="audio-btn" type="button" title="播放單字發音" onclick="speakCurrentItem(event)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+              <button class="audio-btn" type="button" title="複製單字" onclick="copyCurrentWord(event)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </button>
             </div>
             <span class="pos-badge" id="vocabFrontPos"></span>
@@ -1240,7 +1249,7 @@
           <div class="empty-btn-group" id="emptyBtnGroup" style="display:none;">
             <button class="empty-cta-btn" type="button" onclick="syncFromSource()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-              <span>從 Google 試算表讀取</span>
+              <span>從 Google 試算表 / CSV 讀取</span>
             </button>
             <button class="empty-secondary-btn" type="button" onclick="openImportModal()">
               <span>手動上傳 / 自訂來源</span>
@@ -1255,9 +1264,14 @@
         <div id="kanaBackWrapper" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
           <div class="card-top" style="margin-bottom: auto;">
             <span class="tag-chip" id="kanaBackTag">平假名 - 清音</span>
-            <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentItem(event)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-            </button>
+            <div style="display:flex; gap:6px;">
+              <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentItem(event)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+              <button class="audio-btn" type="button" title="複製假名" onclick="copyCurrentWord(event)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
           </div>
 
           <div class="card-center">
@@ -1277,6 +1291,9 @@
               <span class="phonetic-text" id="vocabBackPhonetic" style="font-size:0.95rem;"></span>
               <button class="audio-btn" type="button" title="播放單字發音" onclick="speakCurrentItem(event)" style="width:30px; height:30px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+              <button class="audio-btn" type="button" title="複製單字" onclick="copyCurrentWord(event)" style="width:30px; height:30px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </button>
             </div>
             <span class="back-pos" id="vocabBackPos"></span>
@@ -1327,7 +1344,7 @@
   </div>
 
   <footer>
-    <div class="stat-text">純靜態架構 · 內建五十音字庫並支援讀取 Google 試算表與 CSV</div>
+    <div class="stat-text">純靜態架構 · 支援 Google 語音朗讀與試算表同步</div>
   </footer>
 </div>
 
@@ -1348,10 +1365,10 @@
           <span style="font-size:0.75rem; color:var(--text-muted);" id="githubFetchStatus">就緒</span>
         </div>
         <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
-          可直接貼上<strong>公開的 Google 試算表網址</strong>（權限需設為「知道連結的人均可檢視」）或 CSV 網址：
+          您可以輸入 GitHub Raw CSV 網址，或直接貼上<strong>公開的 Google 試算表網址</strong>（請確保權限為「知道連結的人均可檢視」）：
         </p>
         <div class="github-url-input-group">
-          <input type="text" class="github-url-input" id="githubUrlInput" value="" placeholder="貼上 Google 試算表或 CSV 網址">
+          <input type="text" class="github-url-input" id="githubUrlInput" value="./vocabulary.csv" placeholder="例如：公開的 Google 試算表網址">
           <button class="github-fetch-btn" type="button" onclick="fetchCustomUrl()">載入讀取</button>
         </div>
       </div>
@@ -1415,9 +1432,6 @@
   const STORE_VOCAB_REVIEW = 'jp_vocab_review';
   const STORE_VOCAB_URL = 'jp_vocab_sheet_url';
 
-  // 預設綁定 Google 試算表
-  const DEFAULT_JP_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1l5v2KDof5XPNb' + 'VJ0HnVQoPp8GkkBVed9O' + 'as618aNd0I/edit?usp=sharing';
-
   // ==========================================
   // 2. Hardcoded 50 Sounds Data
   // ==========================================
@@ -1444,6 +1458,7 @@
   let appMode = localStorage.getItem(STORE_APP_MODE) || 'kana'; // 'kana' or 'vocab'
   let isFlipped = false;
   let toastTimer = null;
+  let currentAudio = null;
 
   // --- Kana State ---
   let kanaMasteredSet = new Set(JSON.parse(localStorage.getItem(STORE_KANA_MASTERED) || '[]'));
@@ -1479,15 +1494,18 @@
     btn.textContent = currentTheme === 'dark' ? 'LIGHT' : 'DARK';
     btn.addEventListener('click', toggleTheme);
 
-    const savedUrl = localStorage.getItem(STORE_VOCAB_URL) || DEFAULT_JP_SHEET_URL;
-    document.getElementById('githubUrlInput').value = savedUrl;
+    const savedUrl = localStorage.getItem(STORE_VOCAB_URL);
+    if (savedUrl) {
+      document.getElementById('githubUrlInput').value = savedUrl;
+    }
 
     buildKanaDeck();
     updateVocabFilterList();
 
-    // 若單字庫為空，背景預先載入預設 Google 試算表
+    // 若單字庫為空，嘗試載入預設或已存的來源
     if (allVocab.length === 0) {
-      await fetchVocabularyFile(savedUrl, false);
+      const targetUrl = document.getElementById('githubUrlInput').value || './vocabulary.csv';
+      await fetchVocabularyFile(targetUrl, false);
     }
 
     switchAppMode(appMode, false);
@@ -1947,7 +1965,7 @@
   }
 
   // ==========================================
-  // 8. Card Interactions & Speech Synthesis
+  // 8. Card Interactions, Copy & Google TTS
   // ==========================================
   function handleCardClick(e) {
     if (e && e.target && e.target.closest('button')) return;
@@ -2122,13 +2140,31 @@
     return word;
   }
 
+  // 方案二：Google 翻譯 TTS 音訊串流（若離線則自動退回系統內建語音）
   function speakTextInJapanese(text) {
-    if (!text || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ja-JP';
-    utterance.rate = 0.85;
-    window.speechSynthesis.speak(utterance);
+    if (!text) return;
+
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    const ttsUrl = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=ja&q=${encodeURIComponent(text)}`;
+    const audio = new Audio(ttsUrl);
+    currentAudio = audio;
+
+    audio.play().catch(err => {
+      console.warn('Google TTS 串流失敗，退回系統內建語音:', err);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+      }
+    });
   }
 
   function speakCurrentItem(e) {
@@ -2145,6 +2181,25 @@
       const textToSpeak = extractKanaReading(item.word, item.phonetic);
       speakTextInJapanese(textToSpeak);
     }
+  }
+
+  function copyCurrentWord(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    let textToCopy = '';
+    if (appMode === 'kana') {
+      if (kanaDeck.length === 0) return;
+      textToCopy = kanaDeck[kanaIndex].front;
+    } else {
+      if (vocabDisplayedIndices.length === 0) return;
+      textToCopy = allVocab[vocabDisplayedIndices[vocabIndex]].word;
+    }
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      showToast(`📋 已複製：${textToCopy}`);
+    });
   }
 
   // ==========================================
@@ -2224,7 +2279,7 @@
   }
 
   function syncFromSource() {
-    const url = document.getElementById('githubUrlInput').value.trim() || DEFAULT_JP_SHEET_URL;
+    const url = document.getElementById('githubUrlInput').value.trim() || './vocabulary.csv';
     fetchVocabularyFile(url, true);
   }
 
