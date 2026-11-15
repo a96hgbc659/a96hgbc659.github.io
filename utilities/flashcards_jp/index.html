@@ -468,7 +468,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     /* 50音 Typography */
@@ -1208,32 +1208,25 @@
             <button class="star-btn" id="starBtn" type="button" title="加入或移除待複習" onclick="toggleStar(event)">★</button>
           </div>
 
-          <!-- 50音 Front Center -->
+          <!-- 50音 Front Center (已移除正面發音按鈕) -->
           <div class="card-center" id="kanaFrontCenter">
             <h2 class="jp-character" id="kanaFrontChar">あ</h2>
             <div class="phonetic-row">
-              <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentItem(event)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-              </button>
               <button class="audio-btn" type="button" title="複製假名" onclick="copyCurrentWord(event)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </button>
             </div>
           </div>
 
-          <!-- 單字卡 Front Center -->
+          <!-- 單字卡 Front Center (已移除正面平/片假名讀音、羅馬拼音與發音按鈕) -->
           <div class="card-center" id="vocabFrontCenter" style="display:none;">
             <h2 class="word-text" id="vocabFrontWord">Loading...</h2>
             <div class="phonetic-row" id="vocabFrontPhoneticRow">
-              <span class="phonetic-text" id="vocabFrontPhonetic"></span>
-              <button class="audio-btn" type="button" title="播放單字發音" onclick="speakCurrentItem(event)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-              </button>
-              <button class="audio-btn" type="button" title="複製單字" onclick="copyCurrentWord(event)">
+              <span class="pos-badge" id="vocabFrontPos"></span>
+              <button class="audio-btn" id="vocabFrontCopyBtn" type="button" title="複製單字" onclick="copyCurrentWord(event)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </button>
             </div>
-            <span class="pos-badge" id="vocabFrontPos"></span>
           </div>
 
           <div class="card-bottom-hint" id="frontHint">點擊卡片檢視羅馬拼音</div>
@@ -1283,7 +1276,7 @@
           </div>
         </div>
 
-        <!-- 單字卡 Back Content -->
+        <!-- 單字卡 Back Content (背面完整保留平/片假名讀音、羅馬拼音與發音按鈕) -->
         <div id="vocabBackWrapper" style="display:none; flex-direction:column; height:100%;">
           <div class="back-header">
             <div class="back-word-group">
@@ -1788,14 +1781,14 @@
       if (!isKanaReversed) {
         frontCharEl.innerText = card.front;
         frontCharEl.classList.remove('is-reversed-front');
-        frontHint.innerText = '點擊卡片檢視羅馬拼音';
+        frontHint.innerText = '點擊卡片檢視羅馬拼音與發音';
 
         backRomajiEl.innerText = card.backRomaji;
         backRomajiEl.classList.remove('is-reversed-back');
       } else {
         frontCharEl.innerText = card.backRomaji;
         frontCharEl.classList.add('is-reversed-front');
-        frontHint.innerText = '點擊卡片檢視對應假名';
+        frontHint.innerText = '點擊卡片檢視對應假名與發音';
 
         backRomajiEl.innerText = card.front;
         backRomajiEl.classList.add('is-reversed-back');
@@ -1835,26 +1828,25 @@
       const k = getWordKey(item.word);
 
       const frontWordEl = document.getElementById('vocabFrontWord');
-      const frontPhoneticRow = document.getElementById('vocabFrontPhoneticRow');
+      const frontCopyBtn = document.getElementById('vocabFrontCopyBtn');
       const frontHintEl = document.getElementById('frontHint');
       const backWordEl = document.getElementById('vocabBackWord');
       const backMeaningEl = document.getElementById('vocabBackMeaning');
 
       if (!isVocabReversed) {
-        // 標準模式：日 ➔ 中
+        // 標準模式：日 ➔ 中 (正面僅顯示日文單字與詞性，不顯示假名/羅馬音與發音)
         frontWordEl.innerText = item.word || '';
         frontWordEl.classList.remove('is-reversed-front');
-        frontPhoneticRow.style.display = 'flex';
-        document.getElementById('vocabFrontPhonetic').innerText = item.phonetic || '';
-        frontHintEl.innerText = '點擊卡片或下方「翻轉卡片」按鈕檢視中文釋義與例句';
+        if (frontCopyBtn) frontCopyBtn.style.display = 'inline-flex';
+        frontHintEl.innerText = '點擊卡片或下方「翻轉卡片」按鈕檢視讀音、中文釋義與例句';
 
         backWordEl.classList.remove('is-reversed-back');
         backMeaningEl.classList.remove('is-reversed-back');
       } else {
-        // 反轉模式：中 ➔ 日
+        // 反轉模式：中 ➔ 日 (正面僅顯示中文釋義與詞性)
         frontWordEl.innerText = item.meaning || '';
         frontWordEl.classList.add('is-reversed-front');
-        frontPhoneticRow.style.display = 'none';
+        if (frontCopyBtn) frontCopyBtn.style.display = 'none';
         frontHintEl.innerText = '點擊卡片或下方「翻轉卡片」按鈕檢視日語單字、讀音與例句';
 
         backWordEl.classList.add('is-reversed-back');
@@ -1868,7 +1860,7 @@
       document.getElementById('cardTag').innerText = item.tag || '日語單字';
       document.getElementById('starBtn').classList.toggle('active', vocabReviewSet.has(k));
 
-      // Back Face
+      // Back Face (顯示完整單字、假名/羅馬音、發音按鈕與例句)
       backWordEl.innerText = item.word || '';
       document.getElementById('vocabBackPhonetic').innerText = item.phonetic || '';
       const backPosEl = document.getElementById('vocabBackPos');
