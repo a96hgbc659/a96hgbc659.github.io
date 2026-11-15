@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   <title>Flashcards | ShihCheng Huang</title>
   <script>
     // 預先載入全站共用主題，避免畫面重新整理時產生閃爍 (FOUC)
@@ -48,7 +49,7 @@
       --shadow-sm: 0 2px 8px rgba(51, 49, 46, 0.04);
       --shadow-md: 0 4px 12px rgba(51, 49, 46, 0.08);
       --shadow-lg: 0 10px 25px rgba(51, 49, 46, 0.12);
-      --radius: 8px; /* MUJI 更內斂的微圓角 */
+      --radius: 8px;
     }
 
     [data-theme="dark"] {
@@ -475,7 +476,7 @@
     .phonetic-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .phonetic-text {
@@ -530,7 +531,7 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
     .back-word {
@@ -1081,6 +1082,9 @@
               <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentWord(event)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
               </button>
+              <button class="audio-btn" type="button" title="複製單字" onclick="copyCurrentWord(event)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
             </div>
             <span class="pos-badge" id="frontPos"></span>
           </div>
@@ -1115,6 +1119,9 @@
             <span class="phonetic-text" id="backPhonetic" style="font-size:0.95rem;"></span>
             <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentWord(event)" style="width:28px; height:28px;">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <button class="audio-btn" type="button" title="複製單字" onclick="copyCurrentWord(event)" style="width:28px; height:28px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
           </div>
           <span class="back-pos" id="backPos"></span>
@@ -1163,7 +1170,7 @@
   </div>
 
   <footer>
-    <div class="stat-text">純靜態架構 · 支援讀取 GitHub CSV 與 Google 試算表</div>
+    <div class="stat-text">純靜態架構 · 支援 Google 語音朗讀與試算表同步</div>
   </footer>
 </div>
 
@@ -1259,6 +1266,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   let currentFilter = 'all'; // 'all', 'unlearned', 'review', 'mastered'
   let displayedIndices = [];
   let toastTimer = null;
+  let currentAudio = null;
 
   function getWordKey(word) {
     return String(word || '').trim().toLowerCase();
@@ -1300,12 +1308,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   }
 
   async function initApp() {
-    // 主題初始化改為直接同步按鈕狀態，因為已在頭部優先執行過
     const btn = document.getElementById('themeToggleBtn');
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     btn.textContent = currentTheme === 'dark' ? 'LIGHT' : 'DARK';
-    
-    // 綁定點擊事件以切換主題
     btn.addEventListener('click', toggleTheme);
 
     const savedUrl = localStorage.getItem(STORAGE_KEY_GITHUB_URL);
@@ -1322,7 +1327,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
   }
 
- /* ---------------- Fetch Engine (支援 Google Sheets 自動轉換) ---------------- */
+  /* ---------------- Fetch Engine (支援 Google Sheets 自動轉換) ---------------- */
   async function fetchVocabularyFile(rawUrl, isUserTriggered = true) {
     const statusLabel = document.getElementById('githubFetchStatus');
     if (statusLabel) statusLabel.innerText = "連線讀取中...";
@@ -1330,17 +1335,14 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     try {
       let processUrl = rawUrl;
       
-      // 自動偵測並轉換 Google 試算表網址為支援 CORS 的 CSV 輸出格式 (gviz API)
       const sheetMatch = rawUrl.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
       if (sheetMatch) {
         const sheetId = sheetMatch[1];
         const gidMatch = rawUrl.match(/[?&]gid=(\d+)/);
         const gid = gidMatch ? gidMatch[1] : '0';
-        // 使用 Google Visualization API 端點，穩定回傳純 CSV
         processUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
       }
 
-      // 避免快取
       const fetchUrl = processUrl.includes('?') ? `${processUrl}&_t=${Date.now()}` : `${processUrl}?_t=${Date.now()}`;
       const response = await fetch(fetchUrl);
 
@@ -1350,7 +1352,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
 
       const csvText = await response.text();
       
-      // 【新增防呆檢查】如果抓回來的是 HTML 網頁，直接報錯阻斷
       const textTrimmed = csvText.trim();
       if (textTrimmed.startsWith('<!DOCTYPE') || textTrimmed.startsWith('<html') || textTrimmed.includes('og:type content=Google Docs')) {
          throw new Error("抓取到的內容為網頁 (HTML) 而非單字。請確認 Google 試算表共用權限已設為「知道連結的人均可檢視」。");
@@ -1375,7 +1376,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       }
 
       saveVocabList();
-      localStorage.setItem(STORAGE_KEY_GITHUB_URL, rawUrl); // 儲存原始網址
+      localStorage.setItem(STORAGE_KEY_GITHUB_URL, rawUrl);
       updateFilterList();
       currentIndex = 0;
       renderCard();
@@ -1574,7 +1575,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     const backWordEl = document.getElementById('backWord');
     const backMeaningEl = document.getElementById('backMeaning');
 
-    // Front & Back Mode Rendering
     if (!isReversed) {
       // 標準模式：正面英文，背面中文與例句
       frontWordEl.innerText = item.word || '';
@@ -1769,6 +1769,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
   }
 
+  // 方案二：Google 翻譯 TTS 音訊串流（若離線則自動退回系統內建語音）
   function speakCurrentWord(e) {
     if (e) {
       e.preventDefault();
@@ -1776,13 +1777,43 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
     if (displayedIndices.length === 0) return;
     const item = allVocab[displayedIndices[currentIndex]];
+    const text = item.word;
+    if (!text) return;
+
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(item.word);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
     }
+
+    const ttsUrl = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=en&q=${encodeURIComponent(text)}`;
+    const audio = new Audio(ttsUrl);
+    currentAudio = audio;
+
+    audio.play().catch(err => {
+      console.warn('Google TTS 串流失敗，退回系統內建語音:', err);
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    });
+  }
+
+  function copyCurrentWord(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (displayedIndices.length === 0) return;
+    const textToCopy = allVocab[displayedIndices[currentIndex]].word;
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      showToast(`📋 已複製：${textToCopy}`);
+    });
   }
 
   /* ---------------- Import & Export System ---------------- */
@@ -1818,7 +1849,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      // 忽略包含標題的行數
       if (i === 0 && (line.includes('單字') || line.includes('Word') || line.includes('word'))) {
         continue;
       }
