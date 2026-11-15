@@ -1223,6 +1223,9 @@
               <button class="audio-btn" type="button" title="播放單字發音" onclick="speakCurrentItem(event)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
               </button>
+              <button class="audio-btn" type="button" title="複製單字" onclick="copyCurrentWord(event)" style="width:30px; height:30px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
             </div>
             <span class="pos-badge" id="vocabFrontPos"></span>
           </div>
@@ -1277,6 +1280,9 @@
               <span class="phonetic-text" id="vocabBackPhonetic" style="font-size:0.95rem;"></span>
               <button class="audio-btn" type="button" title="播放單字發音" onclick="speakCurrentItem(event)" style="width:30px; height:30px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+              <button class="audio-btn" type="button" title="複製單字" onclick="copyCurrentWord(event)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </button>
             </div>
             <span class="back-pos" id="vocabBackPos"></span>
@@ -2145,6 +2151,19 @@
       const textToSpeak = extractKanaReading(item.word, item.phonetic);
       speakTextInJapanese(textToSpeak);
     }
+  }
+
+  function copyCurrentWord(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (vocabDisplayedIndices.length === 0) return;
+    const textToCopy = allVocab[vocabDisplayedIndices[vocabIndex]].word;
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      showToast(`📋 已複製：${textToCopy}`);
+    });
   }
 
   // ==========================================
