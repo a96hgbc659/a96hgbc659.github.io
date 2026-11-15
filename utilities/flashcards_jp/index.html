@@ -229,6 +229,13 @@
       color: var(--accent);
     }
 
+    .action-btn-group {
+      margin-left: auto;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
     .progress-bar-bg {
       height: 6px;
       width: 100%;
@@ -290,6 +297,23 @@
       background: var(--card-back-bg);
     }
 
+    .flashcard:not(.is-flipped) .card-face-front {
+      pointer-events: auto;
+      z-index: 2;
+    }
+    .flashcard:not(.is-flipped) .card-face-back {
+      pointer-events: none;
+      z-index: 1;
+    }
+    .flashcard.is-flipped .card-face-front {
+      pointer-events: none;
+      z-index: 1;
+    }
+    .flashcard.is-flipped .card-face-back {
+      pointer-events: auto;
+      z-index: 2;
+    }
+
     /* Card Content Styling */
     .card-top {
       display: flex;
@@ -337,12 +361,24 @@
       margin-bottom: 12px;
     }
 
+    .jp-character.is-reversed-front {
+      font-size: 4.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
     .romaji-text {
       font-size: 3.5rem;
       font-weight: 700;
       color: var(--accent);
       line-height: 1;
       margin-bottom: 16px;
+    }
+
+    .romaji-text.is-reversed-back {
+      font-size: 5rem;
+      font-weight: 500;
+      line-height: 1.05;
     }
 
     .alt-character {
@@ -511,7 +547,10 @@
         <button class="toggle-btn active" data-group="char" data-val="hira" onclick="toggleOption('char', 'hira')">平假名</button>
         <button class="toggle-btn" data-group="char" data-val="kata" onclick="toggleOption('char', 'kata')">片假名</button>
       </div>
-      <button class="toggle-btn" style="border:1px solid var(--border-color); margin-left:auto;" onclick="toggleShuffle()" id="shuffleBtn">🔀 隨機排序</button>
+      <div class="action-btn-group">
+        <button class="toggle-btn" style="border:1px solid var(--border-color);" onclick="toggleReverse()" id="reverseBtn" title="切換假名 / 羅馬音出題方向">⇄ 假名 ➔ 羅馬音</button>
+        <button class="toggle-btn" style="border:1px solid var(--border-color);" onclick="toggleShuffle()" id="shuffleBtn">🔀 隨機排序</button>
+      </div>
     </div>
     
     <!-- 音韻篩選 -->
@@ -551,7 +590,7 @@
     <div class="flashcard" id="flashcard">
       
       <!-- Front Face -->
-      <div class="card-face" id="cardFrontFace">
+      <div class="card-face card-face-front" id="cardFrontFace">
         <div class="card-top">
           <span class="tag-chip" id="cardTag">平假名 - 清音</span>
           <button class="star-btn" id="starBtn" type="button" title="加入或移除待複習" onclick="toggleStar(event)">★</button>
@@ -576,7 +615,10 @@
       <!-- Back Face -->
       <div class="card-face card-face-back" id="cardBackFace">
         <div class="card-top" style="margin-bottom: auto;">
-          <span class="tag-chip" style="opacity: 0;">Spacer</span>
+          <span class="tag-chip" id="backTag">平假名 - 清音</span>
+          <button class="audio-btn" type="button" title="播放發音" onclick="speakCurrentWord(event)" style="margin-top:0; width:34px; height:34px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          </button>
         </div>
 
         <div class="card-center">
@@ -647,6 +689,7 @@
   let activeSounds = new Set(['seion']); // 'seion', 'dakuon', 'yoon'
   let activeStatus = 'all'; // 'all', 'unlearned', 'review', 'mastered'
   let isShuffled = false;
+  let isReversed = false; // false: 假名 ➔ 羅馬音, true: 羅馬音 ➔ 假名
   
   // Current Deck
   let currentDeck = [];
@@ -709,6 +752,25 @@
       btn.classList.toggle('active', btn.dataset.val === val);
     });
     buildDeck();
+  }
+
+  function toggleReverse() {
+    isReversed = !isReversed;
+    const btn = document.getElementById('reverseBtn');
+    if (isReversed) {
+      btn.classList.add('active');
+      btn.style.color = "var(--accent)";
+      btn.style.borderColor = "var(--accent)";
+      btn.innerText = "⇄ 羅馬音 ➔ 假名";
+      showToast('已切換為「羅馬音 ➔ 假名」反向模式');
+    } else {
+      btn.classList.remove('active');
+      btn.style.color = "var(--text-muted)";
+      btn.style.borderColor = "var(--border-color)";
+      btn.innerText = "⇄ 假名 ➔ 羅馬音";
+      showToast('已切換為「假名 ➔ 羅馬音」標準模式');
+    }
+    renderCard();
   }
 
   function toggleShuffle() {
@@ -845,14 +907,33 @@
     starBtn.style.opacity = "1";
 
     const card = currentDeck[currentIndex];
-    
-    // Front
-    document.getElementById('frontChar').innerText = card.front;
-    document.getElementById('cardTag').innerText = card.tag;
+    const frontCharEl = document.getElementById('frontChar');
+    const backRomajiEl = document.getElementById('backRomaji');
+
+    if (!isReversed) {
+      // 標準模式：正面假名，背面羅馬拼音
+      frontCharEl.innerText = card.front;
+      frontCharEl.classList.remove('is-reversed-front');
+      frontHint.innerText = '點擊卡片檢視羅馬拼音';
+
+      backRomajiEl.innerText = card.backRomaji;
+      backRomajiEl.classList.remove('is-reversed-back');
+    } else {
+      // 反向模式：正面羅馬拼音，背面目標假名
+      frontCharEl.innerText = card.backRomaji;
+      frontCharEl.classList.add('is-reversed-front');
+      frontHint.innerText = '點擊卡片檢視對應假名';
+
+      backRomajiEl.innerText = card.front;
+      backRomajiEl.classList.add('is-reversed-back');
+    }
+
+    // Tags & Star
+    tagChip.innerText = card.tag;
+    document.getElementById('backTag').innerText = `${card.tag} (${card.backRomaji})`;
     starBtn.classList.toggle('active', reviewSet.has(card.id));
 
-    // Back
-    document.getElementById('backRomaji').innerText = card.backRomaji;
+    // Back Alt Char
     document.getElementById('backAltLabel').innerText = card.altLabel;
     document.getElementById('backAltChar').innerText = card.backAltChar;
   }
