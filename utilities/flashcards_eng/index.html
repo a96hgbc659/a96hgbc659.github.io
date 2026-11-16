@@ -1151,13 +1151,18 @@
 
         <div class="back-meaning" id="backMeaning"></div>
 
-        <!-- 例句區塊：包含英文例句發音按鈕 -->
+        <!-- 例句區塊：包含英文例句發音與複製按鈕 -->
         <div class="example-container" id="exampleBox">
           <div class="example-en-row">
             <div class="example-en" id="backExample"></div>
-            <button class="audio-btn" id="exampleAudioBtn" type="button" title="播放例句發音" onclick="speakCurrentExample(event)" style="width:28px; height:28px;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-            </button>
+            <div id="exampleActionGroup" style="display:flex; gap:6px; flex-shrink:0;">
+              <button class="audio-btn" id="exampleAudioBtn" type="button" title="播放例句發音" onclick="speakCurrentExample(event)" style="width:28px; height:28px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+              <button class="audio-btn" id="exampleCopyBtn" type="button" title="複製例句" onclick="copyCurrentExample(event)" style="width:28px; height:28px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
           </div>
           <div class="example-zh" id="backExampleZh"></div>
         </div>
@@ -1799,7 +1804,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     backMeaningEl.innerText = item.meaning || '';
 
     const exBox = document.getElementById('exampleBox');
-    const exAudioBtn = document.getElementById('exampleAudioBtn');
+    const exActionGroup = document.getElementById('exampleActionGroup');
     const hasEnEx = Boolean(item.example && item.example.trim());
     const hasZhEx = Boolean(item.example_zh && item.example_zh.trim());
 
@@ -1807,7 +1812,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       exBox.style.display = "block";
       document.getElementById('backExample').innerText = item.example || '';
       document.getElementById('backExampleZh').innerText = item.example_zh || '';
-      if (exAudioBtn) exAudioBtn.style.display = hasEnEx ? "flex" : "none";
+      if (exActionGroup) exActionGroup.style.display = hasEnEx ? "flex" : "none";
     } else {
       exBox.style.display = "none";
     }
@@ -1977,6 +1982,19 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     if (!textToCopy) return;
     navigator.clipboard.writeText(textToCopy).then(() => {
       showToast(`📋 已複製：${textToCopy}`);
+    });
+  }
+
+  function copyCurrentExample(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (displayedIndices.length === 0) return;
+    const textToCopy = (allVocab[displayedIndices[currentIndex]].example || '').trim();
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      showToast('📋 已複製例句！');
     });
   }
 
