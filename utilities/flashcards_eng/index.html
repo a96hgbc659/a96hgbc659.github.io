@@ -1215,8 +1215,23 @@
       <button class="modal-close-btn" type="button" onclick="closeImportModal()">&times;</button>
     </div>
     <div class="modal-body">
-      <!-- Google Cloud TTS API Key 設定區塊 -->
+      <!-- Google Cloud TTS API Key 與聲音模型設定區塊 -->
       <div class="tts-config-card">
+        <div class="github-sync-header">
+          <span class="github-sync-title" style="color:var(--text-main);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+            Google Cloud TTS 語音設定 (選填)
+          </span>
+          <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);" id="ttsApiStatus">未設定 (使用預設語音)</span>
+        </div>
+        <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
+          填入 Google Cloud API Key 後，單字與例句將優先使用您選擇的雲端語音模型；若留空則自動使用預設免費語音：
+        </p>
+        <div class="github-url-input-group">
+          <input type="password" class="github-url-input" id="ttsApiKeyInput" placeholder="貼上 Google Cloud API Key (AIza...)" autocomplete="off">
+          <button class="github-fetch-btn" type="button" onclick="saveTtsApiKey()">儲存金鑰</button>
+          <button class="btn-secondary" type="button" onclick="clearTtsApiKey()" style="padding:7px 10px;">清除</button>
+        </div>
         <div class="github-url-input-group">
           <select class="github-url-input" id="ttsVoiceSelect" onchange="changeTtsVoice()" style="font-family:inherit; cursor:pointer;">
             <optgroup label="Neural2 (推薦・最自然真人感)">
@@ -1239,21 +1254,6 @@
             </optgroup>
           </select>
           <button class="btn-secondary" type="button" onclick="previewTtsVoice()" style="padding:7px 12px; white-space:nowrap;">🔊 試聽</button>
-        </div>
-        <div class="github-sync-header">
-          <span class="github-sync-title" style="color:var(--text-main);">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
-            Google Cloud TTS 語音設定 (選填)
-          </span>
-          <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);" id="ttsApiStatus">未設定 (使用預設語音)</span>
-        </div>
-        <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
-          填入 Google Cloud API Key 後，單字與例句將優先使用真人級 <strong>Neural2</strong> 語音；若留空則自動使用預設免費語音：
-        </p>
-        <div class="github-url-input-group">
-          <input type="password" class="github-url-input" id="ttsApiKeyInput" placeholder="貼上 Google Cloud API Key (AIza...)" autocomplete="off">
-          <button class="github-fetch-btn" type="button" onclick="saveTtsApiKey()">儲存金鑰</button>
-          <button class="btn-secondary" type="button" onclick="clearTtsApiKey()" style="padding:7px 10px;">清除</button>
         </div>
       </div>
 
@@ -1399,10 +1399,12 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       document.getElementById('githubUrlInput').value = savedUrl;
     }
 
-    // 初始化 Google Cloud TTS API Key 狀態
+    // 初始化 Google Cloud TTS API Key 與語音選單狀態
     if (ttsApiKey) {
       document.getElementById('ttsApiKeyInput').value = ttsApiKey;
     }
+    const voiceSelect = document.getElementById('ttsVoiceSelect');
+    if (voiceSelect) voiceSelect.value = ttsVoiceName;
     updateTtsStatusUI();
 
     if (allVocab.length === 0) {
@@ -1413,9 +1415,6 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       updateStats();
     }
   }
-  const voiceSelect = document.getElementById('ttsVoiceSelect');
-  if (voiceSelect) voiceSelect.value = ttsVoiceName;
-  updateTtsStatusUI();
 
   /* ---------------- Google Cloud TTS 設定與雙層語音引擎 ---------------- */
   function updateTtsStatusUI() {
@@ -1504,16 +1503,17 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       return;
     }
 
-    // 檢查記憶體快取
+    // 檢查記憶體快取 (綁定目前選取的聲音名稱)
     const cacheKey = `${ttsVoiceName}_${cleanText}`;
-    const langCode = ttsVoiceName.split('-').slice(0, 2).join('-') || 'en-US';
-    voice: { languageCode: langCode, name: ttsVoiceName },
     if (ttsAudioCache.has(cacheKey)) {
       const audio = new Audio(`data:audio/mp3;base64,${ttsAudioCache.get(cacheKey)}`);
       currentAudio = audio;
       audio.play().catch(() => playFallbackEnglishTTS(cleanText));
       return;
     }
+
+    // 自動從聲音名稱擷取語言代碼 (例如 en-US, en-GB, en-AU)
+    const langCode = ttsVoiceName.split('-').slice(0, 2).join('-') || 'en-US';
 
     // 呼叫官方 Google Cloud Text-to-Speech API
     try {
@@ -1522,7 +1522,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           input: { text: cleanText },
-          voice: { languageCode: 'en-US', name: 'en-US-Neural2-F' },
+          voice: { languageCode: langCode, name: ttsVoiceName },
           audioConfig: { audioEncoding: 'MP3', speakingRate: 0.95 }
         })
       });
