@@ -1217,6 +1217,29 @@
     <div class="modal-body">
       <!-- Google Cloud TTS API Key 設定區塊 -->
       <div class="tts-config-card">
+        <div class="github-url-input-group">
+          <select class="github-url-input" id="ttsVoiceSelect" onchange="changeTtsVoice()" style="font-family:inherit; cursor:pointer;">
+            <optgroup label="Neural2 (推薦・最自然真人感)">
+              <option value="en-US-Neural2-F">美式女聲 (en-US-Neural2-F) - 預設溫暖</option>
+              <option value="en-US-Neural2-C">美式女聲 (en-US-Neural2-C) - 清晰知性</option>
+              <option value="en-US-Neural2-D">美式男聲 (en-US-Neural2-D) - 沉穩自然</option>
+              <option value="en-US-Neural2-J">美式男聲 (en-US-Neural2-J) - 年輕活力</option>
+              <option value="en-GB-Neural2-A">英式女聲 (en-GB-Neural2-A) - 倫敦口音</option>
+              <option value="en-GB-Neural2-B">英式男聲 (en-GB-Neural2-B) - 倫敦口音</option>
+              <option value="en-AU-Neural2-A">澳洲女聲 (en-AU-Neural2-A) - 澳洲口音</option>
+            </optgroup>
+            <optgroup label="WaveNet (高音質・每月免費額度較高)">
+              <option value="en-US-Wavenet-F">美式女聲 (en-US-Wavenet-F)</option>
+              <option value="en-US-Wavenet-D">美式男聲 (en-US-Wavenet-D)</option>
+              <option value="en-GB-Wavenet-A">英式女聲 (en-GB-Wavenet-A)</option>
+            </optgroup>
+            <optgroup label="Standard (標準合成音・最省額度)">
+              <option value="en-US-Standard-C">美式女聲 (en-US-Standard-C)</option>
+              <option value="en-US-Standard-D">美式男聲 (en-US-Standard-D)</option>
+            </optgroup>
+          </select>
+          <button class="btn-secondary" type="button" onclick="previewTtsVoice()" style="padding:7px 12px; white-space:nowrap;">🔊 試聽</button>
+        </div>
         <div class="github-sync-header">
           <span class="github-sync-title" style="color:var(--text-main);">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
@@ -1303,6 +1326,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
   const STORAGE_KEY_THEME = 'theme'; 
   const STORAGE_KEY_GITHUB_URL = 'toeic_github_url';
   const STORAGE_KEY_TTS_API_KEY = 'google_tts_api_key';
+  const STORAGE_KEY_TTS_VOICE = 'google_tts_voice_en';
 
   // State
   let allVocab = JSON.parse(localStorage.getItem(STORAGE_KEY_VOCAB) || '[]');
@@ -1313,6 +1337,7 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEW) || '[]').map(w => String(w).trim().toLowerCase())
   );
   let ttsApiKey = (localStorage.getItem(STORAGE_KEY_TTS_API_KEY) || '').trim();
+  let ttsVoiceName = localStorage.getItem(STORAGE_KEY_TTS_VOICE) || 'en-US-Neural2-F';
   const ttsAudioCache = new Map();
 
   let currentIndex = 0;
@@ -1388,18 +1413,34 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
       updateStats();
     }
   }
+  const voiceSelect = document.getElementById('ttsVoiceSelect');
+  if (voiceSelect) voiceSelect.value = ttsVoiceName;
+  updateTtsStatusUI();
 
   /* ---------------- Google Cloud TTS 設定與雙層語音引擎 ---------------- */
   function updateTtsStatusUI() {
     const statusEl = document.getElementById('ttsApiStatus');
     if (!statusEl) return;
     if (ttsApiKey) {
-      statusEl.innerText = '✓ 已啟用 Cloud Neural2 語音';
+      statusEl.innerText = `✓ 已啟用 (${ttsVoiceName})`;
       statusEl.style.color = 'var(--green)';
     } else {
       statusEl.innerText = '未設定 (使用預設語音)';
       statusEl.style.color = 'var(--text-muted)';
     }
+  }
+
+  function changeTtsVoice() {
+    const selectEl = document.getElementById('ttsVoiceSelect');
+    if (!selectEl) return;
+    ttsVoiceName = selectEl.value;
+    localStorage.setItem(STORAGE_KEY_TTS_VOICE, ttsVoiceName);
+    updateTtsStatusUI();
+    showToast(`已切換語音為：${ttsVoiceName}`);
+  }
+
+  function previewTtsVoice() {
+    playEnglishTTS('Hello! This is a preview of the selected voice.');
   }
 
   function saveTtsApiKey() {
@@ -1464,7 +1505,9 @@ contract,['kantrækt],n.,合約,Please review the contract carefully.,請仔細�
     }
 
     // 檢查記憶體快取
-    const cacheKey = `en_${cleanText}`;
+    const cacheKey = `${ttsVoiceName}_${cleanText}`;
+    const langCode = ttsVoiceName.split('-').slice(0, 2).join('-') || 'en-US';
+    voice: { languageCode: langCode, name: ttsVoiceName },
     if (ttsAudioCache.has(cacheKey)) {
       const audio = new Audio(`data:audio/mp3;base64,${ttsAudioCache.get(cacheKey)}`);
       currentAudio = audio;
