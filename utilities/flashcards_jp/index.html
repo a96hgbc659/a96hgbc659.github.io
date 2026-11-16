@@ -369,12 +369,11 @@
       font-weight: 600;
     }
 
-    /* Flashcard 3D Stage */
+    /* Flashcard 3D Stage (僅透過下方按鈕翻轉) */
     .flashcard-stage {
       perspective: 1200px;
       width: 100%;
       height: 430px;
-      cursor: pointer;
     }
 
     .flashcard {
@@ -1172,7 +1171,7 @@
         <button class="toggle-btn" data-group="sound" data-val="yoon" onclick="toggleKanaOption('sound', 'yoon')">拗音</button>
       </div>
       <div class="action-btn-group">
-        <button class="toggle-btn" style="border:1px solid var(--border-color);" onclick="openImportModal()" title="設定 Google Cloud TTS 語音金鑰">⚙ 語音設定</button>
+        <button class="toggle-btn" style="border:1px solid var(--border-color);" onclick="openImportModal()" title="設定 Google Cloud TTS 語音金鑰與模型">⚙ 語音設定</button>
       </div>
     </div>
 
@@ -1221,8 +1220,8 @@
     </div>
   </div>
 
-  <!-- ==================== 3D Flashcard Stage ==================== -->
-  <div class="flashcard-stage" onclick="handleCardClick(event)">
+  <!-- ==================== 3D Flashcard Stage (僅點擊下方「翻轉卡片」按鈕時翻轉) ==================== -->
+  <div class="flashcard-stage">
     <div class="flashcard" id="flashcard">
       
       <!-- Front Face -->
@@ -1254,7 +1253,7 @@
             </div>
           </div>
 
-          <div class="card-bottom-hint" id="frontHint">點擊卡片檢視羅馬拼音</div>
+          <div class="card-bottom-hint" id="frontHint">點擊下方「翻轉卡片」按鈕檢視羅馬拼音與發音</div>
         </div>
 
         <!-- Empty State View -->
@@ -1301,7 +1300,7 @@
           </div>
         </div>
 
-        <!-- 單字卡 Back Content (背面完整保留讀音、單字發音與例句發音按鈕) -->
+        <!-- 單字卡 Back Content (背面完整保留讀音、單字發音/複製與例句發音/複製按鈕) -->
         <div id="vocabBackWrapper" style="display:none; flex-direction:column; height:100%;">
           <div class="back-header">
             <div class="back-word-group">
@@ -1319,13 +1318,18 @@
 
           <div class="back-meaning" id="vocabBackMeaning"></div>
 
-          <!-- 例句區塊：包含日文例句發音按鈕 -->
+          <!-- 例句區塊：包含日文例句發音與複製按鈕 -->
           <div class="example-container" id="vocabExampleBox">
             <div class="example-jp-row">
               <div class="example-jp" id="vocabBackExample"></div>
-              <button class="audio-btn" id="vocabExampleAudioBtn" type="button" title="播放例句發音" onclick="speakCurrentExample(event)" style="width:28px; height:28px;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-              </button>
+              <div id="vocabExampleActionGroup" style="display:flex; gap:6px; flex-shrink:0;">
+                <button class="audio-btn" id="vocabExampleAudioBtn" type="button" title="播放例句發音" onclick="speakCurrentExample(event)" style="width:28px; height:28px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
+                <button class="audio-btn" id="vocabExampleCopyBtn" type="button" title="複製例句" onclick="copyCurrentExample(event)" style="width:28px; height:28px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
             </div>
             <div class="example-zh" id="vocabBackExampleZh"></div>
           </div>
@@ -1380,7 +1384,7 @@
       <button class="modal-close-btn" type="button" onclick="closeImportModal()">&times;</button>
     </div>
     <div class="modal-body">
-      <!-- Google Cloud TTS API Key 設定區塊 -->
+      <!-- Google Cloud TTS API Key 與日語聲音模型設定區塊 -->
       <div class="tts-config-card">
         <div class="github-sync-header">
           <span class="github-sync-title" style="color:var(--text-main);">
@@ -1390,12 +1394,34 @@
           <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);" id="ttsApiStatus">未設定 (使用預設語音)</span>
         </div>
         <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
-          填入 Google Cloud API Key 後，五十音、單字與例句將優先使用真人級 <strong>Neural2</strong> 語音；若留空則自動使用預設免費語音：
+          填入 Google Cloud API Key 後，五十音、單字與例句將優先使用您選擇的雲端語音模型；若留空則自動使用預設免費語音：
         </p>
         <div class="github-url-input-group">
           <input type="password" class="github-url-input" id="ttsApiKeyInput" placeholder="貼上 Google Cloud API Key (AIza...)" autocomplete="off">
           <button class="github-fetch-btn" type="button" onclick="saveTtsApiKey()">儲存金鑰</button>
           <button class="btn-secondary" type="button" onclick="clearTtsApiKey()" style="padding:7px 10px;">清除</button>
+        </div>
+        <div class="github-url-input-group">
+          <select class="github-url-input" id="ttsVoiceSelect" onchange="changeTtsVoice()" style="font-family:inherit; cursor:pointer;">
+            <optgroup label="Neural2 (推薦・最自然真人感)">
+              <option value="ja-JP-Neural2-B">日語女聲 (ja-JP-Neural2-B) - 預設自然</option>
+              <option value="ja-JP-Neural2-C">日語男聲 (ja-JP-Neural2-C) - 清晰沉穩</option>
+              <option value="ja-JP-Neural2-D">日語男聲 (ja-JP-Neural2-D) - 溫和自然</option>
+            </optgroup>
+            <optgroup label="WaveNet (高音質・每月免費額度較高)">
+              <option value="ja-JP-Wavenet-A">日語女聲 (ja-JP-Wavenet-A) - 輕柔</option>
+              <option value="ja-JP-Wavenet-B">日語女聲 (ja-JP-Wavenet-B) - 標準</option>
+              <option value="ja-JP-Wavenet-C">日語男聲 (ja-JP-Wavenet-C)</option>
+              <option value="ja-JP-Wavenet-D">日語男聲 (ja-JP-Wavenet-D)</option>
+            </optgroup>
+            <optgroup label="Standard (標準合成音・最省額度)">
+              <option value="ja-JP-Standard-A">日語女聲 (ja-JP-Standard-A)</option>
+              <option value="ja-JP-Standard-B">日語女聲 (ja-JP-Standard-B)</option>
+              <option value="ja-JP-Standard-C">日語男聲 (ja-JP-Standard-C)</option>
+              <option value="ja-JP-Standard-D">日語男聲 (ja-JP-Standard-D)</option>
+            </optgroup>
+          </select>
+          <button class="btn-secondary" type="button" onclick="previewTtsVoice()" style="padding:7px 12px; white-space:nowrap;">🔊 試聽</button>
         </div>
       </div>
 
@@ -1466,6 +1492,7 @@
   const STORE_THEME = 'theme';
   const STORE_APP_MODE = 'jp_flashcard_mode'; // 'kana' | 'vocab'
   const STORE_TTS_API_KEY = 'google_tts_api_key';
+  const STORE_TTS_VOICE = 'google_tts_voice_jp';
 
   // 50音 Storage Keys
   const STORE_KANA_MASTERED = 'jp_cards_mastered';
@@ -1505,6 +1532,7 @@
   let toastTimer = null;
   let currentAudio = null;
   let ttsApiKey = (localStorage.getItem(STORE_TTS_API_KEY) || '').trim();
+  let ttsVoiceName = localStorage.getItem(STORE_TTS_VOICE) || 'ja-JP-Neural2-B';
   const ttsAudioCache = new Map();
 
   // --- Kana State ---
@@ -1546,10 +1574,12 @@
       document.getElementById('githubUrlInput').value = savedUrl;
     }
 
-    // 初始化 Google Cloud TTS API Key 狀態
+    // 初始化 Google Cloud TTS API Key 與語音選單狀態
     if (ttsApiKey) {
       document.getElementById('ttsApiKeyInput').value = ttsApiKey;
     }
+    const voiceSelect = document.getElementById('ttsVoiceSelect');
+    if (voiceSelect) voiceSelect.value = ttsVoiceName;
     updateTtsStatusUI();
 
     buildKanaDeck();
@@ -1842,14 +1872,14 @@
       if (!isKanaReversed) {
         frontCharEl.innerText = card.front;
         frontCharEl.classList.remove('is-reversed-front');
-        frontHint.innerText = '點擊卡片檢視羅馬拼音與發音';
+        frontHint.innerText = '點擊下方「翻轉卡片」按鈕檢視羅馬拼音與發音';
 
         backRomajiEl.innerText = card.backRomaji;
         backRomajiEl.classList.remove('is-reversed-back');
       } else {
         frontCharEl.innerText = card.backRomaji;
         frontCharEl.classList.add('is-reversed-front');
-        frontHint.innerText = '點擊卡片檢視對應假名與發音';
+        frontHint.innerText = '點擊下方「翻轉卡片」按鈕檢視對應假名與發音';
 
         backRomajiEl.innerText = card.front;
         backRomajiEl.classList.add('is-reversed-back');
@@ -1899,7 +1929,7 @@
         frontWordEl.innerText = item.word || '';
         frontWordEl.classList.remove('is-reversed-front');
         if (frontCopyBtn) frontCopyBtn.style.display = 'inline-flex';
-        frontHintEl.innerText = '點擊卡片或下方「翻轉卡片」按鈕檢視讀音、中文釋義與例句';
+        frontHintEl.innerText = '點擊下方「翻轉卡片」按鈕檢視讀音、中文釋義與例句';
 
         backWordEl.classList.remove('is-reversed-back');
         backMeaningEl.classList.remove('is-reversed-back');
@@ -1908,7 +1938,7 @@
         frontWordEl.innerText = item.meaning || '';
         frontWordEl.classList.add('is-reversed-front');
         if (frontCopyBtn) frontCopyBtn.style.display = 'none';
-        frontHintEl.innerText = '點擊卡片或下方「翻轉卡片」按鈕檢視日語單字、讀音與例句';
+        frontHintEl.innerText = '點擊下方「翻轉卡片」按鈕檢視日語單字、讀音與例句';
 
         backWordEl.classList.add('is-reversed-back');
         backMeaningEl.classList.add('is-reversed-back');
@@ -1921,7 +1951,7 @@
       document.getElementById('cardTag').innerText = item.tag || '日語單字';
       document.getElementById('starBtn').classList.toggle('active', vocabReviewSet.has(k));
 
-      // Back Face (顯示完整單字、假名/羅馬音、單字發音與例句發音按鈕)
+      // Back Face (顯示完整單字、假名/羅馬音、單字發音與例句發音/複製按鈕)
       backWordEl.innerText = item.word || '';
       document.getElementById('vocabBackPhonetic').innerText = item.phonetic || '';
       const backPosEl = document.getElementById('vocabBackPos');
@@ -1930,7 +1960,7 @@
       backMeaningEl.innerText = item.meaning || '';
 
       const exBox = document.getElementById('vocabExampleBox');
-      const exAudioBtn = document.getElementById('vocabExampleAudioBtn');
+      const exActionGroup = document.getElementById('vocabExampleActionGroup');
       const hasJpEx = Boolean(item.example && item.example.trim());
       const hasZhEx = Boolean(item.example_zh && item.example_zh.trim());
 
@@ -1938,7 +1968,7 @@
         exBox.style.display = 'block';
         document.getElementById('vocabBackExample').innerText = item.example || '';
         document.getElementById('vocabBackExampleZh').innerText = item.example_zh || '';
-        if (exAudioBtn) exAudioBtn.style.display = hasJpEx ? 'inline-flex' : 'none';
+        if (exActionGroup) exActionGroup.style.display = hasJpEx ? 'flex' : 'none';
       } else {
         exBox.style.display = 'none';
       }
@@ -2029,12 +2059,25 @@
     const statusEl = document.getElementById('ttsApiStatus');
     if (!statusEl) return;
     if (ttsApiKey) {
-      statusEl.innerText = '✓ 已啟用 Cloud Neural2 語音';
+      statusEl.innerText = `✓ 已啟用 (${ttsVoiceName})`;
       statusEl.style.color = 'var(--green)';
     } else {
       statusEl.innerText = '未設定 (使用預設語音)';
       statusEl.style.color = 'var(--text-muted)';
     }
+  }
+
+  function changeTtsVoice() {
+    const selectEl = document.getElementById('ttsVoiceSelect');
+    if (!selectEl) return;
+    ttsVoiceName = selectEl.value;
+    localStorage.setItem(STORE_TTS_VOICE, ttsVoiceName);
+    updateTtsStatusUI();
+    showToast(`已切換語音為：${ttsVoiceName}`);
+  }
+
+  function previewTtsVoice() {
+    speakTextInJapanese('こんにちは、音声のテストです。');
   }
 
   function saveTtsApiKey() {
@@ -2098,8 +2141,8 @@
       return;
     }
 
-    // 檢查記憶體快取
-    const cacheKey = `ja_${cleanText}`;
+    // 檢查記憶體快取 (綁定目前選取的聲音名稱)
+    const cacheKey = `${ttsVoiceName}_${cleanText}`;
     if (ttsAudioCache.has(cacheKey)) {
       const audio = new Audio(`data:audio/mp3;base64,${ttsAudioCache.get(cacheKey)}`);
       currentAudio = audio;
@@ -2107,14 +2150,14 @@
       return;
     }
 
-    // 呼叫官方 Google Cloud Text-to-Speech API (ja-JP-Neural2-B)
+    // 呼叫官方 Google Cloud Text-to-Speech API
     try {
       const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(ttsApiKey)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           input: { text: cleanText },
-          voice: { languageCode: 'ja-JP', name: 'ja-JP-Neural2-B' },
+          voice: { languageCode: 'ja-JP', name: ttsVoiceName },
           audioConfig: { audioEncoding: 'MP3', speakingRate: 0.92 }
         })
       });
@@ -2171,11 +2214,6 @@
     if (item.example) {
       speakTextInJapanese(item.example);
     }
-  }
-
-  function handleCardClick(e) {
-    if (e && e.target && e.target.closest('button')) return;
-    flipCard();
   }
 
   function flipCard() {
@@ -2355,6 +2393,19 @@
     if (!textToCopy) return;
     navigator.clipboard.writeText(textToCopy).then(() => {
       showToast(`📋 已複製：${textToCopy}`);
+    });
+  }
+
+  function copyCurrentExample(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (appMode !== 'vocab' || vocabDisplayedIndices.length === 0) return;
+    const textToCopy = (allVocab[vocabDisplayedIndices[vocabIndex]].example || '').trim();
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      showToast('📋 已複製例句！');
     });
   }
 
